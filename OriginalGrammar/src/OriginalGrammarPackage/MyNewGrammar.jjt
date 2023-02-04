@@ -129,6 +129,8 @@ int abase() :
   < INTEGER > {f = Integer.parseInt(token.image);} | "(" f=arithmeticStatement() ")"
   ){return f;}
 }
+
+/*
 int declaration():
 {
 }
@@ -137,7 +139,6 @@ int declaration():
 
 }
 
-/*
 void vartype() :
 {}
 {
@@ -177,6 +178,7 @@ void variableDeclaration() :
 }*/
 
 
+
 /*---------------------------------------------------------------------*/
 /*BOOLEAN ARITHMETIC STATS HERE*/
 /*---------------------------------------------------------------------*/
@@ -185,7 +187,6 @@ TOKEN : /* BOOLEAN OPERATORS AND VALUES */
 {
   < NOT : "NOT" > | < OR : "OR" > | < AND : "AND" >  | < TRUE : "TRUE"> | < FALSE: "FALSE">
 }
-
 
 boolean booleanStatement() :
 {boolean a,b;}
