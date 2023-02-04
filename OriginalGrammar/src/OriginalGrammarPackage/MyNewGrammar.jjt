@@ -1,0 +1,177 @@
+/**
+ * JavaCC template file created by SF JavaCC plugin 1.5.28+ wizard for JavaCC 1.5.0+
+ */options{  static = true;}PARSER_BEGIN(MyNewGrammar)package OriginalGrammarPackage;
+
+public class MyNewGrammar{  public static void main(String args []) throws ParseException  {    MyNewGrammar parser = new MyNewGrammar(System.in);    while (true)    {      System.out.println("Reading from standard input...");      System.out.print("Enter an expression like \"1+(2+3)*4;\" :");      try      {        /*switch (MyNewGrammar.one_line())        {          case 0 :           System.out.println("OK.");          break;          case 1 :           System.out.println("Goodbye.");          break;          default :           break;        }*/
+			SimpleNode n = parser.Start();      }      catch (Exception e)      {        System.out.println("NOK.");        System.out.println(e.getMessage());        MyNewGrammar.ReInit(System.in);      }      catch (Error e)      {        System.out.println("Oops.");        System.out.println(e.getMessage());        break;      }    }  }}
+
+PARSER_END(MyNewGrammar)
+
+SKIP :
+{
+  " "
+| "\r"
+| "\t"
+| "\n"
+}
+
+TOKEN : /* OPERATORS */
+{
+  < PLUS : "+" >
+| < MINUS : "-" >
+| < MULTIPLY : "*" >
+| < DIVIDE : "/" >
+| < EQ : "=" >
+}
+
+TOKEN : /*VARNAME*/
+{
+  < VARNAME : < LETTER >(< LETTER >|< DIGIT >)* >
+}
+
+TOKEN : /*LETTERS*/
+{
+  < LETTER : [ "a"-"z", "A"-"Z" ] >
+}
+
+TOKEN : /*NUMBERS*/
+{
+  < INTEGER : (< DIGIT >)+ >
+}
+
+TOKEN :
+{
+  < #DIGIT : [ "0"-"9" ] >
+}
+/*
+TOKEN : KEYWORDS
+{
+< INT : "int" >
+}
+*/
+int one_line() :
+{int a;}
+{
+  a = arithmeticStatement() ";"
+  varname()
+  <EQ>
+  rightOperand() ";"
+  
+  {
+    {System.out.println("Result : " + a); }
+    return 0;
+  }
+| ";"
+  {
+    return 1;
+  }
+}
+
+void varname() :
+{}
+{
+  <VARNAME>
+}
+
+int rightOperand() :
+{int a;}
+{
+  a=arithmeticStatement()
+  { return a; }
+}
+
+
+void integer() :
+{}
+{
+  <INTEGER>
+}
+
+
+int arithmeticStatement() :
+{int c,b;}
+{
+  c = aterm()
+  (
+    (
+      < PLUS >   b = term() {c += b; }
+    | < MINUS >  b = term() {c -= b; }
+    )
+  )*
+  {return c; }
+}
+
+int aterm() :
+{int d, b;}
+{
+  d = asubterm()
+ (
+    (
+      < MULTIPLY > b = unary() {d *= b; }
+    | < DIVIDE > b = unary() {d /= b; }
+    )
+  )*
+  {return d; }
+}
+
+int asubterm() :
+{int e;}
+{
+  < MINUS > e = abase() {return -e;}
+| e = abase() {return e;}
+
+}
+
+int abase() :
+{int f;}
+{
+  (
+  < INTEGER > {f = Integer.parseInt(token.image);} | "(" f=arithmeticStatement() ")"
+  ){return f;}
+}
+int declaration():
+{
+}
+{
+	global int a; 
+
+}
+
+/*
+void vartype() :
+{}
+{
+  (<INT> )
+}
+
+void variableDeclaration() :
+{}
+{
+  vartype()
+  (
+    varname() ","
+  )*
+  varname() ";"
+}
+*/
+
+/*SimpleNode Start(): {}
+{
+ (   varname()
+  <EQ>
+  rightOperand() ";"
+)* "!"
+  { return jjtThis; }
+}*/
+
+/*void Identifier() :
+{
+  Token t;
+}
+{
+  t=<VARNAME>
+  {
+    jjtThis.value = t.image;
+    System.out.println(t.image);
+  }
+}*/
