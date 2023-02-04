@@ -177,22 +177,19 @@ void variableDeclaration() :
 }*/
 
 
+/*---------------------------------------------------------------------*/
 /*BOOLEAN ARITHMETIC STATS HERE*/
-TOKEN : /* BOOLEAN OPERATORS */
+TOKEN : /* BOOLEAN OPERATORS AND VALUES */
 {
-  < NOT : "NOT" > | < OR : "OR" > | < AND : "AND" >
+  < NOT : "NOT" > | < OR : "OR" > | < AND : "AND" >  | < TRUE : "TRUE"> | < FALSE: "FALSE">
 }
 
-TOKEN : /*BOOLEAN VALUES*/
-{
-  < BOOLEAN : ["TRUE", "FALSE"] >
-}
 
 boolean booleanStatement() :
 {boolean a,b;}
 {
   a = bterm()
-  ( < OR >  b = bterm() {a == a || b; } )*
+  ( < OR >  b = bterm() {a = a || b; } )*
   { System.out.println(a);
     return a;}
 }
@@ -208,13 +205,14 @@ boolean bterm() :
 boolean bsubterm() :
 {boolean a;}
 {
-  < NOT > a = abase() {return !a;} | a = abase() {return a;}
+  < NOT > a = bbase() {return !a;} | a = bbase() {return a;}
 }
 
 boolean bbase() :
 {boolean f;}
 {
   (
-  < BOOLEAN > {f = Boolean.parseBoolean(token.image);} | "(" f=booleanStatement() ")"
+  < TRUE > | < FALSE > {f = Boolean.parseBoolean(token.image);} | "(" f=booleanStatement() ")"
   ){return f;}
 }
+
