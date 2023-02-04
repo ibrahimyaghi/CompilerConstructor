@@ -179,6 +179,8 @@ void variableDeclaration() :
 
 /*---------------------------------------------------------------------*/
 /*BOOLEAN ARITHMETIC STATS HERE*/
+/*---------------------------------------------------------------------*/
+
 TOKEN : /* BOOLEAN OPERATORS AND VALUES */
 {
   < NOT : "NOT" > | < OR : "OR" > | < AND : "AND" >  | < TRUE : "TRUE"> | < FALSE: "FALSE">
@@ -216,3 +218,5 @@ boolean bbase() :
   "(" f=booleanStatement() ")"
   ){return f;}
 }
+
+/*BOOLEAN ARITHMETIC ENDS HERE*/
