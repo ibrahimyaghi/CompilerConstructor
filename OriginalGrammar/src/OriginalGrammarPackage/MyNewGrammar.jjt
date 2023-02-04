@@ -175,3 +175,46 @@ void variableDeclaration() :
     System.out.println(t.image);
   }
 }*/
+
+
+/*BOOLEAN ARITHMETIC STATS HERE*/
+TOKEN : /* BOOLEAN OPERATORS */
+{
+  < NOT : "NOT" > | < OR : "OR" > | < AND : "AND" >
+}
+
+TOKEN : /*BOOLEAN VALUES*/
+{
+  < BOOLEAN : ["TRUE", "FALSE"] >
+}
+
+boolean booleanStatement() :
+{boolean a,b;}
+{
+  a = bterm()
+  ( < OR >  b = bterm() {a == a || b; } )*
+  { System.out.println(a);
+    return a;}
+}
+
+boolean bterm() :
+{boolean a, b;}
+{
+  a = bsubterm()
+  ( < AND > b = bsubterm() {a = a && b;} )*
+  {return a;}
+}
+
+boolean bsubterm() :
+{boolean a;}
+{
+  < NOT > a = abase() {return !a;} | a = abase() {return a;}
+}
+
+boolean bbase() :
+{boolean f;}
+{
+  (
+  < BOOLEAN > {f = Boolean.parseBoolean(token.image);} | "(" f=booleanStatement() ")"
+  ){return f;}
+}
