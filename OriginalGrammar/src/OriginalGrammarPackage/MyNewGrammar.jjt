@@ -190,8 +190,7 @@ boolean booleanStatement() :
 {
   a = bterm()
   ( < OR >  b = bterm() {a = a || b; } )*
-  { System.out.println(a);
-    return a;}
+  { return a;}
 }
 
 boolean bterm() :
@@ -212,7 +211,8 @@ boolean bbase() :
 {boolean f;}
 {
   (
-  < TRUE > | < FALSE > {f = Boolean.parseBoolean(token.image);} | "(" f=booleanStatement() ")"
+  < TRUE > {f = Boolean.parseBoolean(token.image);} |
+  < FALSE > {f = Boolean.parseBoolean(token.image);} |
+  "(" f=booleanStatement() ")"
   ){return f;}
 }
-
