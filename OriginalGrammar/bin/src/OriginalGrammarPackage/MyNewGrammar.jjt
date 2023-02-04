@@ -94,8 +94,8 @@ int arithmeticStatement() :
   c = aterm()
   (
     (
-      < PLUS >   b = aterm() {c += b; }
-    | < MINUS >  b = aterm() {c -= b; }
+      < PLUS >   b = term() {c += b; }
+    | < MINUS >  b = term() {c -= b; }
     )
   )*
   {return c; }
@@ -107,8 +107,8 @@ int aterm() :
   d = asubterm()
  (
     (
-      < MULTIPLY > b = asubterm() {d *= b; }
-    | < DIVIDE > b = asubterm() {d /= b; }
+      < MULTIPLY > b = unary() {d *= b; }
+    | < DIVIDE > b = unary() {d /= b; }
     )
   )*
   {return d; }
@@ -182,11 +182,17 @@ void variableDeclaration() :
 /*---------------------------------------------------------------------*/
 /*BOOLEAN ARITHMETIC STATS HERE*/
 /*---------------------------------------------------------------------*/
+
+TOKEN : /* BOOLEAN OPERATORS AND VALUES */
+{
+  < NOT : "NOT" > | < OR : "OR" > | < AND : "AND" >  | < TRUE : "TRUE"> | < FALSE: "FALSE">
+}
+
 boolean booleanStatement() :
 {boolean a,b;}
 {
   a = bterm()
-  ( "OR"  b = bterm() {a = a || b; } )*
+  ( < OR >  b = bterm() {a = a || b; } )*
   { return a;}
 }
 
@@ -194,22 +200,22 @@ boolean bterm() :
 {boolean a, b;}
 {
   a = bsubterm()
-  ( "AND" b = bsubterm() {a = a && b;} )*
+  ( < AND > b = bsubterm() {a = a && b;} )*
   {return a;}
 }
 
 boolean bsubterm() :
 {boolean a;}
 {
-  "NOT" a = bbase() {return !a;} | a = bbase() {return a;}
+  < NOT > a = bbase() {return !a;} | a = bbase() {return a;}
 }
 
 boolean bbase() :
 {boolean f;}
 {
   (
-  "TRUE" {f = Boolean.parseBoolean(token.image);} |
-  "FALSE" {f = Boolean.parseBoolean(token.image);} |
+  < TRUE > {f = Boolean.parseBoolean(token.image);} |
+  < FALSE > {f = Boolean.parseBoolean(token.image);} |
   "(" f=booleanStatement() ")"
   ){return f;}
 }

@@ -1,0 +1,12 @@
+/MyNewGrammar.java
+/MyNewGrammarConstants.java
+/MyNewGrammarTokenManager.java
+/ParseException.java
+/SimpleCharStream.java
+/Token.java
+/TokenMgrError.java
+/JJTMyNewGrammarState.java
+/MyNewGrammar.jj
+/MyNewGrammarTreeConstants.java
+/Node.java
+/SimpleNode.java
