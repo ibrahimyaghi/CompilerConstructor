@@ -1,0 +1,260 @@
+/**
+ * JavaCC template file created by SF JavaCC plugin 1.5.28+ wizard for JavaCC 1.5.0+
+ */
+options
+{
+  static = true;
+}
+
+PARSER_BEGIN(parsername)
+import java.util.*;
+
+public class parsername
+{
+  public static void main(String args []) throws ParseException
+  {
+    parsername parser = new parsername(System.in);
+    while (true)
+    {
+      System.out.println("Reading from standard input...");
+      System.out.print("Enter an expression like \"1+(2+3)*4 XXDD;\" :");
+      try
+      {
+        Map<String,Object> map=new HashMap<String,Object>(); 
+        switch (parsername.multipleLines(map))
+        {
+          case 0 : 
+          System.out.println("OK. End of program");
+          break;
+          case 1 : 
+          System.out.println("Goodbye.");
+          break;
+          default : 
+          break;
+        }
+      }
+      catch (Exception e)
+      {
+        System.out.println("NOK.");
+        System.out.println(e.getMessage());
+        parsername.ReInit(System.in);
+      }
+      catch (Error e)
+      {
+        System.out.println("Oops.");
+        System.out.println(e.getMessage());
+        break;
+      }
+    }
+  }
+}
+
+PARSER_END(parsername)
+
+SKIP :
+{
+  " "
+| "\r"
+| "\t"
+| "\n"
+}
+
+TOKEN : /* OPERATORS */
+{
+  < PLUS : "+" >
+| < MINUS : "-" >
+| < MULTIPLY : "*" >
+| < DIVIDE : "/" >
+}
+
+TOKEN :
+{
+  < INTEGER : (< DIGIT >)+ >
+| < FLOAT: (< DIGIT >)+"."(< DIGIT >)+>
+| < #DIGIT : [ "0"-"9" ] >
+| < VARNAME : < LETTER >(< LETTER >|< DIGIT >)* >
+| < LETTER : [ "a"-"z" ] > 
+}
+
+/*
+If LETTER is not below VARNAME (lines 72-73), VARNAMEs with just 1 letter are
+treated as LETTER and result in errors when calling for example a=1+1;
+*/
+
+/*---------------------------------------------------------------------*/
+/* DECLARE VARIABLES
+/*---------------------------------------------------------------------*/
+
+void declareINT(Map map):
+{}
+{    "INT" < VARNAME > {map.put(token.toString(), 0);}
+    (","  < VARNAME > {map.put(token.toString(), 0);})* ";"
+}
+
+void declareBOOL(Map map):
+{}
+{
+  "BOOLEAN" < VARNAME > {map.put(token.toString(), false);}
+  ("," 		< VARNAME > {map.put(token.toString(), false);} )* ";"
+}
+
+void declareFLOAT(Map map):
+{}
+{
+  "FLOAT" < VARNAME > {map.put(token.toString(), 0.0);}
+  (","    < VARNAME > {map.put(token.toString(), 0.0);})* ";"
+}
+
+/*---------------------------------------------------------------------*/
+/* SINGLE/MULTIPLE LINES STATS HERE*/
+/*---------------------------------------------------------------------*/
+
+int multipleLines(Map map):
+{boolean a; int b;}
+{ 
+  (line(map))* "END" {return 0;}
+| ";"
+  {
+    return 1;
+  }
+}
+
+void line(Map map) :
+{boolean a; int b; double c; Token s;}
+{
+  //LOOKAHEAD resolves some issue that makes parser confuse statements
+  //THERE IS A BUG - LOOKAHEAD DOES NOT WANT TO COOPERATE WITH PARENTHESIS
+  //THE SAME WITH THE VARNAME
+  
+  LOOKAHEAD(3)
+  s = < VARNAME > "=" a = booleanStatement(map) ";" 
+  {
+    System.out.println("Result : " + a);
+    map.replace(s.toString(), a);
+    return;
+  }
+| LOOKAHEAD(3)
+  s = < VARNAME > "=" b = integerStatement(map) ";" 
+  {
+    System.out.println("Result : " + b);
+    map.replace(s.toString(), b);
+    return;
+  }
+| s = < VARNAME > "=" c = floatStatement(map) ";" 
+  {
+    System.out.println("Result : " + c);
+    map.replace(s.toString(), c);
+    return;
+  }
+| declareINT(map)   {System.out.println("Variable(s) declared"); return;}
+| declareFLOAT(map) {System.out.println("Variable(s) declared"); return;}
+| declareBOOL(map)  {System.out.println("Variable(s) declared"); return;}
+}
+
+/*---------------------------------------------------------------------*/
+/*INTEGER ARITHMETIC STATS HERE*/
+/*---------------------------------------------------------------------*/
+
+int integerStatement(Map map) :
+{int a, b;}
+{
+  a = aterm(map)
+  ( < PLUS >   b = aterm(map) {a += b; } | < MINUS >  b = aterm(map) {a -= b; } )*
+  {return a; }
+}
+
+int aterm(Map map) :
+{int a, b;}
+{
+  a = asubterm(map)
+  ( < MULTIPLY > b = asubterm(map) {a *= b; }| < DIVIDE > b = asubterm(map) {a /= b; } )*
+  {return a; }
+}
+
+int asubterm(Map map) :
+{int a;}
+{
+  < MINUS > a = abase(map) {return -a;} | a = abase(map) {return a;}
+}
+
+int abase(Map map) :
+{int a;}
+{
+  (
+  < INTEGER > {a = Integer.parseInt(token.image);} | "(" a=integerStatement(map) ")"
+  | < VARNAME > {a = (Integer) map.get(token.toString());}
+  ){return a;}
+}
+
+/*---------------------------------------------------------------------*/
+/*BOOLEAN ARITHMETIC STATS HERE*/
+/*---------------------------------------------------------------------*/
+
+boolean booleanStatement(Map map) :
+{boolean a,b;}
+{
+  a = bterm(map)
+  ( "OR"  b = bterm(map) {a = a || b; } )*
+  { return a;}
+}
+
+boolean bterm(Map map) :
+{boolean a, b;}
+{
+  a = bsubterm(map)
+  ( "AND" b = bsubterm(map) {a = a && b;} )*
+  {return a;}
+}
+
+boolean bsubterm(Map map) :
+{boolean a;}
+{
+  "NOT" a = bbase(map) {return !a;} | a = bbase(map) {return a;}
+}
+
+boolean bbase(Map map) :
+{boolean a;}
+{
+  (
+  "TRUE" {a = Boolean.parseBoolean(token.image);} |
+  "FALSE" {a = Boolean.parseBoolean(token.image);} |
+  "(" a=booleanStatement(map) ")" |
+  < VARNAME > {a = (Boolean) map.get(token.toString());}
+  ){return a;}
+}
+
+/*---------------------------------------------------------------------*/
+/*FLOAT ARITHMETIC STATS HERE*/
+/*---------------------------------------------------------------------*/
+
+double floatStatement(Map map) :
+{double a, b;}
+{
+  a = fterm(map)
+  ( < PLUS >   b = fterm(map) {a += b; } | < MINUS >  b = fterm(map) {a -= b; } )*
+  {return a;}
+}
+
+double fterm(Map map) :
+{double a, b;}
+{
+  a = fsubterm(map)
+  ( < MULTIPLY > b = fsubterm(map) {a *= b; }| < DIVIDE > b = fsubterm(map) {a /= b; } )*
+  {return a;}
+}
+
+double fsubterm(Map map) :
+{double a;}
+{
+  < MINUS > a = fbase(map) {return -a;} | a = fbase(map) {return a;}
+}
+
+double fbase(Map map) :
+{double a;}
+{
+  (
+    < FLOAT > {a = Double.parseDouble(token.image);} | "(" a=floatStatement(map) ")"
+  | < VARNAME > {a = (double) map.get(token.toString());}
+  )
+  {return a;}
+}
