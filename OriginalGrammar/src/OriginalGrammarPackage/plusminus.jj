@@ -61,48 +61,65 @@ SKIP :
 
 TOKEN : /* OPERATORS */
 {
-  < PLUS : "+" >
-| < MINUS : "-" >
+  < PLUS     : "+" >
+| < MINUS    : "-" >
 | < MULTIPLY : "*" >
-| < DIVIDE : "/" >
+| < DIVIDE   : "/" >
 }
 
 TOKEN :
 {
   < INTEGER : (< DIGIT >)+ >
-| < FLOAT: (< DIGIT >)+"."(< DIGIT >)+>
-| < #DIGIT : [ "0"-"9" ] >
+| < FLOAT   : (< DIGIT >)+"."(< DIGIT >)+>
+| < #DIGIT  : [ "0"-"9" ] >
 | < VARNAME : < LETTER >(< LETTER >|< DIGIT >)* >
-| < LETTER : [ "a"-"z" ] > 
+| < LETTER  : [ "a"-"z" ] > 
 }
 
+
 /*
-If LETTER is not below VARNAME (lines 72-73), VARNAMEs with just 1 letter are
-treated as LETTER and result in errors when calling for example a=1+1;
+If LETTER is not below VARNAME, VARNAMEs with just 1 letter are
+treated as LETTER and result in errors
 */
+
+TOKEN: /* DATA TYPES */
+{
+  < INT_VARNAME   : "I" <VARNAME> > 
+| < BOOL_VARNAME  : "B" <VARNAME> > 
+| < FLOAT_VARNAME : "F" <VARNAME> > 
+}
 
 /*---------------------------------------------------------------------*/
 /* DECLARE VARIABLES
+/* We allow only simple initializations by values
+/* No statements allowed here
 /*---------------------------------------------------------------------*/
 
 void declareINT(Map map):
-{}
-{    "INT" < VARNAME > {map.put(token.toString(), 0);}
-    (","  < VARNAME > {map.put(token.toString(), 0);})* ";"
+{String a;}
+{
+    "INT" < INT_VARNAME > {a = token.toString();} "="
+    <INTEGER> {map.put(a, Integer.parseInt(token.image));}
+    (","  < INT_VARNAME > {a = token.toString();} "="
+    <INTEGER> {map.put(a, Integer.parseInt(token.image));})* ";"
 }
 
 void declareBOOL(Map map):
-{}
+{String a;}
 {
-  "BOOLEAN" < VARNAME > {map.put(token.toString(), false);}
-  ("," 		< VARNAME > {map.put(token.toString(), false);} )* ";"
+  "BOOLEAN" < BOOL_VARNAME > {a = token.toString();} "="
+  ("TRUE" | "FALSE") {map.put(a, Boolean.parseBoolean(token.image));}
+  ("," 		< BOOL_VARNAME > {a = token.toString();} "="
+  ("TRUE" | "FALSE") {map.put(a, Boolean.parseBoolean(token.image));})* ";"
 }
 
 void declareFLOAT(Map map):
-{}
+{String a;}
 {
-  "FLOAT" < VARNAME > {map.put(token.toString(), 0.0);}
-  (","    < VARNAME > {map.put(token.toString(), 0.0);})* ";"
+  "FLOAT" < FLOAT_VARNAME > {a = token.toString();} "="
+  <FLOAT> {map.put(a,   Double.parseDouble(token.image));}
+  (","    < FLOAT_VARNAME > {a = token.toString();} "="
+  <FLOAT> {map.put(a,   Double.parseDouble(token.image));})* ";"
 }
 
 /*---------------------------------------------------------------------*/
@@ -122,33 +139,35 @@ int multipleLines(Map map):
 void line(Map map) :
 {boolean a; int b; double c; Token s;}
 {
-  //LOOKAHEAD resolves some issue that makes parser confuse statements
-  //THERE IS A BUG - LOOKAHEAD DOES NOT WANT TO COOPERATE WITH PARENTHESIS
-  //THE SAME WITH THE VARNAME
+
+/*	Boolean value can be return either by boolean statement
+	or by any type of comparison, so we basically allow sth like:
+	Bb = EQB TRUE FALSE; 											*/
+
   
   LOOKAHEAD(3)
-  s = < VARNAME > "=" a = booleanStatement(map) ";" 
+  s = < BOOL_VARNAME > "=" (a = booleanStatement(map) | a = comparison(map)) ";" 
   {
-    System.out.println("Result : " + a);
+    System.out.println("Result: " + a);
     map.replace(s.toString(), a);
     return;
   }
 | LOOKAHEAD(3)
-  s = < VARNAME > "=" b = integerStatement(map) ";" 
+  s = < INT_VARNAME > "=" b = integerStatement(map) ";" 
   {
-    System.out.println("Result : " + b);
+    System.out.println("Result: " + b);
     map.replace(s.toString(), b);
     return;
   }
-| s = < VARNAME > "=" c = floatStatement(map) ";" 
+| s = < FLOAT_VARNAME > "=" c = floatStatement(map) ";" 
   {
-    System.out.println("Result : " + c);
+    System.out.println("Result: " + c);
     map.replace(s.toString(), c);
     return;
   }
-| declareINT(map)   {System.out.println("Variable(s) declared"); return;}
-| declareFLOAT(map) {System.out.println("Variable(s) declared"); return;}
-| declareBOOL(map)  {System.out.println("Variable(s) declared"); return;}
+| declareINT(map)   	 {System.out.println("Variable(s) declared"); return;}
+| declareFLOAT(map) 	 {System.out.println("Variable(s) declared"); return;}
+| declareBOOL(map)  	 {System.out.println("Variable(s) declared"); return;}
 }
 
 /*---------------------------------------------------------------------*/
@@ -181,8 +200,8 @@ int abase(Map map) :
 {int a;}
 {
   (
-  < INTEGER > {a = Integer.parseInt(token.image);} | "(" a=integerStatement(map) ")"
-  | < VARNAME > {a = (Integer) map.get(token.toString());}
+    < INTEGER > {a = Integer.parseInt(token.image);} | "(" a=integerStatement(map) ")"
+  | < INT_VARNAME > {a = (Integer) map.get(token.toString());}
   ){return a;}
 }
 
@@ -219,7 +238,7 @@ boolean bbase(Map map) :
   "TRUE" {a = Boolean.parseBoolean(token.image);} |
   "FALSE" {a = Boolean.parseBoolean(token.image);} |
   "(" a=booleanStatement(map) ")" |
-  < VARNAME > {a = (Boolean) map.get(token.toString());}
+  < BOOL_VARNAME > {a = (Boolean) map.get(token.toString());}
   ){return a;}
 }
 
@@ -254,7 +273,53 @@ double fbase(Map map) :
 {
   (
     < FLOAT > {a = Double.parseDouble(token.image);} | "(" a=floatStatement(map) ")"
-  | < VARNAME > {a = (double) map.get(token.toString());}
+  | < FLOAT_VARNAME > {a = (double) map.get(token.toString());}
   )
   {return a;}
 }
+
+/*---------------------------------------------------------------------*/
+/*COMPARISON STATEMENTS STATS HERE*/
+/*---------------------------------------------------------------------*/
+
+boolean comparison(Map map) :
+{boolean a;}
+{
+	(a = booleanComparison(map) | a = integerComparison(map) | a = floatComparison(map))
+	{return a;}
+}
+
+boolean booleanComparison(Map map) :
+{boolean a, b;}
+{
+	"EQB"  a = booleanStatement(map) b = booleanStatement(map) {return a == b;}
+|	"NEQB" a = booleanStatement(map) b = booleanStatement(map) {return a != b;} 
+}
+
+boolean integerComparison(Map map) :
+{int a, b;}
+{
+	"EQI"  a = integerStatement(map) b = integerStatement(map) {return a == b;}
+|	"NEQI" a = integerStatement(map) b = integerStatement(map) {return a != b;}
+|	"GEI"  a = integerStatement(map) b = integerStatement(map) {return a >= b;}
+|	"LEI"  a = integerStatement(map) b = integerStatement(map) {return a <= b;}
+|	"GI"   a = integerStatement(map) b = integerStatement(map) {return a > b;}
+|	"LI"   a = integerStatement(map) b = integerStatement(map) {return a < b;}
+}
+
+boolean floatComparison(Map map) :
+{double a, b;}
+{
+	"EQF"  a = floatStatement(map) b = floatStatement(map) {return a == b;}
+|	"NEQF" a = floatStatement(map) b = floatStatement(map) {return a != b;}
+|	"GEF"  a = floatStatement(map) b = floatStatement(map) {return a >= b;}
+|	"LEF"  a = floatStatement(map) b = floatStatement(map) {return a <= b;}
+|	"GF"   a = floatStatement(map) b = floatStatement(map) {return a > b;}
+|	"LF"   a = floatStatement(map) b = floatStatement(map) {return a < b;}
+}
+
+/*---------------------------------------------------------------------*/
+/*IF STATEMENT STATS HERE*/
+/*---------------------------------------------------------------------*/
+
+//TBD
