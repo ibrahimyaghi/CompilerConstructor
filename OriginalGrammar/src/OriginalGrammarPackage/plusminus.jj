@@ -6,6 +6,25 @@ options
   static = true;
 }
 
+/*---------------------------------------------------------------------*/
+/* TO DO LIST / BUGS TO FIX 										   */
+/*-----------------------------------------------------------------------
+
+[BUG]	Local variables for IF statement (Now they are initialized as
+		global ones)
+		
+[BUG] 	Check if variables exists before assignment
+	  	(Ia = 10; is allowed even without INT Ia = 1; before)
+	  	
+[?] 	Disallow overriding existing variables with declaration of
+		variable of the same name
+
+[TO DO] While statement
+
+[TO DO] Functions
+ 
+---------------------------------------------------------------------*/
+
 PARSER_BEGIN(parsername)
 import java.util.*;
 
@@ -95,31 +114,31 @@ TOKEN: /* DATA TYPES */
 /* No statements allowed here
 /*---------------------------------------------------------------------*/
 
-void declareINT(Map map):
+void declareINT(Map map, boolean execute):
 {String a;}
 {
     "INT" < INT_VARNAME > {a = token.toString();} "="
-    <INTEGER> {map.put(a, Integer.parseInt(token.image));}
+    <INTEGER> {if(execute){map.put(a, Integer.parseInt(token.image));}}
     (","  < INT_VARNAME > {a = token.toString();} "="
-    <INTEGER> {map.put(a, Integer.parseInt(token.image));})* ";"
+    <INTEGER> {if(execute){map.put(a, Integer.parseInt(token.image));}})* ";"
 }
 
-void declareBOOL(Map map):
+void declareBOOL(Map map, boolean execute):
 {String a;}
 {
   "BOOLEAN" < BOOL_VARNAME > {a = token.toString();} "="
-  ("TRUE" | "FALSE") {map.put(a, Boolean.parseBoolean(token.image));}
+  ("TRUE" | "FALSE") {if(execute){map.put(a, Boolean.parseBoolean(token.image)); }}
   ("," 		< BOOL_VARNAME > {a = token.toString();} "="
-  ("TRUE" | "FALSE") {map.put(a, Boolean.parseBoolean(token.image));})* ";"
+  ("TRUE" | "FALSE") {if(execute){map.put(a, Boolean.parseBoolean(token.image));}})* ";"
 }
 
-void declareFLOAT(Map map):
+void declareFLOAT(Map map, boolean execute):
 {String a;}
 {
   "FLOAT" < FLOAT_VARNAME > {a = token.toString();} "="
-  <FLOAT> {map.put(a,   Double.parseDouble(token.image));}
+  <FLOAT> {if(execute){map.put(a, Double.parseDouble(token.image));}}
   (","    < FLOAT_VARNAME > {a = token.toString();} "="
-  <FLOAT> {map.put(a,   Double.parseDouble(token.image));})* ";"
+  <FLOAT> {if(execute){map.put(a, Double.parseDouble(token.image));}})* ";"
 }
 
 /*---------------------------------------------------------------------*/
@@ -129,17 +148,16 @@ void declareFLOAT(Map map):
 int multipleLines(Map map):
 {boolean a; int b;}
 { 
-  (line(map))* "END" {return 0;}
+  (line(map, true))* "END" {return 0;}
 | ";"
   {
     return 1;
   }
 }
 
-void line(Map map) :
+void line(Map map, boolean execute) :
 {boolean a; int b; double c; Token s;}
 {
-
 /*	Boolean value can be return either by boolean statement
 	or by any type of comparison, so we basically allow sth like:
 	Bb = EQB TRUE FALSE; 											*/
@@ -148,6 +166,7 @@ void line(Map map) :
   LOOKAHEAD(3)
   s = < BOOL_VARNAME > "=" (a = booleanStatement(map) | a = comparison(map)) ";" 
   {
+    if(!execute){return;}
     System.out.println("Result: " + a);
     map.replace(s.toString(), a);
     return;
@@ -155,19 +174,22 @@ void line(Map map) :
 | LOOKAHEAD(3)
   s = < INT_VARNAME > "=" b = integerStatement(map) ";" 
   {
+    if(!execute){return;}
     System.out.println("Result: " + b);
     map.replace(s.toString(), b);
     return;
   }
 | s = < FLOAT_VARNAME > "=" c = floatStatement(map) ";" 
   {
+    if(!execute){return;}
     System.out.println("Result: " + c);
     map.replace(s.toString(), c);
     return;
   }
-| declareINT(map)   	 {System.out.println("Variable(s) declared"); return;}
-| declareFLOAT(map) 	 {System.out.println("Variable(s) declared"); return;}
-| declareBOOL(map)  	 {System.out.println("Variable(s) declared"); return;}
+| declareINT(map, execute)   	{System.out.println("Variable(s) declared: " + execute); return;}
+| declareFLOAT(map, execute) 	{System.out.println("Variable(s) declared: " + execute); return;}
+| declareBOOL(map, execute)  	{System.out.println("Variable(s) declared: " + execute); return;}
+| ifStatement(map)				{System.out.println("If statement executed"); return;}
 }
 
 /*---------------------------------------------------------------------*/
@@ -322,4 +344,20 @@ boolean floatComparison(Map map) :
 /*IF STATEMENT STATS HERE*/
 /*---------------------------------------------------------------------*/
 
-//TBD
+void ifStatement(Map map) :
+{boolean execute = false; boolean done = false;}
+{ 
+  	//Develop local variables later
+  	
+	"IF" (execute = comparison(map) | execute = booleanStatement(map))
+	{done = execute; System.out.println("\nIf executed: " + execute);}
+	"THEN" (line(map, execute))*
+	(
+	  "ELSEIF" (execute = comparison(map) | execute = booleanStatement(map))
+	  {execute = execute && !done; done = done || execute; System.out.println("Elseif executed: " + execute);}	  
+	  "THEN" (line(map, execute))*
+	)*
+	(("ELSE" "THEN" (line(map, !done))* {System.out.println("Else executed: " + !done);} "ENDIF") | "ENDIF")
+}
+
+
