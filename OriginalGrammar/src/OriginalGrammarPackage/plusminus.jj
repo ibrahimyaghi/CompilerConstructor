@@ -12,12 +12,6 @@ options
 
 [BUG]	Local variables for IF statement (Now they are initialized as
 		global ones)
-		
-[BUG] 	Check if variables exists before assignment
-	  	(Ia = 10; is allowed even without INT Ia = 1; before)
-	  	
-[?] 	Disallow overriding existing variables with declaration of
-		variable of the same name
 
 [TO DO] While statement
 
@@ -112,33 +106,40 @@ TOKEN: /* DATA TYPES */
 /* DECLARE VARIABLES
 /* We allow only simple initializations by values
 /* No statements allowed here
+/* We do not allow initialization of the same variable twice 
 /*---------------------------------------------------------------------*/
 
 void declareINT(Map map, boolean execute):
 {String a;}
 {
     "INT" < INT_VARNAME > {a = token.toString();} "="
-    <INTEGER> {if(execute){map.put(a, Integer.parseInt(token.image));}}
+    <INTEGER> { if (map.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+      			if(execute){map.put(a, Integer.parseInt(token.image));}}
     (","  < INT_VARNAME > {a = token.toString();} "="
-    <INTEGER> {if(execute){map.put(a, Integer.parseInt(token.image));}})* ";"
+    <INTEGER> { if (map.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+      			if(execute){map.put(a, Integer.parseInt(token.image));}})* ";"
 }
 
 void declareBOOL(Map map, boolean execute):
 {String a;}
 {
   "BOOLEAN" < BOOL_VARNAME > {a = token.toString();} "="
-  ("TRUE" | "FALSE") {if(execute){map.put(a, Boolean.parseBoolean(token.image)); }}
+  ("TRUE" | "FALSE") {  if (map.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+    					if(execute){map.put(a, Boolean.parseBoolean(token.image)); }}
   ("," 		< BOOL_VARNAME > {a = token.toString();} "="
-  ("TRUE" | "FALSE") {if(execute){map.put(a, Boolean.parseBoolean(token.image));}})* ";"
+  ("TRUE" | "FALSE") {  if (map.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+    					if(execute){map.put(a, Boolean.parseBoolean(token.image));}})* ";"
 }
 
 void declareFLOAT(Map map, boolean execute):
 {String a;}
 {
   "FLOAT" < FLOAT_VARNAME > {a = token.toString();} "="
-  <FLOAT> {if(execute){map.put(a, Double.parseDouble(token.image));}}
+  <FLOAT> { if (map.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+    		if(execute){map.put(a, Double.parseDouble(token.image));}}
   (","    < FLOAT_VARNAME > {a = token.toString();} "="
-  <FLOAT> {if(execute){map.put(a, Double.parseDouble(token.image));}})* ";"
+  <FLOAT> { if (map.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+    		if(execute){map.put(a, Double.parseDouble(token.image));}})* ";"
 }
 
 /*---------------------------------------------------------------------*/
@@ -167,6 +168,8 @@ void line(Map map, boolean execute) :
   s = < BOOL_VARNAME > "=" (a = booleanStatement(map) | a = comparison(map)) ";" 
   {
     if(!execute){return;}
+    if(!map.containsKey(s.toString()))
+    {System.out.println("Left operand not declared. Exiting.."); System.exit(-1);}
     System.out.println("Result: " + a);
     map.replace(s.toString(), a);
     return;
@@ -175,6 +178,9 @@ void line(Map map, boolean execute) :
   s = < INT_VARNAME > "=" b = integerStatement(map) ";" 
   {
     if(!execute){return;}
+    if(!map.containsKey(s.toString()))
+    {System.out.println("Left operand not declared. Exiting.."); System.exit(-1);}
+    System.out.println("In map: " + map.containsKey(s.toString()));
     System.out.println("Result: " + b);
     map.replace(s.toString(), b);
     return;
@@ -182,6 +188,8 @@ void line(Map map, boolean execute) :
 | s = < FLOAT_VARNAME > "=" c = floatStatement(map) ";" 
   {
     if(!execute){return;}
+    if(!map.containsKey(s.toString()))
+    {System.out.println("Left operand not declared. Exiting.."); System.exit(-1);}
     System.out.println("Result: " + c);
     map.replace(s.toString(), c);
     return;
