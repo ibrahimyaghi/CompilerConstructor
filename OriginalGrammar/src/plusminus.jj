@@ -31,7 +31,7 @@ public class parsername
     while (true)
     {
       System.out.println("Reading from standard input...");
-      System.out.print("Enter an expression like \"1+(2+3)*4 XXDD;\" :");
+      System.out.print("Enter an expression like \"1+(2+3)*4 GLOBAL VERSION;\" :");
       try
       {
         Map<String,Object> map=new HashMap<String,Object>(); 

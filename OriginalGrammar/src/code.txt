@@ -1,0 +1,38 @@
+INT Ia = 1;
+BOOLEAN Bb = TRUE;
+FUNC
+FLOAT Fc = 1.5;
+
+PROC procname
+
+Ia = 5 * Ia;
+
+Bb = EQI Ia 1;
+
+IF EQB Bb TRUE THEN
+Ia = 5;
+ELSE THEN
+Ia = 15;
+ENDIF
+
+IF EQB Bb FALSE THEN
+Ia = 5;
+ELSEIF TRUE THEN
+Ia = Ia+5;
+ELSE THEN
+Ia = Ia+10;
+ENDIF
+
+IF EQB Bb FALSE THEN
+Ia = 5;
+ELSEIF EQI 1 2 THEN
+Ia = 10;
+ELSE THEN
+Ia = 15;
+ENDIF
+
+Ia = Ia;
+
+PRINT(Ia);
+
+ENDPROC
