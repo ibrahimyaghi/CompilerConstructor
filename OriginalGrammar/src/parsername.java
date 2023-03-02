@@ -1166,9 +1166,14 @@ public class parsername implements parsernameConstants {
 /*PROCEDURE START HERE*/
 /*---------------------------------------------------------------------*/
   static final public void ProcedureDeclaration(Map map, Map localvariables) throws ParseException {
- Map<String,Object> localVariables = new HashMap<String,Object>();
+        Map<String,Object> localVariables = new HashMap<String,Object>();
+        Token s;
     jj_consume_token(54);
-    jj_consume_token(VARNAME);
+    s = jj_consume_token(VARNAME);
+                //Look for name collisions
+                if(map.containsKey(s.toString())){
+                        System.out.println("Function/Procedure/Variable with this name has already been defined"); System.exit(-1);
+                }
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case 28:
       jj_consume_token(28);

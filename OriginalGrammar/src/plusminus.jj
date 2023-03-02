@@ -552,9 +552,18 @@ void print(Map map, Map local):
 /*PROCEDURE START HERE*/
 /*---------------------------------------------------------------------*/
 void ProcedureDeclaration(Map map, Map localvariables):
-{Map<String,Object> localVariables = new HashMap<String,Object>();}
 {
-	"PROC" <VARNAME>
+  	Map<String,Object> localVariables = new HashMap<String,Object>();
+	Token s;
+}
+{
+	"PROC" s = <VARNAME>
+	{
+	  	//Look for name collisions
+	  	if(map.containsKey(s.toString())){
+			System.out.println("Function/Procedure/Variable with this name has already been defined"); System.exit(-1);
+		}
+	}
 	(	  	(	  		"(" (("INT" < INT_VARNAME >) | ("FLOAT" < FLOAT_VARNAME >) | ("BOOLEAN" < BOOL_VARNAME >)) 
 		)
 		(
@@ -567,7 +576,7 @@ void ProcedureDeclaration(Map map, Map localvariables):
 	(line(map, false, localVariables))*
 	"ENDPROC"
 }
-
+ 
 
 /*---------------------------------------------------------------------*/
 /*FUNCTIONS START HERE*/
