@@ -1,11 +1,17 @@
 PROGRAM programname
 
-INT Ia = 1;
+INT Ia = -1;
 BOOLEAN Bb = TRUE;
 FUNC
 FLOAT Fc = 1.5;
 
+PROC dosth()
 
+ENDPROC
+
+PROC dosth2(FLOAT Fvar1, INT Ivar2, BOOLEAN Bvar3)
+
+ENDPROC
 
 MAIN
 

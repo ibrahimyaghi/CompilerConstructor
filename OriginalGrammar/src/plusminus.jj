@@ -12,12 +12,19 @@ options
 
 [TO DO]	Local variables 
 
-[TO DO] While statement
+[TO DO] While statement - Ibrahim
 
-[TO DO] Functions
+[TO DO] Functions - Amarilda
+
+[TO DO] Procedures - Paweł
 
 [TO DO] Extend printing statement values (Variables for now)
- 
+
+[MAYBE CHANGE] Delete ELSEIF
+
+[MAYBE CHANGE] Comparison as a part of boolean statement
+
+[FIX] Figure out why we have warning in floatStatement and integerSatement 
 ---------------------------------------------------------------------*/
 
 PARSER_BEGIN(parsername)
@@ -394,14 +401,17 @@ void print(Map map):
 void ProcedureDeclaration(Map map, Map localvariables):
 {Map<String,Object> local = new HashMap<String,Object>();}
 {
+  	//ADD VARIABLE ASSIGNMENT
 	"PROC" <VARNAME>
-	(	  	(	  		"(" ("INT" < INT_VARNAME >) | ("FLOAT" < FLOAT_VARNAME >) | ("BOOLEAN" < BOOL_VARNAME >) 
+	(	  	(	  		"(" (("INT" < INT_VARNAME >) | ("FLOAT" < FLOAT_VARNAME >) | ("BOOLEAN" < BOOL_VARNAME >)) 
 		)
 		(
-	  		"," ("INT" < INT_VARNAME >) | ("FLOAT" < FLOAT_VARNAME >) | ("BOOLEAN" < BOOL_VARNAME >)
+	  		"," (("INT" < INT_VARNAME >) | ("FLOAT" < FLOAT_VARNAME >) | ("BOOLEAN" < BOOL_VARNAME >))
 		)* ")"
 		| "()"
 	)
+	//EXECUTE SOME INSTRUCTIONS BUT LATER
+	"ENDPROC"
 }
 
 

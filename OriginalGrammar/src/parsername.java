@@ -161,7 +161,7 @@ public class parsername implements parsernameConstants {
       case 21:
       case 24:
       case 54:
-      case 56:
+      case 57:
         ;
         break;
       default:
@@ -169,7 +169,7 @@ public class parsername implements parsernameConstants {
         break label_4;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 56:
+      case 57:
         IntegerFunction(map);
                  System.out.println("Integer function recognized");
         break;
@@ -969,12 +969,10 @@ public class parsername implements parsernameConstants {
     jj_consume_token(54);
     jj_consume_token(VARNAME);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case 21:
-    case 24:
     case 28:
+      jj_consume_token(28);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 28:
-        jj_consume_token(28);
+      case 17:
         jj_consume_token(17);
         jj_consume_token(INT_VARNAME);
         break;
@@ -995,17 +993,15 @@ public class parsername implements parsernameConstants {
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 19:
-        case 21:
-        case 24:
           ;
           break;
         default:
           jj_la1[39] = jj_gen;
           break label_16;
         }
+        jj_consume_token(19);
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case 19:
-          jj_consume_token(19);
+        case 17:
           jj_consume_token(17);
           jj_consume_token(INT_VARNAME);
           break;
@@ -1033,6 +1029,7 @@ public class parsername implements parsernameConstants {
       jj_consume_token(-1);
       throw new ParseException();
     }
+    jj_consume_token(56);
   }
 
 /*---------------------------------------------------------------------*/
@@ -1041,7 +1038,7 @@ public class parsername implements parsernameConstants {
 
 //TO BE DONE
   static final public int IntegerFunction(Map map) throws ParseException {
-    jj_consume_token(56);
+    jj_consume_token(57);
                 {if (true) return 0;}
     throw new Error("Missing return statement in function");
   }
@@ -1058,11 +1055,6 @@ public class parsername implements parsernameConstants {
     try { return !jj_3_2(); }
     catch(LookaheadSuccess ls) { return true; }
     finally { jj_save(1, xla); }
-  }
-
-  static private boolean jj_3R_58() {
-    if (jj_scan_token(BOOL_VARNAME)) return true;
-    return false;
   }
 
   static private boolean jj_3R_57() {
@@ -1365,6 +1357,11 @@ public class parsername implements parsernameConstants {
     return false;
   }
 
+  static private boolean jj_3R_58() {
+    if (jj_scan_token(BOOL_VARNAME)) return true;
+    return false;
+  }
+
   static private boolean jj_initialized_once = false;
   /** Generated Token Manager. */
   static public parsernameTokenManager token_source;
@@ -1385,10 +1382,10 @@ public class parsername implements parsernameConstants {
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x80000,0xc00000,0x80000,0xc00000,0x80000,0x1220000,0x1220000,0x1c000,0x10c08000,0x10000,0x60,0x60,0x180,0x180,0x10004240,0x10004200,0x40000000,0x80000000,0x10c08000,0x10c08000,0x60,0x60,0x180,0x180,0x10010440,0x10010400,0x0,0x0,0x0,0x0,0x10c08000,0x1c000,0x0,0x10c08000,0x1c000,0x1c000,0x0,0x1c000,0x11200000,0x1280000,0x1280000,0x11200000,};
+      jj_la1_0 = new int[] {0x80000,0xc00000,0x80000,0xc00000,0x80000,0x1220000,0x1220000,0x1c000,0x10c08000,0x10000,0x60,0x60,0x180,0x180,0x10004240,0x10004200,0x40000000,0x80000000,0x10c08000,0x10c08000,0x60,0x60,0x180,0x180,0x10010440,0x10010400,0x0,0x0,0x0,0x0,0x10c08000,0x1c000,0x0,0x10c08000,0x1c000,0x1c000,0x0,0x1c000,0x1220000,0x80000,0x1220000,0x10000000,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x0,0x1400000,0x1400000,0x108000,0x7fff,0x108000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x7ffe,0x6,0x1f8,0x7e00,0x7fff,0x108000,0x20000,0x7fff,0x108000,0x108000,0xc0000,0x0,0x0,0x0,0x0,0x800000,};
+      jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x0,0x2400000,0x2400000,0x108000,0x7fff,0x108000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x7ffe,0x6,0x1f8,0x7e00,0x7fff,0x108000,0x20000,0x7fff,0x108000,0x108000,0xc0000,0x0,0x0,0x0,0x0,0x800000,};
    }
   static final private JJCalls[] jj_2_rtns = new JJCalls[2];
   static private boolean jj_rescan = false;
@@ -1595,7 +1592,7 @@ public class parsername implements parsernameConstants {
   /** Generate ParseException. */
   static public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[57];
+    boolean[] la1tokens = new boolean[58];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
@@ -1612,7 +1609,7 @@ public class parsername implements parsernameConstants {
         }
       }
     }
-    for (int i = 0; i < 57; i++) {
+    for (int i = 0; i < 58; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;
