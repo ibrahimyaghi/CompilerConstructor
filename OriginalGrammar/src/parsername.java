@@ -13,6 +13,7 @@ public class parsername implements parsernameConstants {
     parsername parser = null;
         try {
                 //Access file with code
+                //Hardcoded - > THE SAME DIRECTORY AS JAVA CODE, IT HAS TO BE CALLED "code.txt" TO WORK
                 parser = new parsername(new FileInputStream(path));
         }
         catch (FileNotFoundException e) {
