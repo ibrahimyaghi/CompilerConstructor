@@ -140,8 +140,12 @@ void declareFLOAT(Map map, boolean execute):
 void multipleLines(Map map):
 {boolean a, execute = true; int b;}
 {
+  "PROGRAM" <VARNAME>
   //We start with declaration of global variables and functions
-  (	  IntegerFunction(map) {System.out.println("Function recognized");}
+  (	  IntegerFunction(map)
+  		{System.out.println("Integer function recognized");}
+ 	| ProcedureDeclaration(map, map)
+ 		{System.out.println("Procedure recognized");}
   	| declareINT(map, execute)
   		{System.out.println("Variable(s) declared: " + execute);}
 	| declareFLOAT(map, execute)
@@ -149,7 +153,8 @@ void multipleLines(Map map):
 	| declareBOOL(map, execute)
 		{System.out.println("Variable(s) declared: " + execute);}
   )*
-  "PROC" <VARNAME> (line(map, true))* "ENDPROC" {return;}
+  "MAIN" (line(map, true))* "ENDMAIN"
+  	{System.out.println("Exiting main") ;return;}
 }
 
 void line(Map map, boolean execute) :
@@ -382,6 +387,23 @@ void print(Map map):
   | < INT_VARNAME >   {b = (Integer) map.get(token.toString()); System.out.println(token.toString()+"="+b);}
   )");"
 }
+
+/*---------------------------------------------------------------------*/
+/*PROCEDURE START HERE*/
+/*---------------------------------------------------------------------*/
+void ProcedureDeclaration(Map map, Map localvariables):
+{Map<String,Object> local = new HashMap<String,Object>();}
+{
+	"PROC" <VARNAME>
+	(	  	(	  		"(" ("INT" < INT_VARNAME >) | ("FLOAT" < FLOAT_VARNAME >) | ("BOOLEAN" < BOOL_VARNAME >) 
+		)
+		(
+	  		"," ("INT" < INT_VARNAME >) | ("FLOAT" < FLOAT_VARNAME >) | ("BOOLEAN" < BOOL_VARNAME >)
+		)* ")"
+		| "()"
+	)
+}
+
 
 /*---------------------------------------------------------------------*/
 /*FUNCTIONS START HERE*/

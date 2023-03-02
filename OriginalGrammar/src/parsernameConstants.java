@@ -63,8 +63,9 @@ public interface parsernameConstants {
     "\"TRUE\"",
     "\"FALSE\"",
     "\"FLOAT\"",
-    "\"PROC\"",
-    "\"ENDPROC\"",
+    "\"PROGRAM\"",
+    "\"MAIN\"",
+    "\"ENDMAIN\"",
     "\"(\"",
     "\")\"",
     "\"OR\"",
@@ -91,6 +92,8 @@ public interface parsernameConstants {
     "\"ENDIF\"",
     "\"PRINT(\"",
     "\");\"",
+    "\"PROC\"",
+    "\"()\"",
     "\"FUNC\"",
   };
 

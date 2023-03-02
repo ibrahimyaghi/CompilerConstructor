@@ -1,9 +1,13 @@
+PROGRAM programname
+
 INT Ia = 1;
 BOOLEAN Bb = TRUE;
 FUNC
 FLOAT Fc = 1.5;
 
-PROC procname
+
+
+MAIN
 
 Ia = 5 * Ia;
 
@@ -35,4 +39,4 @@ Ia = Ia;
 
 PRINT(Ia);
 
-ENDPROC
+ENDMAIN
