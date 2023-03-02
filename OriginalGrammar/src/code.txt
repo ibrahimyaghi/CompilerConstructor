@@ -1,6 +1,7 @@
 PROGRAM programname
 
 INT Ia = 1;
+INT Ib = -2, Ic = -15, Id = 10;
 BOOLEAN Bb = TRUE;
 FUNC
 FLOAT Fc = -1.5, Fd = 2.0, Fe = -1.2;

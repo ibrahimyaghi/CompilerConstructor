@@ -24,7 +24,7 @@ options
 
 [MAYBE CHANGE] Comparison as a part of boolean statement
 
-[FIX] Figure out why we have warning in floatStatement and integerSatement 
+[FIX] Figure out why we have warning in floatStatement and integerStatement 
 ---------------------------------------------------------------------*/
 
 PARSER_BEGIN(parsername)
@@ -111,11 +111,20 @@ void declareINT(Map map, boolean execute):
 {String a;}
 {
     "INT" < INT_VARNAME > {a = token.toString();} "="
+    (
     <INTEGER> { if(map.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
-      			if(execute){map.put(a, Integer.parseInt(token.image));}}
-    (","  < INT_VARNAME > {a = token.toString();} "="
-    <INTEGER> { if(map.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
-      			if(execute){map.put(a, Integer.parseInt(token.image));}})* ";"
+      			if(execute){map.put(a, Integer.parseInt(token.image));}} |
+	<MINUS> <INTEGER> { if(map.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+      			if(execute){map.put(a, -1*Integer.parseInt(token.image));}} 
+    )
+	(","  < INT_VARNAME > {a = token.toString();} "="
+		( 
+    		<INTEGER> { if(map.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+      			if(execute){map.put(a, Integer.parseInt(token.image));}}|
+			<MINUS> <INTEGER> { if(map.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+      			if(execute){map.put(a, -1*Integer.parseInt(token.image));}} 
+		)
+	)* ";"
 }
 
 void declareBOOL(Map map, boolean execute):
