@@ -16,10 +16,12 @@ ENDPROC
 MAIN
 
 INT Ix = 10;
+FLOAT Ff = 1.2;
+BOOLEAN Bc = FALSE;
 
-Ia = 5 * Ia;
-Fc = 5.0 * Fc;
-Ia = 5+-4;
+Ia = 5 * Ix;
+Fc = 5.0 * Ff;
+Bc = NOT Bc;
 
 Bb = EQI Ia 1;
 

@@ -12,7 +12,8 @@ options
 
 [TO DO]	Local variables
 	{Perform a deep copy of local variables in if}
-	{Access local variables in expressions, ifs, etc}
+	{Left operand fix}
+	{Give access in comparison statements}
 
 [TO DO] While statement - Ibrahim
 
@@ -198,7 +199,7 @@ void line(Map map, boolean execute, Map local) :
 
   
   LOOKAHEAD(3)
-  s = < BOOL_VARNAME > "=" (a = booleanExpression(map) | a = comparison(map)) ";" 
+  s = < BOOL_VARNAME > "=" (a = booleanExpression(map, local) | a = comparison(map, local)) ";" 
   {
     if(!execute){return;}
     if(!map.containsKey(s.toString()))
@@ -208,7 +209,7 @@ void line(Map map, boolean execute, Map local) :
     return;
   }
 | LOOKAHEAD(3)
-  s = < INT_VARNAME > "=" b = integerExpression(map) ";" 
+  s = < INT_VARNAME > "=" b = integerExpression(map, local) ";" 
   {
     if(!execute){return;}
     if(!map.containsKey(s.toString()))
@@ -217,7 +218,7 @@ void line(Map map, boolean execute, Map local) :
     map.replace(s.toString(), b);
     return;
   }
-| s = < FLOAT_VARNAME > "=" c = floatExpression(map) ";" 
+| s = < FLOAT_VARNAME > "=" c = floatExpression(map, local) ";" 
   {
     if(!execute){return;}
     if(!map.containsKey(s.toString()))
@@ -239,34 +240,47 @@ void line(Map map, boolean execute, Map local) :
 /*INTEGER ARITHMETIC STATS HERE*/
 /*---------------------------------------------------------------------*/
 
-int integerExpression(Map map) :
+int integerExpression(Map map, Map local) :
 {int a, b;}
 {
-  a = aterm(map)
-  ( < PLUS >   b = aterm(map) {a += b; } | < MINUS >  b = aterm(map) {a -= b; } )*
+  a = aterm(map, local)
+  ( < PLUS >   b = aterm(map, local) {a += b; } | < MINUS >  b = aterm(map, local) {a -= b; } )*
   {return a; }
 }
 
-int aterm(Map map) :
+int aterm(Map map, Map local) :
 {int a, b;}
 {
-  a = asubterm(map)
-  ( < MULTIPLY > b = asubterm(map) {a *= b; }| < DIVIDE > b = asubterm(map) {a /= b; } )*
+  a = asubterm(map, local)
+  ( < MULTIPLY > b = asubterm(map, local) {a *= b; }| < DIVIDE > b = asubterm(map, local) {a /= b; } )*
   {return a; }
 }
 
-int asubterm(Map map) :
+int asubterm(Map map, Map local) :
 {int a;}
 {
-  < MINUS > a = abase(map) {return -a;} | a = abase(map) {return a;}
+  < MINUS > a = abase(map, local) {return -a;} | a = abase(map, local) {return a;}
 }
 
-int abase(Map map) :
+int abase(Map map, Map local) :
 {int a;}
 {
   (
-    < INTEGER > {a = Integer.parseInt(token.image);} | "(" a=integerExpression(map) ")"
-  | < INT_VARNAME > {a = (Integer) map.get(token.toString());}
+    < INTEGER > {a = Integer.parseInt(token.image);} | "(" a=integerExpression(map, local) ")"
+  | < INT_VARNAME > { a = 1;
+		try {
+	  		a = (Integer) map.get(token.toString());
+		}
+		catch(Exception e) {
+			try {
+	  			System.out.println("Checking local variables.");
+	  			a = (Integer) local.get(token.toString());
+			}
+			catch(Exception f) {
+				System.out.println("Variable not declared. Exiting.."); System.exit(-1);
+			}
+		}
+	}
   ){return a;}
 }
 
@@ -274,36 +288,49 @@ int abase(Map map) :
 /*BOOLEAN ARITHMETIC STATS HERE*/
 /*---------------------------------------------------------------------*/
 
-boolean booleanExpression(Map map) :
+boolean booleanExpression(Map map, Map local) :
 {boolean a,b;}
 {
-  a = bterm(map)
-  ( "OR"  b = bterm(map) {a = a || b; } )*
+  a = bterm(map, local)
+  ( "OR"  b = bterm(map, local) {a = a || b; } )*
   { return a;}
 }
 
-boolean bterm(Map map) :
+boolean bterm(Map map, Map local) :
 {boolean a, b;}
 {
-  a = bsubterm(map)
-  ( "AND" b = bsubterm(map) {a = a && b;} )*
+  a = bsubterm(map, local)
+  ( "AND" b = bsubterm(map, local) {a = a && b;} )*
   {return a;}
 }
 
-boolean bsubterm(Map map) :
+boolean bsubterm(Map map, Map local) :
 {boolean a;}
 {
-  "NOT" a = bbase(map) {return !a;} | a = bbase(map) {return a;}
+  "NOT" a = bbase(map, local) {return !a;} | a = bbase(map, local) {return a;}
 }
 
-boolean bbase(Map map) :
+boolean bbase(Map map, Map local) :
 {boolean a;}
 {
   (
   "TRUE" {a = Boolean.parseBoolean(token.image);} |
   "FALSE" {a = Boolean.parseBoolean(token.image);} |
-  "(" a=booleanExpression(map) ")" |
-  < BOOL_VARNAME > {a = (Boolean) map.get(token.toString());}
+  "(" a=booleanExpression(map, local) ")" |
+  < BOOL_VARNAME > { a = true;
+		try {
+	  		a = (Boolean) map.get(token.toString());
+		}
+		catch(Exception e) {
+		  	try {
+	  			System.out.println("Checking local variables.");
+	  			a = (Boolean) local.get(token.toString());
+			}
+			catch(Exception f) {
+				System.out.println("Variable not declared. Exiting.."); System.exit(-1);
+			}
+		}
+	}
   ){return a;}
 }
 
@@ -311,34 +338,47 @@ boolean bbase(Map map) :
 /*FLOAT ARITHMETIC STATS HERE*/
 /*---------------------------------------------------------------------*/
 
-double floatExpression(Map map) :
+double floatExpression(Map map, Map local) :
 {double a, b;}
 {
-  a = fterm(map)
-  ( < PLUS >   b = fterm(map) {a += b; } | < MINUS >  b = fterm(map) {a -= b; } )*
+  a = fterm(map, local)
+  ( < PLUS >   b = fterm(map, local) {a += b; } | < MINUS >  b = fterm(map, local) {a -= b; } )*
   {return a;}
 }
 
-double fterm(Map map) :
+double fterm(Map map, Map local) :
 {double a, b;}
 {
-  a = fsubterm(map)
-  ( < MULTIPLY > b = fsubterm(map) {a *= b; }| < DIVIDE > b = fsubterm(map) {a /= b; } )*
+  a = fsubterm(map, local)
+  ( < MULTIPLY > b = fsubterm(map, local) {a *= b; }| < DIVIDE > b = fsubterm(map, local) {a /= b; } )*
   {return a;}
 }
 
-double fsubterm(Map map) :
+double fsubterm(Map map, Map local) :
 {double a;}
 {
-  < MINUS > a = fbase(map) {return -a;} | a = fbase(map) {return a;}
+  < MINUS > a = fbase(map, local) {return -a;} | a = fbase(map, local) {return a;}
 }
 
-double fbase(Map map) :
+double fbase(Map map, Map local) :
 {double a;}
 {
   (
-    < FLOAT > {a = Double.parseDouble(token.image);} | "(" a=floatExpression(map) ")"
-  | < FLOAT_VARNAME > {a = (double) map.get(token.toString());}
+    < FLOAT > {a = Double.parseDouble(token.image);} | "(" a=floatExpression(map, local) ")"
+  | < FLOAT_VARNAME >{ a = 1.0;
+		try {
+	  		a = (double) map.get(token.toString());
+		}
+		catch(Exception e) {
+		  	try {
+	  			System.out.println("Checking local variables.");
+	  			a = (double) local.get(token.toString());
+			}
+			catch(Exception f) {
+				System.out.println("Variable not declared. Exiting.."); System.exit(-1);
+			}
+		}
+	}
   )
   {return a;}
 }
@@ -347,40 +387,40 @@ double fbase(Map map) :
 /*COMPARISON STATEMENTS STATS HERE*/
 /*---------------------------------------------------------------------*/
 
-boolean comparison(Map map) :
+boolean comparison(Map map, Map local) :
 {boolean a;}
 {
-	(a = booleanComparison(map) | a = integerComparison(map) | a = floatComparison(map))
+	(a = booleanComparison(map, local) | a = integerComparison(map, local) | a = floatComparison(map, local))
 	{return a;}
 }
 
-boolean booleanComparison(Map map) :
+boolean booleanComparison(Map map, Map local) :
 {boolean a, b;}
 {
-	"EQB"  a = booleanExpression(map) b = booleanExpression(map) {return a == b;}
-|	"NEQB" a = booleanExpression(map) b = booleanExpression(map) {return a != b;} 
+	"EQB"  a = booleanExpression(map, local) b = booleanExpression(map, local) {return a == b;}
+|	"NEQB" a = booleanExpression(map, local) b = booleanExpression(map, local) {return a != b;} 
 }
 
-boolean integerComparison(Map map) :
+boolean integerComparison(Map map, Map local) :
 {int a, b;}
 {
-	"EQI"  a = integerExpression(map) b = integerExpression(map) {return a == b;}
-|	"NEQI" a = integerExpression(map) b = integerExpression(map) {return a != b;}
-|	"GEI"  a = integerExpression(map) b = integerExpression(map) {return a >= b;}
-|	"LEI"  a = integerExpression(map) b = integerExpression(map) {return a <= b;}
-|	"GI"   a = integerExpression(map) b = integerExpression(map) {return a > b;}
-|	"LI"   a = integerExpression(map) b = integerExpression(map) {return a < b;}
+	"EQI"  a = integerExpression(map, local) b = integerExpression(map, local) {return a == b;}
+|	"NEQI" a = integerExpression(map, local) b = integerExpression(map, local) {return a != b;}
+|	"GEI"  a = integerExpression(map, local) b = integerExpression(map, local) {return a >= b;}
+|	"LEI"  a = integerExpression(map, local) b = integerExpression(map, local) {return a <= b;}
+|	"GI"   a = integerExpression(map, local) b = integerExpression(map, local) {return a > b;}
+|	"LI"   a = integerExpression(map, local) b = integerExpression(map, local) {return a < b;}
 }
 
-boolean floatComparison(Map map) :
+boolean floatComparison(Map map, Map local) :
 {double a, b;}
 {
-	"EQF"  a = floatExpression(map) b = floatExpression(map) {return a == b;}
-|	"NEQF" a = floatExpression(map) b = floatExpression(map) {return a != b;}
-|	"GEF"  a = floatExpression(map) b = floatExpression(map) {return a >= b;}
-|	"LEF"  a = floatExpression(map) b = floatExpression(map) {return a <= b;}
-|	"GF"   a = floatExpression(map) b = floatExpression(map) {return a > b;}
-|	"LF"   a = floatExpression(map) b = floatExpression(map) {return a < b;}
+	"EQF"  a = floatExpression(map, local) b = floatExpression(map, local) {return a == b;}
+|	"NEQF" a = floatExpression(map, local) b = floatExpression(map, local) {return a != b;}
+|	"GEF"  a = floatExpression(map, local) b = floatExpression(map, local) {return a >= b;}
+|	"LEF"  a = floatExpression(map, local) b = floatExpression(map, local) {return a <= b;}
+|	"GF"   a = floatExpression(map, local) b = floatExpression(map, local) {return a > b;}
+|	"LF"   a = floatExpression(map, local) b = floatExpression(map, local) {return a < b;}
 }
 
 /*---------------------------------------------------------------------*/
@@ -395,11 +435,11 @@ void ifStatement(Map map) :
 { 
   	//PERFORM A DEEP COPY OF CURRENT LOCAL VARIABLES
   	
-	"IF" (execute = comparison(map) | execute = booleanExpression(map))
+	"IF" (execute = comparison(map, localVariables) | execute = booleanExpression(map, localVariables))
 	{done = execute; System.out.println("\nIf executed: " + execute);}
 	"THEN" (line(map, execute, localVariables))*
 	(
-	  "ELSEIF" (execute = comparison(map) | execute = booleanExpression(map))
+	  "ELSEIF" (execute = comparison(map, localVariables) | execute = booleanExpression(map, localVariables))
 	  {execute = execute && !done; done = done || execute; System.out.println("Elseif executed: " + execute);}	  
 	  "THEN" (line(map, execute, localVariables))*
 	)*
