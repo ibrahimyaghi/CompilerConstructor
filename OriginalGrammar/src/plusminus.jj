@@ -10,13 +10,15 @@ options
 /* TO DO LIST / BUGS TO FIX 										   */
 /*-----------------------------------------------------------------------
 
+[TO DO] Reading from file
+
 [TO DO] While statement (including local variables) - Ibrahim
 
 [TO DO] Functions (including local variables) - Amarilda
 
 [TO DO] Procedures (including local variables) - Paweł
 
-[TO DO] Extend printing statement values (Variables for now)
+[TO DO / CHANGE] Extend printing to expression values (Variables for now) + add writing
 
 [MAYBE CHANGE] Delete ELSEIF
 
