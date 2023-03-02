@@ -109,50 +109,50 @@ TOKEN: /* DATA TYPES */
 /* We do not allow initialization of the same variable twice 
 /*---------------------------------------------------------------------*/
 
-void declareINT(Map map, boolean execute):
+void declareINT(Map map, boolean execute, Map globals):
 {String a;}
 {
     "INT" < INT_VARNAME > {a = token.toString();} "="
     (
-    <INTEGER> { if(map.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+    <INTEGER> { if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
       			if(execute){map.put(a, Integer.parseInt(token.image));}} |
-	<MINUS> <INTEGER> { if(map.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+	<MINUS> <INTEGER> { if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
       			if(execute){map.put(a, -1*Integer.parseInt(token.image));}} 
     )
 	(","  < INT_VARNAME > {a = token.toString();} "="
 		( 
-    		<INTEGER> { if(map.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+    		<INTEGER> { if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
       			if(execute){map.put(a, Integer.parseInt(token.image));}}|
-			<MINUS> <INTEGER> { if(map.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+			<MINUS> <INTEGER> { if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
       			if(execute){map.put(a, -1*Integer.parseInt(token.image));}} 
 		)
 	)* ";"
 }
 
-void declareBOOL(Map map, boolean execute):
+void declareBOOL(Map map, boolean execute, Map globals):
 {String a;}
 {
   "BOOLEAN" < BOOL_VARNAME > {a = token.toString();} "="
-  ("TRUE" | "FALSE") {  if(map.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+  ("TRUE" | "FALSE") {  if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
     					if(execute){map.put(a, Boolean.parseBoolean(token.image)); }}
   ("," 		< BOOL_VARNAME > {a = token.toString();} "="
-  ("TRUE" | "FALSE") {  if(map.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+  ("TRUE" | "FALSE") {  if(mmap.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
     					if(execute){map.put(a, Boolean.parseBoolean(token.image));}})* ";"
 }
 
-void declareFLOAT(Map map, boolean execute):
+void declareFLOAT(Map map, boolean execute, Map globals):
 {String a;}
 {
   "FLOAT" < FLOAT_VARNAME > {a = token.toString();} "="
-  (    <FLOAT> { if(map.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+  (    <FLOAT> { if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
     		if(execute){map.put(a, Double.parseDouble(token.image));}} |
-	<MINUS> <FLOAT> { if(map.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+	<MINUS> <FLOAT> { if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
     		if(execute){map.put(a, -1*Double.parseDouble(token.image));}} 
   )
   (","    < FLOAT_VARNAME > {a = token.toString();} "="
-  	(    	<FLOAT> { if(map.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+  	(    	<FLOAT> { if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
     		if(execute){map.put(a, Double.parseDouble(token.image));}} |
-  		<MINUS> <FLOAT> { if(map.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+  		<MINUS> <FLOAT> { if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
     		if(execute){map.put(a, -1*Double.parseDouble(token.image));}}
   	)
   )* ";"
@@ -173,12 +173,12 @@ void multipleLines(Map map):
   		{System.out.println("Integer function recognized");}
  	| ProcedureDeclaration(map, map)
  		{System.out.println("Procedure recognized");}
-  	| declareINT(map, execute)
-  		{System.out.println("Variable(s) declared: " + execute);}
-	| declareFLOAT(map, execute)
-		{System.out.println("Variable(s) declared: " + execute);}
-	| declareBOOL(map, execute)
-		{System.out.println("Variable(s) declared: " + execute);}
+  	| declareINT(map, execute, map)
+  		{System.out.println("Global variable(s) declared: " + execute);}
+	| declareFLOAT(map, execute, map)
+		{System.out.println("Global variable(s) declared: " + execute);}
+	| declareBOOL(map, execute, map)
+		{System.out.println("Global variable(s) declared: " + execute);}
   )*
   
   //MAIN procedure
@@ -224,10 +224,9 @@ void line(Map map, boolean execute, Map local) :
     return;
   }
 
-// ONLY GLOBAL VARIABLES FOR NOW  
-//| declareINT(map, execute)   	{System.out.println("Variable(s) declared: " + execute); return;}
-//| declareFLOAT(map, execute) 	{System.out.println("Variable(s) declared: " + execute); return;}
-//| declareBOOL(map, execute)  	{System.out.println("Variable(s) declared: " + execute); return;}
+| declareINT(local, execute, map)   	{System.out.println("Local variable(s) declared: " + execute); return;}
+| declareFLOAT(local, execute, map) 	{System.out.println("Local variable(s) declared: " + execute); return;}
+| declareBOOL(local, execute, map)  	{System.out.println("Local variable(s) declared: " + execute); return;}
 
 | ifStatement(map)				{System.out.println("If statement executed"); return;}
 | print(map)					{return;}

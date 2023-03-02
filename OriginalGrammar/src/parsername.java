@@ -35,7 +35,7 @@ public class parsername implements parsernameConstants {
 /* No statements allowed here
 /* We do not allow initialization of the same variable twice 
 /*---------------------------------------------------------------------*/
-  static final public void declareINT(Map map, boolean execute) throws ParseException {
+  static final public void declareINT(Map map, boolean execute, Map globals) throws ParseException {
  String a;
     jj_consume_token(17);
     jj_consume_token(INT_VARNAME);
@@ -44,13 +44,13 @@ public class parsername implements parsernameConstants {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case INTEGER:
       jj_consume_token(INTEGER);
-                if(map.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+                if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
                         if(execute){map.put(a, Integer.parseInt(token.image));}
       break;
     case MINUS:
       jj_consume_token(MINUS);
       jj_consume_token(INTEGER);
-                            if(map.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+                            if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
                         if(execute){map.put(a, -1*Integer.parseInt(token.image));}
       break;
     default:
@@ -75,13 +75,13 @@ public class parsername implements parsernameConstants {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case INTEGER:
         jj_consume_token(INTEGER);
-                            if(map.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+                            if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
                         if(execute){map.put(a, Integer.parseInt(token.image));}
         break;
       case MINUS:
         jj_consume_token(MINUS);
         jj_consume_token(INTEGER);
-                                            if(map.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+                                            if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
                         if(execute){map.put(a, -1*Integer.parseInt(token.image));}
         break;
       default:
@@ -93,7 +93,7 @@ public class parsername implements parsernameConstants {
     jj_consume_token(20);
   }
 
-  static final public void declareBOOL(Map map, boolean execute) throws ParseException {
+  static final public void declareBOOL(Map map, boolean execute, Map globals) throws ParseException {
  String a;
     jj_consume_token(21);
     jj_consume_token(BOOL_VARNAME);
@@ -111,7 +111,7 @@ public class parsername implements parsernameConstants {
       jj_consume_token(-1);
       throw new ParseException();
     }
-                        if(map.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+                        if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
                                         if(execute){map.put(a, Boolean.parseBoolean(token.image)); }
     label_2:
     while (true) {
@@ -139,13 +139,13 @@ public class parsername implements parsernameConstants {
         jj_consume_token(-1);
         throw new ParseException();
       }
-                        if(map.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+                        if(mmap.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
                                         if(execute){map.put(a, Boolean.parseBoolean(token.image));}
     }
     jj_consume_token(20);
   }
 
-  static final public void declareFLOAT(Map map, boolean execute) throws ParseException {
+  static final public void declareFLOAT(Map map, boolean execute, Map globals) throws ParseException {
  String a;
     jj_consume_token(24);
     jj_consume_token(FLOAT_VARNAME);
@@ -154,13 +154,13 @@ public class parsername implements parsernameConstants {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case FLOAT:
       jj_consume_token(FLOAT);
-              if(map.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+              if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
                 if(execute){map.put(a, Double.parseDouble(token.image));}
       break;
     case MINUS:
       jj_consume_token(MINUS);
       jj_consume_token(FLOAT);
-                          if(map.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+                          if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
                 if(execute){map.put(a, -1*Double.parseDouble(token.image));}
       break;
     default:
@@ -185,13 +185,13 @@ public class parsername implements parsernameConstants {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case FLOAT:
         jj_consume_token(FLOAT);
-                  if(map.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+                  if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
                 if(execute){map.put(a, Double.parseDouble(token.image));}
         break;
       case MINUS:
         jj_consume_token(MINUS);
         jj_consume_token(FLOAT);
-                                  if(map.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+                                  if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
                 if(execute){map.put(a, -1*Double.parseDouble(token.image));}
         break;
       default:
@@ -234,16 +234,16 @@ public class parsername implements parsernameConstants {
                  System.out.println("Procedure recognized");
         break;
       case 17:
-        declareINT(map, execute);
-                 System.out.println("Variable(s) declared: " + execute);
+        declareINT(map, execute, map);
+                 System.out.println("Global variable(s) declared: " + execute);
         break;
       case 24:
-        declareFLOAT(map, execute);
-                 System.out.println("Variable(s) declared: " + execute);
+        declareFLOAT(map, execute, map);
+                 System.out.println("Global variable(s) declared: " + execute);
         break;
       case 21:
-        declareBOOL(map, execute);
-                 System.out.println("Variable(s) declared: " + execute);
+        declareBOOL(map, execute, map);
+                 System.out.println("Global variable(s) declared: " + execute);
         break;
       default:
         jj_la1[10] = jj_gen;
@@ -258,6 +258,9 @@ public class parsername implements parsernameConstants {
       case INT_VARNAME:
       case BOOL_VARNAME:
       case FLOAT_VARNAME:
+      case 17:
+      case 21:
+      case 24:
       case 47:
       case 52:
         ;
@@ -337,6 +340,18 @@ public class parsername implements parsernameConstants {
     System.out.println("Result: " + c);
     map.replace(s.toString(), c);
     {if (true) return;}
+        break;
+      case 17:
+        declareINT(local, execute, map);
+                                         System.out.println("Local variable(s) declared: " + execute); {if (true) return;}
+        break;
+      case 24:
+        declareFLOAT(local, execute, map);
+                                         System.out.println("Local variable(s) declared: " + execute); {if (true) return;}
+        break;
+      case 21:
+        declareBOOL(local, execute, map);
+                                         System.out.println("Local variable(s) declared: " + execute); {if (true) return;}
         break;
       case 47:
         ifStatement(map);
@@ -887,6 +902,9 @@ public class parsername implements parsernameConstants {
       case INT_VARNAME:
       case BOOL_VARNAME:
       case FLOAT_VARNAME:
+      case 17:
+      case 21:
+      case 24:
       case 47:
       case 52:
         ;
@@ -945,6 +963,9 @@ public class parsername implements parsernameConstants {
         case INT_VARNAME:
         case BOOL_VARNAME:
         case FLOAT_VARNAME:
+        case 17:
+        case 21:
+        case 24:
         case 47:
         case 52:
           ;
@@ -966,6 +987,9 @@ public class parsername implements parsernameConstants {
         case INT_VARNAME:
         case BOOL_VARNAME:
         case FLOAT_VARNAME:
+        case 17:
+        case 21:
+        case 24:
         case 47:
         case 52:
           ;
@@ -1091,6 +1115,9 @@ public class parsername implements parsernameConstants {
       case INT_VARNAME:
       case BOOL_VARNAME:
       case FLOAT_VARNAME:
+      case 17:
+      case 21:
+      case 24:
       case 47:
       case 52:
         ;
@@ -1127,6 +1154,11 @@ public class parsername implements parsernameConstants {
     try { return !jj_3_2(); }
     catch(LookaheadSuccess ls) { return true; }
     finally { jj_save(1, xla); }
+  }
+
+  static private boolean jj_3R_43() {
+    if (jj_scan_token(39)) return true;
+    return false;
   }
 
   static private boolean jj_3R_42() {
@@ -1277,13 +1309,13 @@ public class parsername implements parsernameConstants {
     return false;
   }
 
-  static private boolean jj_3R_54() {
-    if (jj_scan_token(28)) return true;
+  static private boolean jj_3R_18() {
+    if (jj_3R_21()) return true;
     return false;
   }
 
-  static private boolean jj_3R_18() {
-    if (jj_3R_21()) return true;
+  static private boolean jj_3R_54() {
+    if (jj_scan_token(28)) return true;
     return false;
   }
 
@@ -1297,15 +1329,15 @@ public class parsername implements parsernameConstants {
     return false;
   }
 
-  static private boolean jj_3R_57() {
-    if (jj_scan_token(23)) return true;
-    return false;
-  }
-
   static private boolean jj_3_2() {
     if (jj_scan_token(INT_VARNAME)) return true;
     if (jj_scan_token(18)) return true;
     if (jj_3R_20()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_57() {
+    if (jj_scan_token(23)) return true;
     return false;
   }
 
@@ -1429,11 +1461,6 @@ public class parsername implements parsernameConstants {
     return false;
   }
 
-  static private boolean jj_3R_43() {
-    if (jj_scan_token(39)) return true;
-    return false;
-  }
-
   static private boolean jj_initialized_once = false;
   /** Generated Token Manager. */
   static public parsernameTokenManager token_source;
@@ -1454,7 +1481,7 @@ public class parsername implements parsernameConstants {
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x240,0x80000,0x240,0xc00000,0x80000,0xc00000,0x440,0x80000,0x440,0x1220000,0x1220000,0x1c000,0x10c08000,0x10000,0x60,0x60,0x180,0x180,0x10004240,0x10004200,0x40000000,0x80000000,0x10c08000,0x10c08000,0x60,0x60,0x180,0x180,0x10010440,0x10010400,0x0,0x0,0x0,0x0,0x10c08000,0x1c000,0x0,0x10c08000,0x1c000,0x1c000,0x0,0x1c000,0x1220000,0x80000,0x1220000,0x10000000,0x1c000,};
+      jj_la1_0 = new int[] {0x240,0x80000,0x240,0xc00000,0x80000,0xc00000,0x440,0x80000,0x440,0x1220000,0x1220000,0x123c000,0x10c08000,0x1230000,0x60,0x60,0x180,0x180,0x10004240,0x10004200,0x40000000,0x80000000,0x10c08000,0x10c08000,0x60,0x60,0x180,0x180,0x10010440,0x10010400,0x0,0x0,0x0,0x0,0x10c08000,0x123c000,0x0,0x10c08000,0x123c000,0x123c000,0x0,0x1c000,0x1220000,0x80000,0x1220000,0x10000000,0x123c000,};
    }
    private static void jj_la1_init_1() {
       jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x2400000,0x2400000,0x108000,0x7fff,0x108000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x7ffe,0x6,0x1f8,0x7e00,0x7fff,0x108000,0x20000,0x7fff,0x108000,0x108000,0xc0000,0x0,0x0,0x0,0x0,0x800000,0x108000,};
