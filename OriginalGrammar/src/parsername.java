@@ -283,7 +283,7 @@ public class parsername implements parsernameConstants {
       case 23:
       case 28:
       case 32:
-        a = booleanStatement(map);
+        a = booleanExpression(map);
         break;
       case 33:
       case 34:
@@ -316,7 +316,7 @@ public class parsername implements parsernameConstants {
     } else if (jj_2_2(3)) {
       s = jj_consume_token(INT_VARNAME);
       jj_consume_token(18);
-      b = integerStatement(map);
+      b = integerExpression(map);
       jj_consume_token(20);
     if(!execute){{if (true) return;}}
     if(!map.containsKey(s.toString()))
@@ -329,7 +329,7 @@ public class parsername implements parsernameConstants {
       case FLOAT_VARNAME:
         s = jj_consume_token(FLOAT_VARNAME);
         jj_consume_token(18);
-        c = floatStatement(map);
+        c = floatExpression(map);
         jj_consume_token(20);
     if(!execute){{if (true) return;}}
     if(!map.containsKey(s.toString()))
@@ -357,7 +357,7 @@ public class parsername implements parsernameConstants {
 /*---------------------------------------------------------------------*/
 /*INTEGER ARITHMETIC STATS HERE*/
 /*---------------------------------------------------------------------*/
-  static final public int integerStatement(Map map) throws ParseException {
+  static final public int integerExpression(Map map) throws ParseException {
  int a, b;
     a = aterm(map);
     label_6:
@@ -458,7 +458,7 @@ public class parsername implements parsernameConstants {
       break;
     case 28:
       jj_consume_token(28);
-      a = integerStatement(map);
+      a = integerExpression(map);
       jj_consume_token(29);
       break;
     case INT_VARNAME:
@@ -477,7 +477,7 @@ public class parsername implements parsernameConstants {
 /*---------------------------------------------------------------------*/
 /*BOOLEAN ARITHMETIC STATS HERE*/
 /*---------------------------------------------------------------------*/
-  static final public boolean booleanStatement(Map map) throws ParseException {
+  static final public boolean booleanExpression(Map map) throws ParseException {
  boolean a,b;
     a = bterm(map);
     label_8:
@@ -555,7 +555,7 @@ public class parsername implements parsernameConstants {
       break;
     case 28:
       jj_consume_token(28);
-      a = booleanStatement(map);
+      a = booleanExpression(map);
       jj_consume_token(29);
       break;
     case BOOL_VARNAME:
@@ -574,7 +574,7 @@ public class parsername implements parsernameConstants {
 /*---------------------------------------------------------------------*/
 /*FLOAT ARITHMETIC STATS HERE*/
 /*---------------------------------------------------------------------*/
-  static final public double floatStatement(Map map) throws ParseException {
+  static final public double floatExpression(Map map) throws ParseException {
  double a, b;
     a = fterm(map);
     label_10:
@@ -675,7 +675,7 @@ public class parsername implements parsernameConstants {
       break;
     case 28:
       jj_consume_token(28);
-      a = floatStatement(map);
+      a = floatExpression(map);
       jj_consume_token(29);
       break;
     case FLOAT_VARNAME:
@@ -731,15 +731,15 @@ public class parsername implements parsernameConstants {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case 33:
       jj_consume_token(33);
-      a = booleanStatement(map);
-      b = booleanStatement(map);
-                                                                    {if (true) return a == b;}
+      a = booleanExpression(map);
+      b = booleanExpression(map);
+                                                                      {if (true) return a == b;}
       break;
     case 34:
       jj_consume_token(34);
-      a = booleanStatement(map);
-      b = booleanStatement(map);
-                                                                    {if (true) return a != b;}
+      a = booleanExpression(map);
+      b = booleanExpression(map);
+                                                                      {if (true) return a != b;}
       break;
     default:
       jj_la1[31] = jj_gen;
@@ -754,39 +754,39 @@ public class parsername implements parsernameConstants {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case 35:
       jj_consume_token(35);
-      a = integerStatement(map);
-      b = integerStatement(map);
-                                                                    {if (true) return a == b;}
+      a = integerExpression(map);
+      b = integerExpression(map);
+                                                                      {if (true) return a == b;}
       break;
     case 36:
       jj_consume_token(36);
-      a = integerStatement(map);
-      b = integerStatement(map);
-                                                                    {if (true) return a != b;}
+      a = integerExpression(map);
+      b = integerExpression(map);
+                                                                      {if (true) return a != b;}
       break;
     case 37:
       jj_consume_token(37);
-      a = integerStatement(map);
-      b = integerStatement(map);
-                                                                    {if (true) return a >= b;}
+      a = integerExpression(map);
+      b = integerExpression(map);
+                                                                      {if (true) return a >= b;}
       break;
     case 38:
       jj_consume_token(38);
-      a = integerStatement(map);
-      b = integerStatement(map);
-                                                                    {if (true) return a <= b;}
+      a = integerExpression(map);
+      b = integerExpression(map);
+                                                                      {if (true) return a <= b;}
       break;
     case 39:
       jj_consume_token(39);
-      a = integerStatement(map);
-      b = integerStatement(map);
-                                                                    {if (true) return a > b;}
+      a = integerExpression(map);
+      b = integerExpression(map);
+                                                                      {if (true) return a > b;}
       break;
     case 40:
       jj_consume_token(40);
-      a = integerStatement(map);
-      b = integerStatement(map);
-                                                                    {if (true) return a < b;}
+      a = integerExpression(map);
+      b = integerExpression(map);
+                                                                      {if (true) return a < b;}
       break;
     default:
       jj_la1[32] = jj_gen;
@@ -801,39 +801,39 @@ public class parsername implements parsernameConstants {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case 41:
       jj_consume_token(41);
-      a = floatStatement(map);
-      b = floatStatement(map);
-                                                                {if (true) return a == b;}
+      a = floatExpression(map);
+      b = floatExpression(map);
+                                                                  {if (true) return a == b;}
       break;
     case 42:
       jj_consume_token(42);
-      a = floatStatement(map);
-      b = floatStatement(map);
-                                                                {if (true) return a != b;}
+      a = floatExpression(map);
+      b = floatExpression(map);
+                                                                  {if (true) return a != b;}
       break;
     case 43:
       jj_consume_token(43);
-      a = floatStatement(map);
-      b = floatStatement(map);
-                                                                {if (true) return a >= b;}
+      a = floatExpression(map);
+      b = floatExpression(map);
+                                                                  {if (true) return a >= b;}
       break;
     case 44:
       jj_consume_token(44);
-      a = floatStatement(map);
-      b = floatStatement(map);
-                                                                {if (true) return a <= b;}
+      a = floatExpression(map);
+      b = floatExpression(map);
+                                                                  {if (true) return a <= b;}
       break;
     case 45:
       jj_consume_token(45);
-      a = floatStatement(map);
-      b = floatStatement(map);
-                                                                {if (true) return a > b;}
+      a = floatExpression(map);
+      b = floatExpression(map);
+                                                                  {if (true) return a > b;}
       break;
     case 46:
       jj_consume_token(46);
-      a = floatStatement(map);
-      b = floatStatement(map);
-                                                                {if (true) return a < b;}
+      a = floatExpression(map);
+      b = floatExpression(map);
+                                                                  {if (true) return a < b;}
       break;
     default:
       jj_la1[33] = jj_gen;
@@ -872,7 +872,7 @@ public class parsername implements parsernameConstants {
     case 23:
     case 28:
     case 32:
-      execute = booleanStatement(map);
+      execute = booleanExpression(map);
       break;
     default:
       jj_la1[34] = jj_gen;
@@ -930,7 +930,7 @@ public class parsername implements parsernameConstants {
       case 23:
       case 28:
       case 32:
-        execute = booleanStatement(map);
+        execute = booleanExpression(map);
         break;
       default:
         jj_la1[37] = jj_gen;

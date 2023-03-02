@@ -24,7 +24,9 @@ options
 
 [MAYBE CHANGE] Comparison as a part of boolean statement
 
-[FIX] Figure out why we have warning in floatStatement and integerStatement 
+[MAYBE CHANGE] Operation with semicolon consistency
+
+[FIX] Figure out why we have warning in floatExpression and integerExpression 
 ---------------------------------------------------------------------*/
 
 PARSER_BEGIN(parsername)
@@ -189,7 +191,7 @@ void line(Map map, boolean execute) :
 
   
   LOOKAHEAD(3)
-  s = < BOOL_VARNAME > "=" (a = booleanStatement(map) | a = comparison(map)) ";" 
+  s = < BOOL_VARNAME > "=" (a = booleanExpression(map) | a = comparison(map)) ";" 
   {
     if(!execute){return;}
     if(!map.containsKey(s.toString()))
@@ -199,7 +201,7 @@ void line(Map map, boolean execute) :
     return;
   }
 | LOOKAHEAD(3)
-  s = < INT_VARNAME > "=" b = integerStatement(map) ";" 
+  s = < INT_VARNAME > "=" b = integerExpression(map) ";" 
   {
     if(!execute){return;}
     if(!map.containsKey(s.toString()))
@@ -208,7 +210,7 @@ void line(Map map, boolean execute) :
     map.replace(s.toString(), b);
     return;
   }
-| s = < FLOAT_VARNAME > "=" c = floatStatement(map) ";" 
+| s = < FLOAT_VARNAME > "=" c = floatExpression(map) ";" 
   {
     if(!execute){return;}
     if(!map.containsKey(s.toString()))
@@ -231,7 +233,7 @@ void line(Map map, boolean execute) :
 /*INTEGER ARITHMETIC STATS HERE*/
 /*---------------------------------------------------------------------*/
 
-int integerStatement(Map map) :
+int integerExpression(Map map) :
 {int a, b;}
 {
   a = aterm(map)
@@ -257,7 +259,7 @@ int abase(Map map) :
 {int a;}
 {
   (
-    < INTEGER > {a = Integer.parseInt(token.image);} | "(" a=integerStatement(map) ")"
+    < INTEGER > {a = Integer.parseInt(token.image);} | "(" a=integerExpression(map) ")"
   | < INT_VARNAME > {a = (Integer) map.get(token.toString());}
   ){return a;}
 }
@@ -266,7 +268,7 @@ int abase(Map map) :
 /*BOOLEAN ARITHMETIC STATS HERE*/
 /*---------------------------------------------------------------------*/
 
-boolean booleanStatement(Map map) :
+boolean booleanExpression(Map map) :
 {boolean a,b;}
 {
   a = bterm(map)
@@ -294,7 +296,7 @@ boolean bbase(Map map) :
   (
   "TRUE" {a = Boolean.parseBoolean(token.image);} |
   "FALSE" {a = Boolean.parseBoolean(token.image);} |
-  "(" a=booleanStatement(map) ")" |
+  "(" a=booleanExpression(map) ")" |
   < BOOL_VARNAME > {a = (Boolean) map.get(token.toString());}
   ){return a;}
 }
@@ -303,7 +305,7 @@ boolean bbase(Map map) :
 /*FLOAT ARITHMETIC STATS HERE*/
 /*---------------------------------------------------------------------*/
 
-double floatStatement(Map map) :
+double floatExpression(Map map) :
 {double a, b;}
 {
   a = fterm(map)
@@ -329,7 +331,7 @@ double fbase(Map map) :
 {double a;}
 {
   (
-    < FLOAT > {a = Double.parseDouble(token.image);} | "(" a=floatStatement(map) ")"
+    < FLOAT > {a = Double.parseDouble(token.image);} | "(" a=floatExpression(map) ")"
   | < FLOAT_VARNAME > {a = (double) map.get(token.toString());}
   )
   {return a;}
@@ -349,30 +351,30 @@ boolean comparison(Map map) :
 boolean booleanComparison(Map map) :
 {boolean a, b;}
 {
-	"EQB"  a = booleanStatement(map) b = booleanStatement(map) {return a == b;}
-|	"NEQB" a = booleanStatement(map) b = booleanStatement(map) {return a != b;} 
+	"EQB"  a = booleanExpression(map) b = booleanExpression(map) {return a == b;}
+|	"NEQB" a = booleanExpression(map) b = booleanExpression(map) {return a != b;} 
 }
 
 boolean integerComparison(Map map) :
 {int a, b;}
 {
-	"EQI"  a = integerStatement(map) b = integerStatement(map) {return a == b;}
-|	"NEQI" a = integerStatement(map) b = integerStatement(map) {return a != b;}
-|	"GEI"  a = integerStatement(map) b = integerStatement(map) {return a >= b;}
-|	"LEI"  a = integerStatement(map) b = integerStatement(map) {return a <= b;}
-|	"GI"   a = integerStatement(map) b = integerStatement(map) {return a > b;}
-|	"LI"   a = integerStatement(map) b = integerStatement(map) {return a < b;}
+	"EQI"  a = integerExpression(map) b = integerExpression(map) {return a == b;}
+|	"NEQI" a = integerExpression(map) b = integerExpression(map) {return a != b;}
+|	"GEI"  a = integerExpression(map) b = integerExpression(map) {return a >= b;}
+|	"LEI"  a = integerExpression(map) b = integerExpression(map) {return a <= b;}
+|	"GI"   a = integerExpression(map) b = integerExpression(map) {return a > b;}
+|	"LI"   a = integerExpression(map) b = integerExpression(map) {return a < b;}
 }
 
 boolean floatComparison(Map map) :
 {double a, b;}
 {
-	"EQF"  a = floatStatement(map) b = floatStatement(map) {return a == b;}
-|	"NEQF" a = floatStatement(map) b = floatStatement(map) {return a != b;}
-|	"GEF"  a = floatStatement(map) b = floatStatement(map) {return a >= b;}
-|	"LEF"  a = floatStatement(map) b = floatStatement(map) {return a <= b;}
-|	"GF"   a = floatStatement(map) b = floatStatement(map) {return a > b;}
-|	"LF"   a = floatStatement(map) b = floatStatement(map) {return a < b;}
+	"EQF"  a = floatExpression(map) b = floatExpression(map) {return a == b;}
+|	"NEQF" a = floatExpression(map) b = floatExpression(map) {return a != b;}
+|	"GEF"  a = floatExpression(map) b = floatExpression(map) {return a >= b;}
+|	"LEF"  a = floatExpression(map) b = floatExpression(map) {return a <= b;}
+|	"GF"   a = floatExpression(map) b = floatExpression(map) {return a > b;}
+|	"LF"   a = floatExpression(map) b = floatExpression(map) {return a < b;}
 }
 
 /*---------------------------------------------------------------------*/
@@ -387,11 +389,11 @@ void ifStatement(Map map) :
 { 
   	//Develop local variables later
   	
-	"IF" (execute = comparison(map) | execute = booleanStatement(map))
+	"IF" (execute = comparison(map) | execute = booleanExpression(map))
 	{done = execute; System.out.println("\nIf executed: " + execute);}
 	"THEN" (line(map, execute))*
 	(
-	  "ELSEIF" (execute = comparison(map) | execute = booleanStatement(map))
+	  "ELSEIF" (execute = comparison(map) | execute = booleanExpression(map))
 	  {execute = execute && !done; done = done || execute; System.out.println("Elseif executed: " + execute);}	  
 	  "THEN" (line(map, execute))*
 	)*
