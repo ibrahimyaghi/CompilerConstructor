@@ -21,6 +21,8 @@ BOOLEAN Bc = FALSE;
 
 Ia = 5 * Ix;
 Fc = 5.0 * Ff;
+Ix = Ix;
+Fc = Fc;
 Bc = NOT Bc;
 
 Bb = EQI Ia 1;

@@ -12,7 +12,6 @@ options
 
 [TO DO]	Local variables
 	{Perform a deep copy of local variables in if}
-	{Left operand fix}
 	{Give access in comparison statements}
 
 [TO DO] While statement - Ibrahim
@@ -202,29 +201,47 @@ void line(Map map, boolean execute, Map local) :
   s = < BOOL_VARNAME > "=" (a = booleanExpression(map, local) | a = comparison(map, local)) ";" 
   {
     if(!execute){return;}
-    if(!map.containsKey(s.toString()))
-    {System.out.println("Left operand not declared. Exiting.."); System.exit(-1);}
+    if(!map.containsKey(s.toString())){
+    	if(!local.containsKey(s.toString()))
+    	{System.out.println("Left operand not declared. Exiting.."); System.exit(-1);}
+    	else {
+			local.replace(s.toString(), a);
+    	}
+ 	}else{  
+    	map.replace(s.toString(), a);
+    }
     System.out.println("Result: " + a);
-    map.replace(s.toString(), a);
     return;
   }
 | LOOKAHEAD(3)
   s = < INT_VARNAME > "=" b = integerExpression(map, local) ";" 
   {
     if(!execute){return;}
-    if(!map.containsKey(s.toString()))
-    {System.out.println("Left operand not declared. Exiting.."); System.exit(-1);}
+    if(!map.containsKey(s.toString())){
+    	if(!local.containsKey(s.toString()))
+    	{System.out.println("Left operand not declared. Exiting.."); System.exit(-1);}
+    	else {
+			local.replace(s.toString(), b);
+    	}
+ 	}else{  
+    	map.replace(s.toString(), b);
+    }
     System.out.println("Result: " + b);
-    map.replace(s.toString(), b);
     return;
   }
 | s = < FLOAT_VARNAME > "=" c = floatExpression(map, local) ";" 
   {
     if(!execute){return;}
-    if(!map.containsKey(s.toString()))
-    {System.out.println("Left operand not declared. Exiting.."); System.exit(-1);}
+    if(!map.containsKey(s.toString())){
+    	if(!local.containsKey(s.toString()))
+    	{System.out.println("Left operand not declared. Exiting.."); System.exit(-1);}
+    	else {
+			local.replace(s.toString(), c);
+    	}
+ 	}else{  
+    	map.replace(s.toString(), c);
+    }
     System.out.println("Result: " + c);
-    map.replace(s.toString(), c);
     return;
   }
 
