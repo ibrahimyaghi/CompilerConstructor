@@ -1,9 +1,9 @@
 PROGRAM programname
 
-INT Ia = -1;
+INT Ia = 1;
 BOOLEAN Bb = TRUE;
 FUNC
-FLOAT Fc = 1.5;
+FLOAT Fc = -1.5, Fd = 2.0, Fe = -1.2;
 
 PROC dosth()
 
@@ -16,6 +16,7 @@ ENDPROC
 MAIN
 
 Ia = 5 * Ia;
+Fc = 5.0 * Fc;
 
 Bb = EQI Ia 1;
 

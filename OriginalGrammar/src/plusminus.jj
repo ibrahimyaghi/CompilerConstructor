@@ -133,11 +133,18 @@ void declareFLOAT(Map map, boolean execute):
 {String a;}
 {
   "FLOAT" < FLOAT_VARNAME > {a = token.toString();} "="
-  <FLOAT> { if(map.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
-    		if(execute){map.put(a, Double.parseDouble(token.image));}}
+  (    <FLOAT> { if(map.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+    		if(execute){map.put(a, Double.parseDouble(token.image));}} |
+	<MINUS> <FLOAT> { if(map.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+    		if(execute){map.put(a, -1*Double.parseDouble(token.image));}} 
+  )
   (","    < FLOAT_VARNAME > {a = token.toString();} "="
-  <FLOAT> { if(map.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
-    		if(execute){map.put(a, Double.parseDouble(token.image));}})* ";"
+  	(    	<FLOAT> { if(map.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+    		if(execute){map.put(a, Double.parseDouble(token.image));}} |
+  		<MINUS> <FLOAT> { if(map.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+    		if(execute){map.put(a, -1*Double.parseDouble(token.image));}}
+  	)
+  )* ";"
 }
 
 /*---------------------------------------------------------------------*/
