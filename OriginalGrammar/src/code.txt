@@ -19,7 +19,6 @@ INT Ix = 10;
 FLOAT Ff = 1.2;
 BOOLEAN Bc = FALSE;
 
-Ia = 5 * Ix;
 Fc = 5.0 * Ff;
 Ix = Ix;
 Fc = Fc;
@@ -39,12 +38,16 @@ ENDIF
 
 IF EQB Bb FALSE THEN
 Ia = 5;
-Ix = Ix;
 ELSEIF TRUE THEN
 Ia = Ia+5;
+Ix = 2*Ix;
+INT Iif = 12;
+PRINT(Ix);
 ELSE THEN
 Ia = Ia+10;
 ENDIF
+
+PRINT(Ix);
 
 IF EQB Bb FALSE THEN
 Ia = 5;

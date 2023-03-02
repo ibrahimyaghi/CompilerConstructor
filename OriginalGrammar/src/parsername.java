@@ -1073,6 +1073,13 @@ public class parsername implements parsernameConstants {
       jj_consume_token(-1);
       throw new ParseException();
     }
+                Iterator<Map.Entry<String, Object>> iterator2 = locals.entrySet().iterator();
+            while (iterator2.hasNext()) {
+                Map.Entry<String, Object> entry = iterator2.next();
+                if(entry.getValue() != localVariables.get(entry.getKey())) {
+                                locals.put(entry.getKey(), localVariables.get(entry.getKey()));
+                }
+        }
   }
 
 /*---------------------------------------------------------------------*/

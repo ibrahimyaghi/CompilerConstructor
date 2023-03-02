@@ -10,14 +10,11 @@ options
 /* TO DO LIST / BUGS TO FIX 										   */
 /*-----------------------------------------------------------------------
 
-[TO DO]	Local variables
-	{Adjust variables after if}
+[TO DO] While statement (including local variables) - Ibrahim
 
-[TO DO] While statement - Ibrahim
+[TO DO] Functions (including local variables) - Amarilda
 
-[TO DO] Functions - Amarilda
-
-[TO DO] Procedures - Paweł
+[TO DO] Procedures (including local variables) - Paweł
 
 [TO DO] Extend printing statement values (Variables for now)
 
@@ -466,6 +463,18 @@ void ifStatement(Map map, Map locals) :
 	  "THEN" (line(map, execute, localVariables))*
 	)*
 	(("ELSE" {System.out.println("Else executed: " + !done);} "THEN" (line(map, !done, localVariables))* "ENDIF") | "ENDIF")
+
+	//Check if any of the local variables were changed
+	{
+		Iterator<Map.Entry<String, Object>> iterator2 = locals.entrySet().iterator();
+	    while (iterator2.hasNext()) {
+	      	Map.Entry<String, Object> entry = iterator2.next();
+	      	if(entry.getValue() != localVariables.get(entry.getKey())) {
+				locals.put(entry.getKey(), localVariables.get(entry.getKey()));
+	      	}
+    	}
+	}
+	
 }
 
 /*---------------------------------------------------------------------*/
