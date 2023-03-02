@@ -163,10 +163,12 @@ void declareFLOAT(Map map, boolean execute):
 /*---------------------------------------------------------------------*/
 
 void multipleLines(Map map):
-{boolean a, execute = true; int b;}
+{boolean a, execute = true; int b; Map<String,Object> mainLocal = new HashMap<String,Object>();}
 {
+  //Arbitrary name for the program
   "PROGRAM" <VARNAME>
-  //We start with declaration of global variables and functions
+  
+  //Then declaration of global variables and functions
   (	  IntegerFunction(map)
   		{System.out.println("Integer function recognized");}
  	| ProcedureDeclaration(map, map)
@@ -178,6 +180,11 @@ void multipleLines(Map map):
 	| declareBOOL(map, execute)
 		{System.out.println("Variable(s) declared: " + execute);}
   )*
+  
+  //Local variables for the main procedure - uppercase to avoid collisions with variables
+  {map.put("MAINLOCAL", mainLocal);}
+
+  //MAIN procedure
   "MAIN" (line(map, true))* "ENDMAIN"
   	{System.out.println("Exiting main") ;return;}
 }
@@ -428,7 +435,8 @@ void ProcedureDeclaration(Map map, Map localvariables):
 		)* ")"
 		| "()"
 	)
-	//EXECUTE SOME INSTRUCTIONS BUT LATER
+	(line(map, false))*
+	//SAVE THOSE INSTRUCTIONS SOMEWHERE TO EXECUTE LATER
 	"ENDPROC"
 }
 

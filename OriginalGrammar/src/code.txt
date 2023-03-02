@@ -18,6 +18,7 @@ MAIN
 
 Ia = 5 * Ia;
 Fc = 5.0 * Fc;
+Ia = 5+-4;
 
 Bb = EQI Ia 1;
 
