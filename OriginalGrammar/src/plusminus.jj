@@ -10,8 +10,6 @@ options
 /* TO DO LIST / BUGS TO FIX 										   */
 /*-----------------------------------------------------------------------
 
-[TO DO] Reading from file
-
 [TO DO] While statement (including local variables) - Ibrahim
 
 [TO DO] Functions (including local variables) - Amarilda
@@ -31,34 +29,52 @@ options
 
 PARSER_BEGIN(parsername)
 import java.util.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 public class parsername
 {
   public static void main(String args []) throws ParseException
   {
-    parsername parser = new parsername(System.in);
-    while (true)
+	//Get current directory
+	String path = System.getProperty("user.dir");
+	path+="\\src\\code.txt";
+
+    parsername parser = null;
+	try {
+	  	//Access file with code
+		parser = new parsername(new FileInputStream(path));
+	}
+	catch (FileNotFoundException e) {
+		System.out.println("File not found. Exiting.") ;
+		System.exit(-1) ;
+	}
+
+    //If file was found, execute its contents
+    System.out.println("Reading from file!");
+    
+    try
     {
-      System.out.println("Reading from standard input...");
-      System.out.print("Enter an expression like \"1+(2+3)*4 GLOBAL VERSION;\" :");
-      try
-      {
-        Map<String,Object> map=new HashMap<String,Object>(); 
+      	//Map for global variables
+        Map<String,Object> map=new HashMap<String,Object>();
+        //This is the entry point for our language - sth like "main"
         parsername.multipleLines(map);
-      }
-      catch (Exception e)
-      {
-        System.out.println("NOK.");
-        System.out.println(e.getMessage());
-        parsername.ReInit(System.in);
-      }
-      catch (Error e)
-      {
-        System.out.println("Oops.");
-        System.out.println(e.getMessage());
-        break;
-      }
     }
+    catch (Exception e)
+    {
+        System.out.println("Something went wrong - exception detected.");
+        System.out.println(e.getMessage());
+        System.exit(-1) ;
+    }
+    catch (Error e)
+    {
+        System.out.println("Something went wrong - error detected.");
+        System.out.println(e.getMessage());
+        System.exit(-1) ;
+    }
+
+	//Exit after successful code execution
+    System.out.println("Terminating");
   }
 }
 
