@@ -139,7 +139,7 @@ public class parsername implements parsernameConstants {
         jj_consume_token(-1);
         throw new ParseException();
       }
-                        if(mmap.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+                        if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
                                         if(execute){map.put(a, Boolean.parseBoolean(token.image));}
     }
     jj_consume_token(20);
@@ -251,6 +251,7 @@ public class parsername implements parsernameConstants {
         throw new ParseException();
       }
     }
+   System.out.println("\u005cnEntering main");
     jj_consume_token(26);
     label_5:
     while (true) {
@@ -272,7 +273,7 @@ public class parsername implements parsernameConstants {
       line(map, true, mainLocal);
     }
     jj_consume_token(27);
-         System.out.println("Exiting main") ;{if (true) return;}
+         System.out.println("Exiting main\u005cn") ;{if (true) return;}
   }
 
   static final public void line(Map map, boolean execute, Map local) throws ParseException {
@@ -355,11 +356,11 @@ public class parsername implements parsernameConstants {
         break;
       case 47:
         ifStatement(map);
-                                                 System.out.println("If statement executed"); {if (true) return;}
+                                                                 System.out.println("End of IF statement\u005cn"); {if (true) return;}
         break;
       case 52:
         print(map);
-                                                 {if (true) return;}
+                                                                 {if (true) return;}
         break;
       default:
         jj_la1[13] = jj_gen;
@@ -980,6 +981,7 @@ public class parsername implements parsernameConstants {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case 50:
       jj_consume_token(50);
+                  System.out.println("Else executed: " + !done);
       jj_consume_token(48);
       label_15:
       while (true) {
@@ -1000,7 +1002,6 @@ public class parsername implements parsernameConstants {
         }
         line(map, !done, localVariables);
       }
-                                                             System.out.println("Else executed: " + !done);
       jj_consume_token(51);
       break;
     case 51:
@@ -1154,26 +1155,6 @@ public class parsername implements parsernameConstants {
     try { return !jj_3_2(); }
     catch(LookaheadSuccess ls) { return true; }
     finally { jj_save(1, xla); }
-  }
-
-  static private boolean jj_3R_43() {
-    if (jj_scan_token(39)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_42() {
-    if (jj_scan_token(38)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_21() {
-    if (jj_3R_24()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_41() {
-    if (jj_scan_token(37)) return true;
-    return false;
   }
 
   static private boolean jj_3R_40() {
@@ -1458,6 +1439,26 @@ public class parsername implements parsernameConstants {
 
   static private boolean jj_3R_44() {
     if (jj_scan_token(40)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_43() {
+    if (jj_scan_token(39)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_42() {
+    if (jj_scan_token(38)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_21() {
+    if (jj_3R_24()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_41() {
+    if (jj_scan_token(37)) return true;
     return false;
   }
 

@@ -24,8 +24,10 @@ Ia = 5+-4;
 Bb = EQI Ia 1;
 
 IF EQB Bb TRUE THEN
+INT Iz = 69;
 Ia = 5;
 ELSE THEN
+INT Izz = 69;
 Ia = 15;
 ENDIF
 

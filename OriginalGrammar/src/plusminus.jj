@@ -10,7 +10,9 @@ options
 /* TO DO LIST / BUGS TO FIX 										   */
 /*-----------------------------------------------------------------------
 
-[TO DO]	Local variables 
+[TO DO]	Local variables
+	{Perform a deep copy of local variables in if}
+	{Access local variables in expressions, ifs, etc}
 
 [TO DO] While statement - Ibrahim
 
@@ -136,7 +138,7 @@ void declareBOOL(Map map, boolean execute, Map globals):
   ("TRUE" | "FALSE") {  if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
     					if(execute){map.put(a, Boolean.parseBoolean(token.image)); }}
   ("," 		< BOOL_VARNAME > {a = token.toString();} "="
-  ("TRUE" | "FALSE") {  if(mmap.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+  ("TRUE" | "FALSE") {  if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
     					if(execute){map.put(a, Boolean.parseBoolean(token.image));}})* ";"
 }
 
@@ -182,8 +184,9 @@ void multipleLines(Map map):
   )*
   
   //MAIN procedure
+  {System.out.println("\nEntering main");}
   "MAIN" (line(map, true, mainLocal))* "ENDMAIN"
-  	{System.out.println("Exiting main") ;return;}
+  	{System.out.println("Exiting main\n") ;return;}
 }
 
 void line(Map map, boolean execute, Map local) :
@@ -228,8 +231,8 @@ void line(Map map, boolean execute, Map local) :
 | declareFLOAT(local, execute, map) 	{System.out.println("Local variable(s) declared: " + execute); return;}
 | declareBOOL(local, execute, map)  	{System.out.println("Local variable(s) declared: " + execute); return;}
 
-| ifStatement(map)				{System.out.println("If statement executed"); return;}
-| print(map)					{return;}
+| ifStatement(map)						{System.out.println("End of IF statement\n"); return;}
+| print(map)							{return;}
 }
 
 /*---------------------------------------------------------------------*/
@@ -390,7 +393,7 @@ void ifStatement(Map map) :
 	Map<String,Object> localVariables = new HashMap<String,Object>();
 }
 { 
-  	//Develop local variables later
+  	//PERFORM A DEEP COPY OF CURRENT LOCAL VARIABLES
   	
 	"IF" (execute = comparison(map) | execute = booleanExpression(map))
 	{done = execute; System.out.println("\nIf executed: " + execute);}
@@ -400,7 +403,7 @@ void ifStatement(Map map) :
 	  {execute = execute && !done; done = done || execute; System.out.println("Elseif executed: " + execute);}	  
 	  "THEN" (line(map, execute, localVariables))*
 	)*
-	(("ELSE" "THEN" (line(map, !done, localVariables))* {System.out.println("Else executed: " + !done);} "ENDIF") | "ENDIF")
+	(("ELSE" {System.out.println("Else executed: " + !done);} "THEN" (line(map, !done, localVariables))* "ENDIF") | "ENDIF")
 }
 
 /*---------------------------------------------------------------------*/
