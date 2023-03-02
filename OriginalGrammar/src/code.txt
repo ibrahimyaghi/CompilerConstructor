@@ -25,6 +25,8 @@ Ix = Ix;
 Fc = Fc;
 Bc = NOT Bc;
 
+Bc = EQB Bc Bc;
+
 Bb = EQI Ia 1;
 
 IF EQB Bb TRUE THEN
@@ -37,6 +39,7 @@ ENDIF
 
 IF EQB Bb FALSE THEN
 Ia = 5;
+Ix = Ix;
 ELSEIF TRUE THEN
 Ia = Ia+5;
 ELSE THEN

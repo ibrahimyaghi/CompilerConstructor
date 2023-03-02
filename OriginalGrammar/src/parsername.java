@@ -373,11 +373,11 @@ public class parsername implements parsernameConstants {
                                          System.out.println("Local variable(s) declared: " + execute); {if (true) return;}
         break;
       case 47:
-        ifStatement(map);
-                                                                 System.out.println("End of IF statement\u005cn"); {if (true) return;}
+        ifStatement(map, local);
+                                                         System.out.println("End of IF statement\u005cn"); {if (true) return;}
         break;
       case 52:
-        print(map);
+        print(map, local);
                                                                  {if (true) return;}
         break;
       default:
@@ -916,7 +916,7 @@ public class parsername implements parsernameConstants {
 /*---------------------------------------------------------------------*/
 /*IF STATEMENT STARTS HERE*/
 /*---------------------------------------------------------------------*/
-  static final public void ifStatement(Map map) throws ParseException {
+  static final public void ifStatement(Map map, Map locals) throws ParseException {
         boolean execute = false; boolean done = false;
         Map<String,Object> localVariables = new HashMap<String,Object>();
     jj_consume_token(47);
@@ -1071,22 +1071,55 @@ public class parsername implements parsernameConstants {
 /*---------------------------------------------------------------------*/
 /*PRINT FUNCTION STARTS HERE*/
 /*---------------------------------------------------------------------*/
-  static final public void print(Map map) throws ParseException {
+  static final public void print(Map map, Map local) throws ParseException {
  boolean a; int b; double c;
     jj_consume_token(52);
 
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case FLOAT_VARNAME:
       jj_consume_token(FLOAT_VARNAME);
-                       c = (double)  map.get(token.toString()); System.out.println(token.toString()+"="+c);
+                try {
+                        c = (double) map.get(token.toString()); System.out.println(token.toString()+"="+c);
+                }
+                catch(Exception e) {
+                        try {
+                                System.out.println("Checking local variables.");
+                                c = (double) local.get(token.toString()); System.out.println(token.toString()+"="+c);
+                        }
+                        catch(Exception f) {
+                                System.out.println("Variable not declared. Cannot print. Exiting.."); System.exit(-1);
+                        }
+                }
       break;
     case BOOL_VARNAME:
       jj_consume_token(BOOL_VARNAME);
-                       a = (Boolean) map.get(token.toString()); System.out.println(token.toString()+"="+a);
+        try {
+                        a = (Boolean) map.get(token.toString()); System.out.println(token.toString()+"="+a);
+                }
+                catch(Exception e) {
+                        try {
+                                System.out.println("Checking local variables.");
+                                a = (Boolean) local.get(token.toString()); System.out.println(token.toString()+"="+a);
+                        }
+                        catch(Exception f) {
+                                System.out.println("Variable not declared. Cannot print. Exiting.."); System.exit(-1);
+                        }
+                }
       break;
     case INT_VARNAME:
       jj_consume_token(INT_VARNAME);
-                       b = (Integer) map.get(token.toString()); System.out.println(token.toString()+"="+b);
+                try {
+                        b = (Integer) map.get(token.toString()); System.out.println(token.toString()+"="+b);
+                }
+                catch(Exception e) {
+                        try {
+                                System.out.println("Checking local variables.");
+                                b = (Integer) local.get(token.toString()); System.out.println(token.toString()+"="+b);
+                        }
+                        catch(Exception f) {
+                                System.out.println("Variable not declared. Cannot print. Exiting.."); System.exit(-1);
+                        }
+                }
       break;
     default:
       jj_la1[41] = jj_gen;

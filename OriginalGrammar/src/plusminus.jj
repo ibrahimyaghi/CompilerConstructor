@@ -12,7 +12,6 @@ options
 
 [TO DO]	Local variables
 	{Perform a deep copy of local variables in if}
-	{Give access in comparison statements}
 
 [TO DO] While statement - Ibrahim
 
@@ -249,8 +248,8 @@ void line(Map map, boolean execute, Map local) :
 | declareFLOAT(local, execute, map) 	{System.out.println("Local variable(s) declared: " + execute); return;}
 | declareBOOL(local, execute, map)  	{System.out.println("Local variable(s) declared: " + execute); return;}
 
-| ifStatement(map)						{System.out.println("End of IF statement\n"); return;}
-| print(map)							{return;}
+| ifStatement(map, local)				{System.out.println("End of IF statement\n"); return;}
+| print(map, local)						{return;}
 }
 
 /*---------------------------------------------------------------------*/
@@ -444,7 +443,7 @@ boolean floatComparison(Map map, Map local) :
 /*IF STATEMENT STARTS HERE*/
 /*---------------------------------------------------------------------*/
 
-void ifStatement(Map map) :
+void ifStatement(Map map, Map locals) :
 {
  	boolean execute = false; boolean done = false;
 	Map<String,Object> localVariables = new HashMap<String,Object>();
@@ -466,13 +465,52 @@ void ifStatement(Map map) :
 /*---------------------------------------------------------------------*/
 /*PRINT FUNCTION STARTS HERE*/
 /*---------------------------------------------------------------------*/
-void print(Map map):
+void print(Map map, Map local):
 {boolean a; int b; double c;}
 {
   "PRINT(" {}(
-    < FLOAT_VARNAME > {c = (double)  map.get(token.toString()); System.out.println(token.toString()+"="+c);}
-  | < BOOL_VARNAME >  {a = (Boolean) map.get(token.toString()); System.out.println(token.toString()+"="+a);}
-  | < INT_VARNAME >   {b = (Integer) map.get(token.toString()); System.out.println(token.toString()+"="+b);}
+    < FLOAT_VARNAME > {
+		try {
+	  		c = (double) map.get(token.toString()); System.out.println(token.toString()+"="+c);
+		}
+		catch(Exception e) {
+		  	try {
+	  			System.out.println("Checking local variables.");
+	  			c = (double) local.get(token.toString()); System.out.println(token.toString()+"="+c);
+			}
+			catch(Exception f) {
+				System.out.println("Variable not declared. Cannot print. Exiting.."); System.exit(-1);
+			}
+		}
+	}
+  | < BOOL_VARNAME >  {
+    	try {
+	  		a = (Boolean) map.get(token.toString()); System.out.println(token.toString()+"="+a);
+		}
+		catch(Exception e) {
+		  	try {
+	  			System.out.println("Checking local variables.");
+	  			a = (Boolean) local.get(token.toString()); System.out.println(token.toString()+"="+a);
+			}
+			catch(Exception f) {
+				System.out.println("Variable not declared. Cannot print. Exiting.."); System.exit(-1);
+			}
+		}
+	}
+  | < INT_VARNAME >   {
+		try {
+	  		b = (Integer) map.get(token.toString()); System.out.println(token.toString()+"="+b);
+		}
+		catch(Exception e) {
+		  	try {
+	  			System.out.println("Checking local variables.");
+	  			b = (Integer) local.get(token.toString()); System.out.println(token.toString()+"="+b);
+			}
+			catch(Exception f) {
+				System.out.println("Variable not declared. Cannot print. Exiting.."); System.exit(-1);
+			}
+		}
+	}
   )");"
 }
 
