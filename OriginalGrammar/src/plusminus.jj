@@ -11,7 +11,7 @@ options
 /*-----------------------------------------------------------------------
 
 [TO DO]	Local variables
-	{Perform a deep copy of local variables in if}
+	{Adjust variables after if}
 
 [TO DO] While statement - Ibrahim
 
@@ -447,10 +447,16 @@ void ifStatement(Map map, Map locals) :
 {
  	boolean execute = false; boolean done = false;
 	Map<String,Object> localVariables = new HashMap<String,Object>();
+	
+	//Perform a deep copy of local variables
+  	Iterator<Map.Entry<String, Object>> iterator = locals.entrySet().iterator();
+    while (iterator.hasNext()) {
+        Map.Entry<String, Object> entry = iterator.next();
+        localVariables.put(entry.getKey(), entry.getValue());
+    }
 }
 { 
-  	//PERFORM A DEEP COPY OF CURRENT LOCAL VARIABLES
-  	
+  	//Go into the logic
 	"IF" (execute = comparison(map, localVariables) | execute = booleanExpression(map, localVariables))
 	{done = execute; System.out.println("\nIf executed: " + execute);}
 	"THEN" (line(map, execute, localVariables))*

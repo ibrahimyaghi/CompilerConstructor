@@ -919,6 +919,13 @@ public class parsername implements parsernameConstants {
   static final public void ifStatement(Map map, Map locals) throws ParseException {
         boolean execute = false; boolean done = false;
         Map<String,Object> localVariables = new HashMap<String,Object>();
+
+        //Perform a deep copy of local variables
+        Iterator<Map.Entry<String, Object>> iterator = locals.entrySet().iterator();
+    while (iterator.hasNext()) {
+        Map.Entry<String, Object> entry = iterator.next();
+        localVariables.put(entry.getKey(), entry.getValue());
+    }
     jj_consume_token(47);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case 33:
