@@ -181,15 +181,12 @@ void multipleLines(Map map):
 		{System.out.println("Variable(s) declared: " + execute);}
   )*
   
-  //Local variables for the main procedure - uppercase to avoid collisions with variables
-  {map.put("MAINLOCAL", mainLocal);}
-
   //MAIN procedure
-  "MAIN" (line(map, true))* "ENDMAIN"
+  "MAIN" (line(map, true, mainLocal))* "ENDMAIN"
   	{System.out.println("Exiting main") ;return;}
 }
 
-void line(Map map, boolean execute) :
+void line(Map map, boolean execute, Map local) :
 {boolean a; int b; double c; Token s;}
 {
 /*	Boolean value can be return either by boolean statement
@@ -398,13 +395,13 @@ void ifStatement(Map map) :
   	
 	"IF" (execute = comparison(map) | execute = booleanExpression(map))
 	{done = execute; System.out.println("\nIf executed: " + execute);}
-	"THEN" (line(map, execute))*
+	"THEN" (line(map, execute, localVariables))*
 	(
 	  "ELSEIF" (execute = comparison(map) | execute = booleanExpression(map))
 	  {execute = execute && !done; done = done || execute; System.out.println("Elseif executed: " + execute);}	  
-	  "THEN" (line(map, execute))*
+	  "THEN" (line(map, execute, localVariables))*
 	)*
-	(("ELSE" "THEN" (line(map, !done))* {System.out.println("Else executed: " + !done);} "ENDIF") | "ENDIF")
+	(("ELSE" "THEN" (line(map, !done, localVariables))* {System.out.println("Else executed: " + !done);} "ENDIF") | "ENDIF")
 }
 
 /*---------------------------------------------------------------------*/
@@ -424,9 +421,8 @@ void print(Map map):
 /*PROCEDURE START HERE*/
 /*---------------------------------------------------------------------*/
 void ProcedureDeclaration(Map map, Map localvariables):
-{Map<String,Object> local = new HashMap<String,Object>();}
+{Map<String,Object> localVariables = new HashMap<String,Object>();}
 {
-  	//ADD VARIABLE ASSIGNMENT
 	"PROC" <VARNAME>
 	(	  	(	  		"(" (("INT" < INT_VARNAME >) | ("FLOAT" < FLOAT_VARNAME >) | ("BOOLEAN" < BOOL_VARNAME >)) 
 		)
@@ -435,8 +431,9 @@ void ProcedureDeclaration(Map map, Map localvariables):
 		)* ")"
 		| "()"
 	)
-	(line(map, false))*
 	//SAVE THOSE INSTRUCTIONS SOMEWHERE TO EXECUTE LATER
+	//ADD LOCAL VARIABLE ASSIGNMENT - > VARIABLE PASSED AS FUNCTION PARAMETERS
+	(line(map, false, localVariables))*
 	"ENDPROC"
 }
 

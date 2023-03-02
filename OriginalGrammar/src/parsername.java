@@ -251,7 +251,6 @@ public class parsername implements parsernameConstants {
         throw new ParseException();
       }
     }
-   map.put("MAINLOCAL", mainLocal);
     jj_consume_token(26);
     label_5:
     while (true) {
@@ -267,13 +266,13 @@ public class parsername implements parsernameConstants {
         jj_la1[11] = jj_gen;
         break label_5;
       }
-      line(map, true);
+      line(map, true, mainLocal);
     }
     jj_consume_token(27);
          System.out.println("Exiting main") ;{if (true) return;}
   }
 
-  static final public void line(Map map, boolean execute) throws ParseException {
+  static final public void line(Map map, boolean execute, Map local) throws ParseException {
  boolean a; int b; double c; Token s;
     if (jj_2_1(3)) {
       s = jj_consume_token(BOOL_VARNAME);
@@ -896,7 +895,7 @@ public class parsername implements parsernameConstants {
         jj_la1[35] = jj_gen;
         break label_12;
       }
-      line(map, execute);
+      line(map, execute, localVariables);
     }
     label_13:
     while (true) {
@@ -954,7 +953,7 @@ public class parsername implements parsernameConstants {
           jj_la1[38] = jj_gen;
           break label_14;
         }
-        line(map, execute);
+        line(map, execute, localVariables);
       }
     }
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -975,9 +974,9 @@ public class parsername implements parsernameConstants {
           jj_la1[39] = jj_gen;
           break label_15;
         }
-        line(map, !done);
+        line(map, !done, localVariables);
       }
-                                             System.out.println("Else executed: " + !done);
+                                                             System.out.println("Else executed: " + !done);
       jj_consume_token(51);
       break;
     case 51:
@@ -1022,7 +1021,7 @@ public class parsername implements parsernameConstants {
 /*PROCEDURE START HERE*/
 /*---------------------------------------------------------------------*/
   static final public void ProcedureDeclaration(Map map, Map localvariables) throws ParseException {
- Map<String,Object> local = new HashMap<String,Object>();
+ Map<String,Object> localVariables = new HashMap<String,Object>();
     jj_consume_token(54);
     jj_consume_token(VARNAME);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1100,7 +1099,7 @@ public class parsername implements parsernameConstants {
         jj_la1[46] = jj_gen;
         break label_17;
       }
-      line(map, false);
+      line(map, false, localVariables);
     }
     jj_consume_token(56);
   }
@@ -1128,6 +1127,26 @@ public class parsername implements parsernameConstants {
     try { return !jj_3_2(); }
     catch(LookaheadSuccess ls) { return true; }
     finally { jj_save(1, xla); }
+  }
+
+  static private boolean jj_3R_42() {
+    if (jj_scan_token(38)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_21() {
+    if (jj_3R_24()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_41() {
+    if (jj_scan_token(37)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_40() {
+    if (jj_scan_token(36)) return true;
+    return false;
   }
 
   static private boolean jj_3R_31() {
@@ -1412,26 +1431,6 @@ public class parsername implements parsernameConstants {
 
   static private boolean jj_3R_43() {
     if (jj_scan_token(39)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_42() {
-    if (jj_scan_token(38)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_21() {
-    if (jj_3R_24()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_41() {
-    if (jj_scan_token(37)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_40() {
-    if (jj_scan_token(36)) return true;
     return false;
   }
 
