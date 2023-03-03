@@ -81,6 +81,20 @@ public class parsername
 
 PARSER_END(parsername)
 
+//C-type comments with 2 options - one line or multiline
+SKIP :
+{
+  < "//" (~["\r", "\n"])* >
+| < "/*" > : COMMENT_STATE
+}
+
+//Comment state where everything is skipped until the "*/" sign is encountered
+<COMMENT_STATE> SKIP :
+{
+  < "*/" > : DEFAULT
+| < ~[] >   
+}
+
 SKIP :
 {
   " "

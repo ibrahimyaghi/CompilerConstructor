@@ -1,5 +1,10 @@
 PROGRAM programname
 
+//A comment
+/*
+a = 1+1 Another comment
+*/
+
 INT Ia = 1;
 INT Ib = -2, Ic = -15, Id = 10;
 BOOLEAN Bb = TRUE;
