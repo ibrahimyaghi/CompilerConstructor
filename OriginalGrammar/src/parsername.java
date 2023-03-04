@@ -45,7 +45,7 @@ public class parsername implements parsernameConstants {
     }
 
         //Exit after successful code execution
-    System.out.println("Terminating");
+    System.out.println("Terminating global version");
   }
 
 /*---------------------------------------------------------------------*/
