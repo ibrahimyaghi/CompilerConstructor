@@ -133,6 +133,20 @@ TOKEN: /* DATA TYPES */
 | < FLOAT_VARNAME : "F" <VARNAME> > 
 }
 
+Token any():{Token t;}
+{
+	(
+	  	t=<INTEGER>
+	  | t=<FLOAT>
+	  | t=<INT_VARNAME>
+	  | t=<BOOL_VARNAME>
+	  | t=<FLOAT_VARNAME>
+	  | t=<PLUS> | t=<MINUS> | t=<MULTIPLY> | t=<DIVIDE>
+	  | t = "INT" | t = "=" | t = ";"
+	)
+	{return t;}
+}
+
 /*---------------------------------------------------------------------*/
 /* DECLARE VARIABLES
 /* We allow only simple initializations by values
@@ -279,6 +293,7 @@ void line(Map map, boolean execute, Map local) :
 | declareBOOL(local, execute, map)  	{System.out.println("Local variable(s) declared: " + execute); return;}
 
 | ifStatement(map, local)				{System.out.println("End of IF statement\n"); return;}
+| whileLoop(map, local)					{System.out.println("End of loop\n"); return;}
 | print(map, local)						{return;}
 }
 
@@ -507,7 +522,6 @@ void ifStatement(Map map, Map locals) :
 	      	}
     	}
 	}
-	
 }
 
 /*---------------------------------------------------------------------*/
@@ -560,6 +574,51 @@ void print(Map map, Map local):
 		}
 	}
   )");"
+}
+
+/*---------------------------------------------------------------------*/
+/*WHILE START HERE*/
+/*---------------------------------------------------------------------*/
+void whileLoop(Map map, Map locals):
+{
+  	boolean execute = false;
+	Map<String,Object> localVariables = new HashMap<String,Object>();
+	
+	//Perform a deep copy of local variables
+  	Iterator<Map.Entry<String, Object>> iterator = locals.entrySet().iterator();
+    while (iterator.hasNext()) {
+        Map.Entry<String, Object> entry = iterator.next();
+        localVariables.put(entry.getKey(), entry.getValue());
+    }
+    Token t = null;
+    List<Token> list = new ArrayList<Token>();  
+}
+{
+  	//TODO - > Store comparison expression for later
+  	"WHILE" (execute = comparison(map, localVariables) | execute = booleanExpression(map, localVariables))
+	"DO"
+	//Gather tokens for further processing
+	 (t = any() {list.add(t);})*
+  	"ENDWHILE" 
+
+
+	//TODO - > Create a new parser and perform checkings
+	//parser2 = new parsername(new FileInputStream(path));
+	
+	{
+	  System.out.println(list);
+ 	}
+ 	
+  	//Check if any of the local variables were changed
+	{
+		Iterator<Map.Entry<String, Object>> iterator2 = locals.entrySet().iterator();
+	    while (iterator2.hasNext()) {
+	      	Map.Entry<String, Object> entry = iterator2.next();
+	      	if(entry.getValue() != localVariables.get(entry.getKey())) {
+				locals.put(entry.getKey(), localVariables.get(entry.getKey()));
+	      	}
+    	}
+	}
 }
 
 /*---------------------------------------------------------------------*/
