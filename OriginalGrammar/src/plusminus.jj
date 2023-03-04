@@ -169,7 +169,7 @@ TOKEN: /* DATA TYPES */
 | < FLOAT_VARNAME : "F" <VARNAME> > 
 }
 
-//DO NOT put <ENDWHILE> here, otherwise loop will not end
+
 Token any():{Token t;}
 {
 	(
@@ -181,7 +181,7 @@ Token any():{Token t;}
 	  | t = "(" | t = ")"
 	  | t = <AND> | t = <OR> | t = <NOT>
 	  | t = <IF> | t = <ELSE> | t = <ELSEIF> | t = <THEN> | t = <ENDIF> 
-	  | t = <WHILE> | t = <DO>
+	  | t = <WHILE>
 	  | t =	"EQB" | t = "NEQB" 
 	  | t = "EQI" | t = "NEQI" | t = "GEI" | t = "LEI" | t = "GI" | t = "LI"
       | t = "EQF" | t = "NEQF" | t = "GEF" | t = "LEF" | t = "GF" | t = "LF"
@@ -190,7 +190,17 @@ Token any():{Token t;}
 	{return t;}
 }
 
- 
+//DO NOT put <DO> in condition, otherwise loop will not start
+Token anyCondition():{Token t;}
+{
+	(t = <ENDWHILE> | t = any()){return t;}
+}
+
+//DO NOT put <ENDWHILE> in body, otherwise loop will not end
+Token anyBody():{Token t;}
+{
+	(t = <DO> | t = any()){return t;}
+}
 
 /*---------------------------------------------------------------------*/
 /* DECLARE VARIABLES
@@ -636,22 +646,25 @@ void whileLoop(Map map, Map locals):
         localVariables.put(entry.getKey(), entry.getValue());
     }
     Token t = null;
-    List<Token> list = new ArrayList<Token>();  
+    List<Token> body = new ArrayList<Token>();
+    List<Token> condition = new ArrayList<Token>(); 
 }
 {
-  	//TODO - > Store comparison expression for later
-  	<WHILE> (execute = comparison(map, localVariables) | execute = booleanExpression(map, localVariables))
+  	//Store condition
+  	<WHILE> (t = anyCondition() {condition.add(t);})*
 	<DO>
 	//Gather tokens for further processing
-	 (t = any() {list.add(t);})*
+	(t = anyBody() {body.add(t);})*
   	<ENDWHILE> 
 
 
-	//TODO - > Create a new parser and perform checkings
+	//TODO - > Create a new parser and perform checks based on condition array
+	//		   then execute body (and check again like it is done in a loop)
 	//parser2 = new parsername(new FileInputStream(path));
 	
 	{
-	  System.out.println(list);
+	  System.out.println("Condition: "+condition);
+	  System.out.println("Body: "+body);
  	}
  	
   	//Check if any of the local variables were changed
