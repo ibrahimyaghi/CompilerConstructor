@@ -124,6 +124,11 @@ TOKEN : /*ALLOWED CHARACTERS*/
 | < LETTER  : [ "a"-"z" ] > 
 }
 
+/*
+If LETTER is not below VARNAME, VARNAMEs with just 1 letter are
+treated as LETTER and result in errors
+*/
+
 TOKEN : /* SEPARATORS */
 {
   < SEMICOLON : ";" >
@@ -139,10 +144,23 @@ TOKEN : /* DATATYPES */
 | < FALSE   : "FALSE" >
 }
 
-/*
-If LETTER is not below VARNAME, VARNAMEs with just 1 letter are
-treated as LETTER and result in errors
-*/
+TOKEN : /* IF+LOOPS */
+{
+  < IF 		 : "IF" >
+| < ELSE  	 : "ELSE" >
+| < ELSEIF   : "ELSEIF" >
+| < THEN  	 : "THEN" >
+| < ENDIF  	 : "ENDIF" >
+| < WHILE    : "WHILE" >
+| < DO       : "DO" >
+| < ENDWHILE : "ENDWHILE" >
+}
+
+TOKEN : /* SPECIAL TOKENS */
+{
+  < PRINT: "PRINT" >
+}
+
 
 TOKEN: /* DATA TYPES */
 {
@@ -151,6 +169,7 @@ TOKEN: /* DATA TYPES */
 | < FLOAT_VARNAME : "F" <VARNAME> > 
 }
 
+//DO NOT put <ENDWHILE> here, otherwise loop will not end
 Token any():{Token t;}
 {
 	(
@@ -161,9 +180,17 @@ Token any():{Token t;}
 	  | t = <EQUAL> | t = <SEMICOLON>
 	  | t = "(" | t = ")"
 	  | t = <AND> | t = <OR> | t = <NOT>
+	  | t = <IF> | t = <ELSE> | t = <ELSEIF> | t = <THEN> | t = <ENDIF> 
+	  | t = <WHILE> | t = <DO>
+	  | t =	"EQB" | t = "NEQB" 
+	  | t = "EQI" | t = "NEQI" | t = "GEI" | t = "LEI" | t = "GI" | t = "LI"
+      | t = "EQF" | t = "NEQF" | t = "GEF" | t = "LEF" | t = "GF" | t = "LF"
+      | t = <PRINT>
 	)
 	{return t;}
 }
+
+ 
 
 /*---------------------------------------------------------------------*/
 /* DECLARE VARIABLES
@@ -520,15 +547,15 @@ void ifStatement(Map map, Map locals) :
 }
 { 
   	//Go into the logic
-	"IF" (execute = comparison(map, localVariables) | execute = booleanExpression(map, localVariables))
+	<IF> (execute = comparison(map, localVariables) | execute = booleanExpression(map, localVariables))
 	{done = execute; System.out.println("\nIf executed: " + execute);}
-	"THEN" (line(map, execute, localVariables))*
+	<THEN> (line(map, execute, localVariables))*
 	(
-	  "ELSEIF" (execute = comparison(map, localVariables) | execute = booleanExpression(map, localVariables))
+	  <ELSEIF> (execute = comparison(map, localVariables) | execute = booleanExpression(map, localVariables))
 	  {execute = execute && !done; done = done || execute; System.out.println("Elseif executed: " + execute);}	  
-	  "THEN" (line(map, execute, localVariables))*
+	  <THEN> (line(map, execute, localVariables))*
 	)*
-	(("ELSE" {System.out.println("Else executed: " + !done);} "THEN" (line(map, !done, localVariables))* "ENDIF") | "ENDIF")
+	((<ELSE> {System.out.println("Else executed: " + !done);} <THEN> (line(map, !done, localVariables))* <ENDIF>) | <ENDIF>)
 
 	//Check if any of the local variables were changed
 	{
@@ -548,7 +575,7 @@ void ifStatement(Map map, Map locals) :
 void print(Map map, Map local):
 {boolean a; int b; double c;}
 {
-  "PRINT(" {}(
+  <PRINT>"(" {}(
     < FLOAT_VARNAME > {
 		try {
 	  		c = (double) map.get(token.toString()); System.out.println(token.toString()+"="+c);
@@ -591,7 +618,7 @@ void print(Map map, Map local):
 			}
 		}
 	}
-  )");"
+  )")"<SEMICOLON>
 }
 
 /*---------------------------------------------------------------------*/
@@ -613,11 +640,11 @@ void whileLoop(Map map, Map locals):
 }
 {
   	//TODO - > Store comparison expression for later
-  	"WHILE" (execute = comparison(map, localVariables) | execute = booleanExpression(map, localVariables))
-	"DO"
+  	<WHILE> (execute = comparison(map, localVariables) | execute = booleanExpression(map, localVariables))
+	<DO>
 	//Gather tokens for further processing
 	 (t = any() {list.add(t);})*
-  	"ENDWHILE" 
+  	<ENDWHILE> 
 
 
 	//TODO - > Create a new parser and perform checkings
@@ -668,7 +695,6 @@ void ProcedureDeclaration(Map map, Map localvariables):
 	"ENDPROC"
 }
  
-
 /*---------------------------------------------------------------------*/
 /*FUNCTIONS START HERE*/
 /*---------------------------------------------------------------------*/

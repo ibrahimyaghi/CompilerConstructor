@@ -49,11 +49,29 @@ public interface parsernameConstants {
   /** RegularExpression Id. */
   int FALSE = 28;
   /** RegularExpression Id. */
-  int INT_VARNAME = 29;
+  int IF = 29;
   /** RegularExpression Id. */
-  int BOOL_VARNAME = 30;
+  int ELSE = 30;
   /** RegularExpression Id. */
-  int FLOAT_VARNAME = 31;
+  int ELSEIF = 31;
+  /** RegularExpression Id. */
+  int THEN = 32;
+  /** RegularExpression Id. */
+  int ENDIF = 33;
+  /** RegularExpression Id. */
+  int WHILE = 34;
+  /** RegularExpression Id. */
+  int DO = 35;
+  /** RegularExpression Id. */
+  int ENDWHILE = 36;
+  /** RegularExpression Id. */
+  int PRINT = 37;
+  /** RegularExpression Id. */
+  int INT_VARNAME = 38;
+  /** RegularExpression Id. */
+  int BOOL_VARNAME = 39;
+  /** RegularExpression Id. */
+  int FLOAT_VARNAME = 40;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -91,14 +109,20 @@ public interface parsernameConstants {
     "\"BOOLEAN\"",
     "\"TRUE\"",
     "\"FALSE\"",
+    "\"IF\"",
+    "\"ELSE\"",
+    "\"ELSEIF\"",
+    "\"THEN\"",
+    "\"ENDIF\"",
+    "\"WHILE\"",
+    "\"DO\"",
+    "\"ENDWHILE\"",
+    "\"PRINT\"",
     "<INT_VARNAME>",
     "<BOOL_VARNAME>",
     "<FLOAT_VARNAME>",
     "\"(\"",
     "\")\"",
-    "\"PROGRAM\"",
-    "\"MAIN\"",
-    "\"ENDMAIN\"",
     "\"EQB\"",
     "\"NEQB\"",
     "\"EQI\"",
@@ -113,16 +137,9 @@ public interface parsernameConstants {
     "\"LEF\"",
     "\"GF\"",
     "\"LF\"",
-    "\"IF\"",
-    "\"THEN\"",
-    "\"ELSEIF\"",
-    "\"ELSE\"",
-    "\"ENDIF\"",
-    "\"PRINT(\"",
-    "\");\"",
-    "\"WHILE\"",
-    "\"DO\"",
-    "\"ENDWHILE\"",
+    "\"PROGRAM\"",
+    "\"MAIN\"",
+    "\"ENDMAIN\"",
     "\"PROC\"",
     "\"()\"",
     "\"ENDPROC\"",
