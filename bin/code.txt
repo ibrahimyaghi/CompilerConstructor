@@ -1,0 +1,74 @@
+PROGRAM programname
+
+//A comment
+/*
+a = 1+1 Another comment
+*/
+
+INT Ia = 1;
+INT Ib = -2, Ic = -15, Id = 10;
+BOOLEAN Bb = TRUE;
+FUNC
+FLOAT Fc = -1.5, Fd = 2.0, Fe = -1.2;
+
+PROC dosth()
+Ia = 5 * Ia;
+ENDPROC
+
+PROC dosth2(FLOAT Fvar1, INT Ivar2, BOOLEAN Bvar3)
+ENDPROC
+
+MAIN
+
+INT Ix = 10;
+FLOAT Ff = 1.2;
+BOOLEAN Bc = FALSE;
+
+Fc = 5.0 * Ff;
+Ix = Ix;
+Fc = Fc;
+Bc = NOT Bc;
+
+Bc = EQB Bc Bc;
+
+Bb = EQI Ia 1;
+
+IF EQB Bb TRUE THEN
+INT Iz = 69;
+Ia = 5;
+ELSE THEN
+INT Izz = 69;
+Ia = 15;
+ENDIF
+
+IF EQB Bb FALSE THEN
+Ia = 5;
+ELSEIF TRUE THEN
+Ia = Ia+5;
+Ix = 2*Ix;
+INT Iif = 12;
+PRINT(Ix);
+ELSE THEN
+Ia = Ia+10;
+ENDIF
+
+PRINT(Ix);
+
+IF EQB Bb FALSE THEN
+Ia = 5;
+ELSEIF EQI 1 2 THEN
+Ia = 10;
+ELSE THEN
+Ia = 15;
+ENDIF
+
+Ia = Ia;
+
+
+PRINT(Ia);
+
+WHILE LT Ia 10 
+  PRINT(Ia);
+  Ia = Ia + 10;
+ENDWHILE
+ENDMAIN

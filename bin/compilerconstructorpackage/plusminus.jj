@@ -1,0 +1,641 @@
+/**
+ * JavaCC template file created by SF JavaCC plugin 1.5.28+ wizard for JavaCC 1.5.0+
+ */
+options
+{
+  static = true;
+}
+
+/*---------------------------------------------------------------------*/
+/* TO DO LIST / BUGS TO FIX 										   */
+/*-----------------------------------------------------------------------
+
+[TO DO] While statement (including local variables) - Ibrahim
+
+[TO DO] Functions (including local variables) - Amarilda
+
+[TO DO] Procedures (including local variables) - Paweł
+
+[TO DO / CHANGE] Extend printing to expression values (Variables for now) + add writing
+
+[MAYBE CHANGE] Delete ELSEIF
+
+[MAYBE CHANGE] Comparison as a part of boolean statement
+
+[MAYBE CHANGE] Operation with semicolon consistency
+
+[FIX] Figure out why we have warning in floatExpression and integerExpression 
+---------------------------------------------------------------------*/
+
+PARSER_BEGIN(parsername)
+package compilerconstructorpackage;
+import java.util.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
+public class parsername
+{
+  public static void main(String args []) throws ParseException
+  {
+	//Get current directory
+	String path = System.getProperty("user.dir");
+	path+="\\src\\code.txt";
+
+    parsername parser = null;
+	try {
+	  	//Access file with code
+	  	//Hardcoded - > THE SAME DIRECTORY AS JAVA CODE, IT HAS TO BE CALLED "code.txt" TO WORK
+		parser = new parsername(new FileInputStream(path));
+	}
+	catch (FileNotFoundException e) {
+		System.out.println("File not found. Exiting.") ;
+		System.exit(-1) ;
+	}
+
+    //If file was found, execute its contents
+    System.out.println("Reading from file!");
+    
+    try
+    {
+      	//Map for global variables
+        Map<String,Object> map=new HashMap<String,Object>();
+        //This is the entry point for our language - sth like "main"
+        parsername.multipleLines(map);
+    }
+    catch (Exception e)
+    {
+        System.out.println("Something went wrong - exception detected.");
+        System.out.println(e.getMessage());
+        System.exit(-1) ;
+    }
+    catch (Error e)
+    {
+        System.out.println("Something went wrong - error detected.");
+        System.out.println(e.getMessage());
+        System.exit(-1) ;
+    }
+
+	//Exit after successful code execution
+    System.out.println("Terminating");
+  }
+}
+
+PARSER_END(parsername)
+
+//C-type comments with 2 options - one line or multiline
+SKIP :
+{
+  < "//" (~["\r", "\n"])* >
+| < "/*" > : COMMENT_STATE
+}
+
+//Comment state where everything is skipped until the "*/" sign is encountered
+<COMMENT_STATE> SKIP :
+{
+  < "*/" > : DEFAULT
+| < ~[] >   
+}
+
+SKIP :
+{
+  " "
+| "\r"
+| "\t"
+| "\n"
+}
+
+TOKEN : /* OPERATORS */
+{
+  < PLUS     : "+" >
+| < MINUS    : "-" >
+| < MULTIPLY : "*" >
+| < DIVIDE   : "/" >
+}
+
+TOKEN :
+{
+  < INTEGER : (< DIGIT >)+ >
+| < FLOAT   : (< DIGIT >)+"."(< DIGIT >)+>
+| < #DIGIT  : [ "0"-"9" ] >
+| < VARNAME : < LETTER >(< LETTER >|< DIGIT >)* >
+| < LETTER  : [ "a"-"z" ] > 
+}
+
+TOKEN: { < WHILE: "WHILE" > }
+
+
+
+/*
+If LETTER is not below VARNAME, VARNAMEs with just 1 letter are
+treated as LETTER and result in errors
+*/
+
+TOKEN: /* DATA TYPES */
+{
+  < INT_VARNAME   : "I" <VARNAME> > 
+| < BOOL_VARNAME  : "B" <VARNAME> > 
+| < FLOAT_VARNAME : "F" <VARNAME> > 
+}
+
+/*---------------------------------------------------------------------*/
+/* DECLARE VARIABLES
+/* We allow only simple initializations by values
+/* No statements allowed here
+/* We do not allow initialization of the same variable twice 
+/*---------------------------------------------------------------------*/
+
+void declareINT(Map map, boolean execute, Map globals):
+{String a;}
+{
+    "INT" < INT_VARNAME > {a = token.toString();} "="
+    (
+    <INTEGER> { if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+      			if(execute){map.put(a, Integer.parseInt(token.image));}} |
+	<MINUS> <INTEGER> { if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+      			if(execute){map.put(a, -1*Integer.parseInt(token.image));}} 
+    )
+	(","  < INT_VARNAME > {a = token.toString();} "="
+		( 
+    		<INTEGER> { if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+      			if(execute){map.put(a, Integer.parseInt(token.image));}}|
+			<MINUS> <INTEGER> { if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+      			if(execute){map.put(a, -1*Integer.parseInt(token.image));}} 
+		)
+	)* ";"
+}
+
+void declareBOOL(Map map, boolean execute, Map globals):
+{String a;}
+{
+  "BOOLEAN" < BOOL_VARNAME > {a = token.toString();} "="
+  ("TRUE" | "FALSE") {  if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+    					if(execute){map.put(a, Boolean.parseBoolean(token.image)); }}
+  ("," 		< BOOL_VARNAME > {a = token.toString();} "="
+  ("TRUE" | "FALSE") {  if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+    					if(execute){map.put(a, Boolean.parseBoolean(token.image));}})* ";"
+}
+
+void declareFLOAT(Map map, boolean execute, Map globals):
+{String a;}
+{
+  "FLOAT" < FLOAT_VARNAME > {a = token.toString();} "="
+  (
+    <FLOAT> { if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+    		if(execute){map.put(a, Double.parseDouble(token.image));}} |
+	<MINUS> <FLOAT> { if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+    		if(execute){map.put(a, -1*Double.parseDouble(token.image));}} 
+  )
+  (","    < FLOAT_VARNAME > {a = token.toString();} "="
+  	(
+    	<FLOAT> { if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+    		if(execute){map.put(a, Double.parseDouble(token.image));}} |
+  		<MINUS> <FLOAT> { if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+    		if(execute){map.put(a, -1*Double.parseDouble(token.image));}}
+  	)
+  )* ";"
+}
+
+/*---------------------------------------------------------------------*/
+/* SINGLE/MULTIPLE LINES STATS HERE*/
+/*---------------------------------------------------------------------*/
+
+void multipleLines(Map map):
+{boolean a, execute = true; int b; Map<String,Object> mainLocal = new HashMap<String,Object>();}
+{
+  //Arbitrary name for the program
+  "PROGRAM" <VARNAME>
+  
+  //Then declaration of global variables and functions
+  (	  IntegerFunction(map)
+  		{System.out.println("Integer function recognized");}
+ 	| ProcedureDeclaration(map, map)
+ 		{System.out.println("Procedure recognized");}
+  	| declareINT(map, execute, map)
+  		{System.out.println("Global variable(s) declared: " + execute);}
+	| declareFLOAT(map, execute, map)
+		{System.out.println("Global variable(s) declared: " + execute);}
+	| declareBOOL(map, execute, map)
+		{System.out.println("Global variable(s) declared: " + execute);}
+  )*
+  
+  //MAIN procedure
+  {System.out.println("\nEntering main");}
+  "MAIN" (line(map, true, mainLocal))* "ENDMAIN"
+  	{System.out.println("Exiting main\n") ;return;}
+}
+
+void line(Map map, boolean execute, Map local) :
+{boolean a; int b; double c; Token s;}
+{
+/*	Boolean value can be return either by boolean statement
+	or by any type of comparison, so we basically allow sth like:
+	Bb = EQB TRUE FALSE; 											*/
+
+  
+  LOOKAHEAD(3)
+  s = < BOOL_VARNAME > "=" (a = booleanExpression(map, local) | a = comparison(map, local)) ";" 
+  {
+    if(!execute){return;}
+    if(!map.containsKey(s.toString())){
+    	if(!local.containsKey(s.toString()))
+    	{System.out.println("Left operand not declared. Exiting.."); System.exit(-1);}
+    	else {
+			local.replace(s.toString(), a);
+    	}
+ 	}else{  
+    	map.replace(s.toString(), a);
+    }
+    System.out.println("Result: " + a);
+    return;
+  }
+| LOOKAHEAD(3)
+  s = < INT_VARNAME > "=" b = integerExpression(map, local) ";" 
+  {
+    if(!execute){return;}
+    if(!map.containsKey(s.toString())){
+    	if(!local.containsKey(s.toString()))
+    	{System.out.println("Left operand not declared. Exiting.."); System.exit(-1);}
+    	else {
+			local.replace(s.toString(), b);
+    	}
+ 	}else{  
+    	map.replace(s.toString(), b);
+    }
+    System.out.println("Result: " + b);
+    return;
+  }
+| s = < FLOAT_VARNAME > "=" c = floatExpression(map, local) ";" 
+  {
+    if(!execute){return;}
+    if(!map.containsKey(s.toString())){
+    	if(!local.containsKey(s.toString()))
+    	{System.out.println("Left operand not declared. Exiting.."); System.exit(-1);}
+    	else {
+			local.replace(s.toString(), c);
+    	}
+ 	}else{  
+    	map.replace(s.toString(), c);
+    }
+    System.out.println("Result: " + c);
+    return;
+  }
+
+| declareINT(local, execute, map)   	{System.out.println("Local variable(s) declared: " + execute); return;}
+| declareFLOAT(local, execute, map) 	{System.out.println("Local variable(s) declared: " + execute); return;}
+| declareBOOL(local, execute, map)  	{System.out.println("Local variable(s) declared: " + execute); return;}
+
+| ifStatement(map, local)				{System.out.println("End of IF statement\n"); return;}
+| whileLoop(map, local)				{System.out.println("End of while loop\n"); return;}
+| print(map, local)						{return;}
+}
+
+/*---------------------------------------------------------------------*/
+/*INTEGER ARITHMETIC STATS HERE*/
+/*---------------------------------------------------------------------*/
+
+int integerExpression(Map map, Map local) :
+{int a, b;}
+{
+  a = aterm(map, local)
+  ( < PLUS >   b = aterm(map, local) {a += b; } | < MINUS >  b = aterm(map, local) {a -= b; } )*
+  {return a; }
+}
+
+int aterm(Map map, Map local) :
+{int a, b;}
+{
+  a = asubterm(map, local)
+  ( < MULTIPLY > b = asubterm(map, local) {a *= b; }| < DIVIDE > b = asubterm(map, local) {a /= b; } )*
+  {return a; }
+}
+
+int asubterm(Map map, Map local) :
+{int a;}
+{
+  < MINUS > a = abase(map, local) {return -a;} | a = abase(map, local) {return a;}
+}
+
+int abase(Map map, Map local) :
+{int a;}
+{
+  (
+    < INTEGER > {a = Integer.parseInt(token.image);} | "(" a=integerExpression(map, local) ")"
+  | < INT_VARNAME > { a = 1;
+		try {
+	  		a = (Integer) map.get(token.toString());
+		}
+		catch(Exception e) {
+			try {
+	  			System.out.println("Checking local variables.");
+	  			a = (Integer) local.get(token.toString());
+			}
+			catch(Exception f) {
+				System.out.println("Variable not declared. Exiting.."); System.exit(-1);
+			}
+		}
+	}
+  ){return a;}
+}
+
+/*---------------------------------------------------------------------*/
+/*BOOLEAN ARITHMETIC STATS HERE*/
+/*---------------------------------------------------------------------*/
+
+boolean booleanExpression(Map map, Map local) :
+{boolean a,b;}
+{
+  a = bterm(map, local)
+  ( "OR"  b = bterm(map, local) {a = a || b; } )*
+  { return a;}
+}
+
+boolean bterm(Map map, Map local) :
+{boolean a, b;}
+{
+  a = bsubterm(map, local)
+  ( "AND" b = bsubterm(map, local) {a = a && b;} )*
+  {return a;}
+}
+
+boolean bsubterm(Map map, Map local) :
+{boolean a;}
+{
+  "NOT" a = bbase(map, local) {return !a;} | a = bbase(map, local) {return a;}
+}
+
+boolean bbase(Map map, Map local) :
+{boolean a;}
+{
+  (
+  "TRUE" {a = Boolean.parseBoolean(token.image);} |
+  "FALSE" {a = Boolean.parseBoolean(token.image);} |
+  "(" a=booleanExpression(map, local) ")" |
+  < BOOL_VARNAME > { a = true;
+		try {
+	  		a = (Boolean) map.get(token.toString());
+		}
+		catch(Exception e) {
+		  	try {
+	  			System.out.println("Checking local variables.");
+	  			a = (Boolean) local.get(token.toString());
+			}
+			catch(Exception f) {
+				System.out.println("Variable not declared. Exiting.."); System.exit(-1);
+			}
+		}
+	}
+  ){return a;}
+}
+
+/*---------------------------------------------------------------------*/
+/*FLOAT ARITHMETIC STATS HERE*/
+/*---------------------------------------------------------------------*/
+
+double floatExpression(Map map, Map local) :
+{double a, b;}
+{
+  a = fterm(map, local)
+  ( < PLUS >   b = fterm(map, local) {a += b; } | < MINUS >  b = fterm(map, local) {a -= b; } )*
+  {return a;}
+}
+
+double fterm(Map map, Map local) :
+{double a, b;}
+{
+  a = fsubterm(map, local)
+  ( < MULTIPLY > b = fsubterm(map, local) {a *= b; }| < DIVIDE > b = fsubterm(map, local) {a /= b; } )*
+  {return a;}
+}
+
+double fsubterm(Map map, Map local) :
+{double a;}
+{
+  < MINUS > a = fbase(map, local) {return -a;} | a = fbase(map, local) {return a;}
+}
+
+double fbase(Map map, Map local) :
+{double a;}
+{
+  (
+    < FLOAT > {a = Double.parseDouble(token.image);} | "(" a=floatExpression(map, local) ")"
+  | < FLOAT_VARNAME >{ a = 1.0;
+		try {
+	  		a = (double) map.get(token.toString());
+		}
+		catch(Exception e) {
+		  	try {
+	  			System.out.println("Checking local variables.");
+	  			a = (double) local.get(token.toString());
+			}
+			catch(Exception f) {
+				System.out.println("Variable not declared. Exiting.."); System.exit(-1);
+			}
+		}
+	}
+  )
+  {return a;}
+}
+
+/*---------------------------------------------------------------------*/
+/*COMPARISON STATEMENTS STATS HERE*/
+/*---------------------------------------------------------------------*/
+
+boolean comparison(Map map, Map local) :
+{boolean a;}
+{
+	(a = booleanComparison(map, local) | a = integerComparison(map, local) | a = floatComparison(map, local))
+	{return a;}
+}
+
+boolean booleanComparison(Map map, Map local) :
+{boolean a, b;}
+{
+	"EQB"  a = booleanExpression(map, local) b = booleanExpression(map, local) {return a == b;}
+|	"NEQB" a = booleanExpression(map, local) b = booleanExpression(map, local) {return a != b;} 
+}
+
+boolean integerComparison(Map map, Map local) :
+{int a, b;}
+{
+	"EQI"  a = integerExpression(map, local) b = integerExpression(map, local) {return a == b;}
+|	"NEQI" a = integerExpression(map, local) b = integerExpression(map, local) {return a != b;}
+|	"GEI"  a = integerExpression(map, local) b = integerExpression(map, local) {return a >= b;}
+|	"LEI"  a = integerExpression(map, local) b = integerExpression(map, local) {return a <= b;}
+|	"GI"   a = integerExpression(map, local) b = integerExpression(map, local) {return a > b;}
+|	"LI"   a = integerExpression(map, local) b = integerExpression(map, local) {return a < b;}
+}
+
+boolean floatComparison(Map map, Map local) :
+{double a, b;}
+{
+	"EQF"  a = floatExpression(map, local) b = floatExpression(map, local) {return a == b;}
+|	"NEQF" a = floatExpression(map, local) b = floatExpression(map, local) {return a != b;}
+|	"GEF"  a = floatExpression(map, local) b = floatExpression(map, local) {return a >= b;}
+|	"LEF"  a = floatExpression(map, local) b = floatExpression(map, local) {return a <= b;}
+|	"GF"   a = floatExpression(map, local) b = floatExpression(map, local) {return a > b;}
+|	"LF"   a = floatExpression(map, local) b = floatExpression(map, local) {return a < b;}
+}
+
+/*---------------------------------------------------------------------*/
+/*IF STATEMENT STARTS HERE*/
+/*---------------------------------------------------------------------*/
+
+void ifStatement(Map map, Map locals) :
+{
+ 	boolean execute = false; boolean done = false;
+	Map<String,Object> localVariables = new HashMap<String,Object>();
+	
+	//Perform a deep copy of local variables
+  	Iterator<Map.Entry<String, Object>> iterator = locals.entrySet().iterator();
+    while (iterator.hasNext()) {
+        Map.Entry<String, Object> entry = iterator.next();
+        localVariables.put(entry.getKey(), entry.getValue());
+    }
+}
+{ 
+  	//Go into the logic
+	"IF" (execute = comparison(map, localVariables) | execute = booleanExpression(map, localVariables))
+	{done = execute; System.out.println("\nIf executed: " + execute);}
+	"THEN" (line(map, execute, localVariables))*
+	(
+	  "ELSEIF" (execute = comparison(map, localVariables) | execute = booleanExpression(map, localVariables))
+	  {execute = execute && !done; done = done || execute; System.out.println("Elseif executed: " + execute);}	  
+	  "THEN" (line(map, execute, localVariables))*
+	)*
+	(("ELSE" {System.out.println("Else executed: " + !done);} "THEN" (line(map, !done, localVariables))* "ENDIF") | "ENDIF")
+
+	//Check if any of the local variables were changed
+	{
+		Iterator<Map.Entry<String, Object>> iterator2 = locals.entrySet().iterator();
+	    while (iterator2.hasNext()) {
+	      	Map.Entry<String, Object> entry = iterator2.next();
+	      	if(entry.getValue() != localVariables.get(entry.getKey())) {
+				locals.put(entry.getKey(), localVariables.get(entry.getKey()));
+	      	}
+    	}
+	}
+	
+}
+
+/*---------------------------------------------------------------------*/
+/*PRINT FUNCTION STARTS HERE*/
+/*---------------------------------------------------------------------*/
+void print(Map map, Map local):
+{boolean a; int b; double c;}
+{
+  "PRINT(" {}(
+    < FLOAT_VARNAME > {
+		try {
+	  		c = (double) map.get(token.toString()); System.out.println(token.toString()+"="+c);
+		}
+		catch(Exception e) {
+		  	try {
+	  			System.out.println("Checking local variables.");
+	  			c = (double) local.get(token.toString()); System.out.println(token.toString()+"="+c);
+			}
+			catch(Exception f) {
+				System.out.println("Variable not declared. Cannot print. Exiting.."); System.exit(-1);
+			}
+		}
+	}
+  | < BOOL_VARNAME >  {
+    	try {
+	  		a = (Boolean) map.get(token.toString()); System.out.println(token.toString()+"="+a);
+		}
+		catch(Exception e) {
+		  	try {
+	  			System.out.println("Checking local variables.");
+	  			a = (Boolean) local.get(token.toString()); System.out.println(token.toString()+"="+a);
+			}
+			catch(Exception f) {
+				System.out.println("Variable not declared. Cannot print. Exiting.."); System.exit(-1);
+			}
+		}
+	}
+  | < INT_VARNAME >   {
+		try {
+	  		b = (Integer) map.get(token.toString()); System.out.println(token.toString()+"="+b);
+		}
+		catch(Exception e) {
+		  	try {
+	  			System.out.println("Checking local variables.");
+	  			b = (Integer) local.get(token.toString()); System.out.println(token.toString()+"="+b);
+			}
+			catch(Exception f) {
+				System.out.println("Variable not declared. Cannot print. Exiting.."); System.exit(-1);
+			}
+		}
+	}
+  )");"
+}
+
+/*---------------------------------------------------------------------*/
+/*PROCEDURE START HERE*/
+/*---------------------------------------------------------------------*/
+void ProcedureDeclaration(Map map, Map localvariables):
+{
+  	Map<String,Object> localVariables = new HashMap<String,Object>();
+	Token s;
+}
+{
+	"PROC" s = <VARNAME>
+	{
+	  	//Look for name collisions
+	  	if(map.containsKey(s.toString())){
+			System.out.println("Function/Procedure/Variable with this name has already been defined"); System.exit(-1);
+		}
+	}
+	(
+	  	(
+	  		"(" (("INT" < INT_VARNAME >) | ("FLOAT" < FLOAT_VARNAME >) | ("BOOLEAN" < BOOL_VARNAME >)) 
+		)
+		(
+	  		"," (("INT" < INT_VARNAME >) | ("FLOAT" < FLOAT_VARNAME >) | ("BOOLEAN" < BOOL_VARNAME >))
+		)* ")"
+		| "()"
+	)
+	//SAVE THOSE INSTRUCTIONS SOMEWHERE TO EXECUTE LATER
+	//ADD LOCAL VARIABLE ASSIGNMENT - > VARIABLE PASSED AS FUNCTION PARAMETERS
+	(line(map, false, localVariables))*
+	"ENDPROC"
+}
+
+void whileLoop(Map map, Map locals) :
+{
+  	Map<String,Object> localVariables = new HashMap<String,Object>();
+  	boolean execute = false;
+}
+{
+	"WHILE" (execute = comparison(map, localVariables) | execute = booleanExpression(map, localVariables))
+	{
+	  	while(execute) {
+	  		line(map, execute, localVariables);
+	  		execute = comparison(map, localVariables) | booleanExpression(map, localVariables);
+	  		// Check if any local variables were changed
+	  		Iterator<Map.Entry<String, Object>> iterator = locals.entrySet().iterator();
+			while (iterator.hasNext()) {
+				Map.Entry<String, Object> entry = iterator.next();
+				if (entry.getValue() != localVariables.get(entry.getKey())) {
+					locals.put(entry.getKey(), localVariables.get(entry.getKey()));
+				}
+			}
+	  	}
+	}
+	"ENDWHILE"
+}
+
+
+
+
+ 
+
+/*---------------------------------------------------------------------*/
+/*FUNCTIONS START HERE*/
+/*---------------------------------------------------------------------*/
+
+//TO BE DONE
+int IntegerFunction(Map map):
+{}
+{
+	"FUNC" {return 0;}
+}
