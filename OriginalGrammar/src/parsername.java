@@ -78,14 +78,41 @@ public class parsername implements parsernameConstants {
     case DIVIDE:
       t = jj_consume_token(DIVIDE);
       break;
-    case 21:
-      t = jj_consume_token(21);
+    case INT:
+      t = jj_consume_token(INT);
       break;
-    case 22:
-      t = jj_consume_token(22);
+    case DOUBLE:
+      t = jj_consume_token(DOUBLE);
       break;
-    case 23:
-      t = jj_consume_token(23);
+    case BOOLEAN:
+      t = jj_consume_token(BOOLEAN);
+      break;
+    case TRUE:
+      t = jj_consume_token(TRUE);
+      break;
+    case FALSE:
+      t = jj_consume_token(FALSE);
+      break;
+    case EQUAL:
+      t = jj_consume_token(EQUAL);
+      break;
+    case SEMICOLON:
+      t = jj_consume_token(SEMICOLON);
+      break;
+    case 32:
+      t = jj_consume_token(32);
+      break;
+    case 33:
+      t = jj_consume_token(33);
+      break;
+    case AND:
+      t = jj_consume_token(AND);
+      break;
+    case OR:
+      t = jj_consume_token(OR);
+      break;
+    case NOT:
+      t = jj_consume_token(NOT);
       break;
     default:
       jj_la1[0] = jj_gen;
@@ -104,10 +131,10 @@ public class parsername implements parsernameConstants {
 /*---------------------------------------------------------------------*/
   static final public void declareINT(Map map, boolean execute, Map globals) throws ParseException {
  String a;
-    jj_consume_token(21);
+    jj_consume_token(INT);
     jj_consume_token(INT_VARNAME);
                            a = token.toString();
-    jj_consume_token(22);
+    jj_consume_token(EQUAL);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case INTEGER:
       jj_consume_token(INTEGER);
@@ -128,17 +155,17 @@ public class parsername implements parsernameConstants {
     label_1:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 24:
+      case COMMA:
         ;
         break;
       default:
         jj_la1[2] = jj_gen;
         break label_1;
       }
-      jj_consume_token(24);
+      jj_consume_token(COMMA);
       jj_consume_token(INT_VARNAME);
-                               a = token.toString();
-      jj_consume_token(22);
+                                   a = token.toString();
+      jj_consume_token(EQUAL);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case INTEGER:
         jj_consume_token(INTEGER);
@@ -157,21 +184,21 @@ public class parsername implements parsernameConstants {
         throw new ParseException();
       }
     }
-    jj_consume_token(23);
+    jj_consume_token(SEMICOLON);
   }
 
   static final public void declareBOOL(Map map, boolean execute, Map globals) throws ParseException {
  String a;
-    jj_consume_token(25);
+    jj_consume_token(BOOLEAN);
     jj_consume_token(BOOL_VARNAME);
                               a = token.toString();
-    jj_consume_token(22);
+    jj_consume_token(EQUAL);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case 26:
-      jj_consume_token(26);
+    case TRUE:
+      jj_consume_token(TRUE);
       break;
-    case 27:
-      jj_consume_token(27);
+    case FALSE:
+      jj_consume_token(FALSE);
       break;
     default:
       jj_la1[4] = jj_gen;
@@ -183,23 +210,23 @@ public class parsername implements parsernameConstants {
     label_2:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 24:
+      case COMMA:
         ;
         break;
       default:
         jj_la1[5] = jj_gen;
         break label_2;
       }
-      jj_consume_token(24);
+      jj_consume_token(COMMA);
       jj_consume_token(BOOL_VARNAME);
-                                  a = token.toString();
-      jj_consume_token(22);
+                              a = token.toString();
+      jj_consume_token(EQUAL);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 26:
-        jj_consume_token(26);
+      case TRUE:
+        jj_consume_token(TRUE);
         break;
-      case 27:
-        jj_consume_token(27);
+      case FALSE:
+        jj_consume_token(FALSE);
         break;
       default:
         jj_la1[6] = jj_gen;
@@ -209,15 +236,15 @@ public class parsername implements parsernameConstants {
                         if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
                                         if(execute){map.put(a, Boolean.parseBoolean(token.image));}
     }
-    jj_consume_token(23);
+    jj_consume_token(SEMICOLON);
   }
 
   static final public void declareFLOAT(Map map, boolean execute, Map globals) throws ParseException {
  String a;
-    jj_consume_token(28);
+    jj_consume_token(DOUBLE);
     jj_consume_token(FLOAT_VARNAME);
-                             a = token.toString();
-    jj_consume_token(22);
+                              a = token.toString();
+    jj_consume_token(EQUAL);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case FLOAT:
       jj_consume_token(FLOAT);
@@ -238,17 +265,17 @@ public class parsername implements parsernameConstants {
     label_3:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 24:
+      case COMMA:
         ;
         break;
       default:
         jj_la1[8] = jj_gen;
         break label_3;
       }
-      jj_consume_token(24);
+      jj_consume_token(COMMA);
       jj_consume_token(FLOAT_VARNAME);
-                             a = token.toString();
-      jj_consume_token(22);
+                              a = token.toString();
+      jj_consume_token(EQUAL);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case FLOAT:
         jj_consume_token(FLOAT);
@@ -267,7 +294,7 @@ public class parsername implements parsernameConstants {
         throw new ParseException();
       }
     }
-    jj_consume_token(23);
+    jj_consume_token(SEMICOLON);
   }
 
 /*---------------------------------------------------------------------*/
@@ -275,14 +302,14 @@ public class parsername implements parsernameConstants {
 /*---------------------------------------------------------------------*/
   static final public void multipleLines(Map map) throws ParseException {
  boolean a, execute = true; int b; Map<String,Object> mainLocal = new HashMap<String,Object>();
-    jj_consume_token(29);
+    jj_consume_token(34);
     jj_consume_token(VARNAME);
     label_4:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 21:
-      case 25:
-      case 28:
+      case INT:
+      case DOUBLE:
+      case BOOLEAN:
       case 61:
       case 64:
         ;
@@ -300,15 +327,15 @@ public class parsername implements parsernameConstants {
         ProcedureDeclaration(map, map);
                  System.out.println("Procedure recognized");
         break;
-      case 21:
+      case INT:
         declareINT(map, execute, map);
                  System.out.println("Global variable(s) declared: " + execute);
         break;
-      case 28:
+      case DOUBLE:
         declareFLOAT(map, execute, map);
                  System.out.println("Global variable(s) declared: " + execute);
         break;
-      case 25:
+      case BOOLEAN:
         declareBOOL(map, execute, map);
                  System.out.println("Global variable(s) declared: " + execute);
         break;
@@ -319,16 +346,16 @@ public class parsername implements parsernameConstants {
       }
     }
    System.out.println("\u005cnEntering main");
-    jj_consume_token(30);
+    jj_consume_token(35);
     label_5:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case INT:
+      case DOUBLE:
+      case BOOLEAN:
       case INT_VARNAME:
       case BOOL_VARNAME:
       case FLOAT_VARNAME:
-      case 21:
-      case 25:
-      case 28:
       case 51:
       case 56:
       case 58:
@@ -340,7 +367,7 @@ public class parsername implements parsernameConstants {
       }
       line(map, true, mainLocal);
     }
-    jj_consume_token(31);
+    jj_consume_token(36);
          System.out.println("Exiting main\u005cn") ;{if (true) return;}
   }
 
@@ -348,13 +375,13 @@ public class parsername implements parsernameConstants {
  boolean a; int b; double c; Token s;
     if (jj_2_1(3)) {
       s = jj_consume_token(BOOL_VARNAME);
-      jj_consume_token(22);
+      jj_consume_token(EQUAL);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case NOT:
+      case TRUE:
+      case FALSE:
       case BOOL_VARNAME:
-      case 26:
-      case 27:
       case 32:
-      case 36:
         a = booleanExpression(map, local);
         break;
       case 37:
@@ -378,7 +405,7 @@ public class parsername implements parsernameConstants {
         jj_consume_token(-1);
         throw new ParseException();
       }
-      jj_consume_token(23);
+      jj_consume_token(SEMICOLON);
     if(!execute){{if (true) return;}}
     if(!map.containsKey(s.toString())){
         if(!local.containsKey(s.toString()))
@@ -393,9 +420,9 @@ public class parsername implements parsernameConstants {
     {if (true) return;}
     } else if (jj_2_2(3)) {
       s = jj_consume_token(INT_VARNAME);
-      jj_consume_token(22);
+      jj_consume_token(EQUAL);
       b = integerExpression(map, local);
-      jj_consume_token(23);
+      jj_consume_token(SEMICOLON);
     if(!execute){{if (true) return;}}
     if(!map.containsKey(s.toString())){
         if(!local.containsKey(s.toString()))
@@ -412,9 +439,9 @@ public class parsername implements parsernameConstants {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case FLOAT_VARNAME:
         s = jj_consume_token(FLOAT_VARNAME);
-        jj_consume_token(22);
+        jj_consume_token(EQUAL);
         c = floatExpression(map, local);
-        jj_consume_token(23);
+        jj_consume_token(SEMICOLON);
     if(!execute){{if (true) return;}}
     if(!map.containsKey(s.toString())){
         if(!local.containsKey(s.toString()))
@@ -428,15 +455,15 @@ public class parsername implements parsernameConstants {
     System.out.println("Result: " + c);
     {if (true) return;}
         break;
-      case 21:
+      case INT:
         declareINT(local, execute, map);
                                          System.out.println("Local variable(s) declared: " + execute); {if (true) return;}
         break;
-      case 28:
+      case DOUBLE:
         declareFLOAT(local, execute, map);
                                          System.out.println("Local variable(s) declared: " + execute); {if (true) return;}
         break;
-      case 25:
+      case BOOLEAN:
         declareBOOL(local, execute, map);
                                          System.out.println("Local variable(s) declared: " + execute); {if (true) return;}
         break;
@@ -601,14 +628,14 @@ public class parsername implements parsernameConstants {
     label_8:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 34:
+      case OR:
         ;
         break;
       default:
         jj_la1[21] = jj_gen;
         break label_8;
       }
-      jj_consume_token(34);
+      jj_consume_token(OR);
       b = bterm(map, local);
                                  a = a || b;
     }
@@ -622,14 +649,14 @@ public class parsername implements parsernameConstants {
     label_9:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 35:
+      case AND:
         ;
         break;
       default:
         jj_la1[22] = jj_gen;
         break label_9;
       }
-      jj_consume_token(35);
+      jj_consume_token(AND);
       b = bsubterm(map, local);
                                     a = a && b;
     }
@@ -640,14 +667,14 @@ public class parsername implements parsernameConstants {
   static final public boolean bsubterm(Map map, Map local) throws ParseException {
  boolean a;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case 36:
-      jj_consume_token(36);
+    case NOT:
+      jj_consume_token(NOT);
       a = bbase(map, local);
                                {if (true) return !a;}
       break;
+    case TRUE:
+    case FALSE:
     case BOOL_VARNAME:
-    case 26:
-    case 27:
     case 32:
       a = bbase(map, local);
                                                                     {if (true) return a;}
@@ -663,12 +690,12 @@ public class parsername implements parsernameConstants {
   static final public boolean bbase(Map map, Map local) throws ParseException {
  boolean a;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case 26:
-      jj_consume_token(26);
+    case TRUE:
+      jj_consume_token(TRUE);
           a = Boolean.parseBoolean(token.image);
       break;
-    case 27:
-      jj_consume_token(27);
+    case FALSE:
+      jj_consume_token(FALSE);
            a = Boolean.parseBoolean(token.image);
       break;
     case 32:
@@ -1016,11 +1043,11 @@ public class parsername implements parsernameConstants {
     case 50:
       execute = comparison(map, localVariables);
       break;
+    case NOT:
+    case TRUE:
+    case FALSE:
     case BOOL_VARNAME:
-    case 26:
-    case 27:
     case 32:
-    case 36:
       execute = booleanExpression(map, localVariables);
       break;
     default:
@@ -1033,12 +1060,12 @@ public class parsername implements parsernameConstants {
     label_12:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case INT:
+      case DOUBLE:
+      case BOOLEAN:
       case INT_VARNAME:
       case BOOL_VARNAME:
       case FLOAT_VARNAME:
-      case 21:
-      case 25:
-      case 28:
       case 51:
       case 56:
       case 58:
@@ -1078,11 +1105,11 @@ public class parsername implements parsernameConstants {
       case 50:
         execute = comparison(map, localVariables);
         break;
+      case NOT:
+      case TRUE:
+      case FALSE:
       case BOOL_VARNAME:
-      case 26:
-      case 27:
       case 32:
-      case 36:
         execute = booleanExpression(map, localVariables);
         break;
       default:
@@ -1095,12 +1122,12 @@ public class parsername implements parsernameConstants {
       label_14:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case INT:
+        case DOUBLE:
+        case BOOLEAN:
         case INT_VARNAME:
         case BOOL_VARNAME:
         case FLOAT_VARNAME:
-        case 21:
-        case 25:
-        case 28:
         case 51:
         case 56:
         case 58:
@@ -1121,12 +1148,12 @@ public class parsername implements parsernameConstants {
       label_15:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case INT:
+        case DOUBLE:
+        case BOOLEAN:
         case INT_VARNAME:
         case BOOL_VARNAME:
         case FLOAT_VARNAME:
-        case 21:
-        case 25:
-        case 28:
         case 51:
         case 56:
         case 58:
@@ -1251,11 +1278,11 @@ public class parsername implements parsernameConstants {
     case 50:
       execute = comparison(map, localVariables);
       break;
+    case NOT:
+    case TRUE:
+    case FALSE:
     case BOOL_VARNAME:
-    case 26:
-    case 27:
     case 32:
-    case 36:
       execute = booleanExpression(map, localVariables);
       break;
     default:
@@ -1271,14 +1298,23 @@ public class parsername implements parsernameConstants {
       case MINUS:
       case MULTIPLY:
       case DIVIDE:
+      case EQUAL:
+      case AND:
+      case OR:
+      case NOT:
       case INTEGER:
       case FLOAT:
+      case SEMICOLON:
+      case INT:
+      case DOUBLE:
+      case BOOLEAN:
+      case TRUE:
+      case FALSE:
       case INT_VARNAME:
       case BOOL_VARNAME:
       case FLOAT_VARNAME:
-      case 21:
-      case 22:
-      case 23:
+      case 32:
+      case 33:
         ;
         break;
       default:
@@ -1315,16 +1351,16 @@ public class parsername implements parsernameConstants {
     case 32:
       jj_consume_token(32);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 21:
-        jj_consume_token(21);
+      case INT:
+        jj_consume_token(INT);
         jj_consume_token(INT_VARNAME);
         break;
-      case 28:
-        jj_consume_token(28);
+      case DOUBLE:
+        jj_consume_token(DOUBLE);
         jj_consume_token(FLOAT_VARNAME);
         break;
-      case 25:
-        jj_consume_token(25);
+      case BOOLEAN:
+        jj_consume_token(BOOLEAN);
         jj_consume_token(BOOL_VARNAME);
         break;
       default:
@@ -1335,25 +1371,25 @@ public class parsername implements parsernameConstants {
       label_17:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case 24:
+        case COMMA:
           ;
           break;
         default:
           jj_la1[46] = jj_gen;
           break label_17;
         }
-        jj_consume_token(24);
+        jj_consume_token(COMMA);
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case 21:
-          jj_consume_token(21);
+        case INT:
+          jj_consume_token(INT);
           jj_consume_token(INT_VARNAME);
           break;
-        case 28:
-          jj_consume_token(28);
+        case DOUBLE:
+          jj_consume_token(DOUBLE);
           jj_consume_token(FLOAT_VARNAME);
           break;
-        case 25:
-          jj_consume_token(25);
+        case BOOLEAN:
+          jj_consume_token(BOOLEAN);
           jj_consume_token(BOOL_VARNAME);
           break;
         default:
@@ -1375,12 +1411,12 @@ public class parsername implements parsernameConstants {
     label_18:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case INT:
+      case DOUBLE:
+      case BOOLEAN:
       case INT_VARNAME:
       case BOOL_VARNAME:
       case FLOAT_VARNAME:
-      case 21:
-      case 25:
-      case 28:
       case 51:
       case 56:
       case 58:
@@ -1420,74 +1456,6 @@ public class parsername implements parsernameConstants {
     finally { jj_save(1, xla); }
   }
 
-  static private boolean jj_3R_39() {
-    if (jj_scan_token(38)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_31() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_38()) {
-    jj_scanpos = xsp;
-    if (jj_3R_39()) return true;
-    }
-    return false;
-  }
-
-  static private boolean jj_3R_38() {
-    if (jj_scan_token(37)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_30() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_36()) {
-    jj_scanpos = xsp;
-    if (jj_3R_37()) return true;
-    }
-    return false;
-  }
-
-  static private boolean jj_3R_36() {
-    if (jj_scan_token(36)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_35() {
-    if (jj_3R_52()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_26() {
-    if (jj_3R_31()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_19() {
-    if (jj_3R_22()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_23() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_26()) {
-    jj_scanpos = xsp;
-    if (jj_3R_27()) {
-    jj_scanpos = xsp;
-    if (jj_3R_28()) return true;
-    }
-    }
-    return false;
-  }
-
-  static private boolean jj_3R_25() {
-    if (jj_3R_30()) return true;
-    return false;
-  }
-
   static private boolean jj_3R_22() {
     if (jj_3R_25()) return true;
     return false;
@@ -1495,7 +1463,7 @@ public class parsername implements parsernameConstants {
 
   static private boolean jj_3_2() {
     if (jj_scan_token(INT_VARNAME)) return true;
-    if (jj_scan_token(22)) return true;
+    if (jj_scan_token(EQUAL)) return true;
     if (jj_3R_21()) return true;
     return false;
   }
@@ -1507,7 +1475,7 @@ public class parsername implements parsernameConstants {
 
   static private boolean jj_3_1() {
     if (jj_scan_token(BOOL_VARNAME)) return true;
-    if (jj_scan_token(22)) return true;
+    if (jj_scan_token(EQUAL)) return true;
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3R_19()) {
@@ -1565,6 +1533,11 @@ public class parsername implements parsernameConstants {
     return false;
   }
 
+  static private boolean jj_3R_20() {
+    if (jj_3R_23()) return true;
+    return false;
+  }
+
   static private boolean jj_3R_21() {
     if (jj_3R_24()) return true;
     return false;
@@ -1572,11 +1545,6 @@ public class parsername implements parsernameConstants {
 
   static private boolean jj_3R_27() {
     if (jj_3R_32()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_20() {
-    if (jj_3R_23()) return true;
     return false;
   }
 
@@ -1673,7 +1641,7 @@ public class parsername implements parsernameConstants {
   }
 
   static private boolean jj_3R_58() {
-    if (jj_scan_token(27)) return true;
+    if (jj_scan_token(FALSE)) return true;
     return false;
   }
 
@@ -1705,7 +1673,7 @@ public class parsername implements parsernameConstants {
   }
 
   static private boolean jj_3R_57() {
-    if (jj_scan_token(26)) return true;
+    if (jj_scan_token(TRUE)) return true;
     return false;
   }
 
@@ -1722,6 +1690,74 @@ public class parsername implements parsernameConstants {
     }
     }
     }
+    return false;
+  }
+
+  static private boolean jj_3R_39() {
+    if (jj_scan_token(38)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_31() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_38()) {
+    jj_scanpos = xsp;
+    if (jj_3R_39()) return true;
+    }
+    return false;
+  }
+
+  static private boolean jj_3R_38() {
+    if (jj_scan_token(37)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_30() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_36()) {
+    jj_scanpos = xsp;
+    if (jj_3R_37()) return true;
+    }
+    return false;
+  }
+
+  static private boolean jj_3R_36() {
+    if (jj_scan_token(NOT)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_35() {
+    if (jj_3R_52()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_19() {
+    if (jj_3R_22()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_26() {
+    if (jj_3R_31()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_23() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_26()) {
+    jj_scanpos = xsp;
+    if (jj_3R_27()) {
+    jj_scanpos = xsp;
+    if (jj_3R_28()) return true;
+    }
+    }
+    return false;
+  }
+
+  static private boolean jj_3R_25() {
+    if (jj_3R_30()) return true;
     return false;
   }
 
@@ -1747,10 +1783,10 @@ public class parsername implements parsernameConstants {
       jj_la1_init_2();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0xfc7e00,0x2400,0x1000000,0x2400,0xc000000,0x1000000,0xc000000,0x4400,0x1000000,0x4400,0x12200000,0x12200000,0x123c0000,0xc080000,0x12300000,0x600,0x600,0x1800,0x1800,0x42400,0x42000,0x0,0x0,0xc080000,0xc080000,0x600,0x600,0x1800,0x1800,0x104400,0x104000,0x0,0x0,0x0,0x0,0xc080000,0x123c0000,0x0,0xc080000,0x123c0000,0x123c0000,0x0,0x1c0000,0xc080000,0xfc7e00,0x12200000,0x1000000,0x12200000,0x0,0x123c0000,};
+      jj_la1_0 = new int[] {0xff47fe00,0x20400,0x800000,0x20400,0x18000000,0x800000,0x18000000,0x40400,0x800000,0x40400,0x7000000,0x7000000,0xe7000000,0x58010000,0x87000000,0x600,0x600,0x1800,0x1800,0x20020400,0x20020000,0x8000,0x4000,0x58010000,0x58000000,0x600,0x600,0x1800,0x1800,0x80040400,0x80040000,0x0,0x0,0x0,0x0,0x58010000,0xe7000000,0x0,0x58010000,0xe7000000,0xe7000000,0x0,0xe0000000,0x58010000,0xff47fe00,0x7000000,0x800000,0x7000000,0x0,0xe7000000,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x20000000,0x20000000,0x5080000,0x7fff1,0x5080000,0x0,0x0,0x0,0x0,0x1,0x1,0x4,0x8,0x11,0x1,0x0,0x0,0x0,0x0,0x1,0x1,0x7ffe0,0x60,0x1f80,0x7e000,0x7fff1,0x5080000,0x200000,0x7fff1,0x5080000,0x5080000,0xc00000,0x0,0x7fff1,0x0,0x0,0x0,0x0,0x40000001,0x5080000,};
+      jj_la1_1 = new int[] {0x3,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x20000000,0x20000000,0x5080000,0x7ffe1,0x5080000,0x0,0x0,0x0,0x0,0x1,0x1,0x0,0x0,0x1,0x1,0x0,0x0,0x0,0x0,0x1,0x1,0x7ffe0,0x60,0x1f80,0x7e000,0x7ffe1,0x5080000,0x200000,0x7ffe1,0x5080000,0x5080000,0xc00000,0x0,0x7ffe1,0x3,0x0,0x0,0x0,0x40000001,0x5080000,};
    }
    private static void jj_la1_init_2() {
       jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x1,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};

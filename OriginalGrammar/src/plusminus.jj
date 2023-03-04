@@ -109,9 +109,13 @@ TOKEN : /* OPERATORS */
 | < MINUS    : "-" >
 | < MULTIPLY : "*" >
 | < DIVIDE   : "/" >
+| < EQUAL    : "=" >
+| < AND      : "AND" >
+| < OR       : "OR" >
+| < NOT      : "NOT" >
 }
 
-TOKEN :
+TOKEN : /*ALLOWED CHARACTERS*/
 {
   < INTEGER : (< DIGIT >)+ >
 | < FLOAT   : (< DIGIT >)+"."(< DIGIT >)+>
@@ -120,6 +124,20 @@ TOKEN :
 | < LETTER  : [ "a"-"z" ] > 
 }
 
+TOKEN : /* SEPARATORS */
+{
+  < SEMICOLON : ";" >
+| < COMMA     : "," >
+}
+
+TOKEN : /* DATATYPES */
+{
+  < INT 	: "INT" >
+| < DOUBLE  : "FLOAT" >
+| < BOOLEAN : "BOOLEAN" >
+| < TRUE    : "TRUE" >
+| < FALSE   : "FALSE" >
+}
 
 /*
 If LETTER is not below VARNAME, VARNAMEs with just 1 letter are
@@ -136,13 +154,13 @@ TOKEN: /* DATA TYPES */
 Token any():{Token t;}
 {
 	(
-	  	t=<INTEGER>
-	  | t=<FLOAT>
-	  | t=<INT_VARNAME>
-	  | t=<BOOL_VARNAME>
-	  | t=<FLOAT_VARNAME>
-	  | t=<PLUS> | t=<MINUS> | t=<MULTIPLY> | t=<DIVIDE>
-	  | t = "INT" | t = "=" | t = ";"
+	  	t = <INTEGER> | t = <FLOAT>
+	  | t = <INT_VARNAME> | t = <BOOL_VARNAME> | t = <FLOAT_VARNAME>
+	  | t = <PLUS> | t = <MINUS> | t = <MULTIPLY> | t = <DIVIDE>
+	  | t = <INT> | t = <DOUBLE> | t = < BOOLEAN> | t = <TRUE> | t = <FALSE>
+	  | t = <EQUAL> | t = <SEMICOLON>
+	  | t = "(" | t = ")"
+	  | t = <AND> | t = <OR> | t = <NOT>
 	)
 	{return t;}
 }
@@ -157,50 +175,50 @@ Token any():{Token t;}
 void declareINT(Map map, boolean execute, Map globals):
 {String a;}
 {
-    "INT" < INT_VARNAME > {a = token.toString();} "="
+    <INT> < INT_VARNAME > {a = token.toString();} <EQUAL>
     (
     <INTEGER> { if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
       			if(execute){map.put(a, Integer.parseInt(token.image));}} |
 	<MINUS> <INTEGER> { if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
       			if(execute){map.put(a, -1*Integer.parseInt(token.image));}} 
     )
-	(","  < INT_VARNAME > {a = token.toString();} "="
+	(<COMMA>  < INT_VARNAME > {a = token.toString();} <EQUAL>
 		( 
     		<INTEGER> { if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
       			if(execute){map.put(a, Integer.parseInt(token.image));}}|
 			<MINUS> <INTEGER> { if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
       			if(execute){map.put(a, -1*Integer.parseInt(token.image));}} 
 		)
-	)* ";"
+	)* <SEMICOLON>
 }
 
 void declareBOOL(Map map, boolean execute, Map globals):
 {String a;}
 {
-  "BOOLEAN" < BOOL_VARNAME > {a = token.toString();} "="
-  ("TRUE" | "FALSE") {  if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+  <BOOLEAN> < BOOL_VARNAME > {a = token.toString();} <EQUAL>
+  (<TRUE> | <FALSE>) {  if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
     					if(execute){map.put(a, Boolean.parseBoolean(token.image)); }}
-  ("," 		< BOOL_VARNAME > {a = token.toString();} "="
-  ("TRUE" | "FALSE") {  if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
-    					if(execute){map.put(a, Boolean.parseBoolean(token.image));}})* ";"
+  (<COMMA>  < BOOL_VARNAME > {a = token.toString();} <EQUAL>
+  (<TRUE> | <FALSE>) {  if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+    					if(execute){map.put(a, Boolean.parseBoolean(token.image));}})* <SEMICOLON>
 }
 
 void declareFLOAT(Map map, boolean execute, Map globals):
 {String a;}
 {
-  "FLOAT" < FLOAT_VARNAME > {a = token.toString();} "="
+  <DOUBLE> < FLOAT_VARNAME > {a = token.toString();} <EQUAL>
   (    <FLOAT> { if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
     		if(execute){map.put(a, Double.parseDouble(token.image));}} |
 	<MINUS> <FLOAT> { if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
     		if(execute){map.put(a, -1*Double.parseDouble(token.image));}} 
   )
-  (","    < FLOAT_VARNAME > {a = token.toString();} "="
+  (<COMMA> < FLOAT_VARNAME > {a = token.toString();} <EQUAL>
   	(    	<FLOAT> { if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
     		if(execute){map.put(a, Double.parseDouble(token.image));}} |
   		<MINUS> <FLOAT> { if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
     		if(execute){map.put(a, -1*Double.parseDouble(token.image));}}
   	)
-  )* ";"
+  )* <SEMICOLON>
 }
 
 /*---------------------------------------------------------------------*/
@@ -241,7 +259,7 @@ void line(Map map, boolean execute, Map local) :
 
   
   LOOKAHEAD(3)
-  s = < BOOL_VARNAME > "=" (a = booleanExpression(map, local) | a = comparison(map, local)) ";" 
+  s = < BOOL_VARNAME > <EQUAL> (a = booleanExpression(map, local) | a = comparison(map, local)) <SEMICOLON> 
   {
     if(!execute){return;}
     if(!map.containsKey(s.toString())){
@@ -257,7 +275,7 @@ void line(Map map, boolean execute, Map local) :
     return;
   }
 | LOOKAHEAD(3)
-  s = < INT_VARNAME > "=" b = integerExpression(map, local) ";" 
+  s = < INT_VARNAME > <EQUAL> b = integerExpression(map, local) <SEMICOLON> 
   {
     if(!execute){return;}
     if(!map.containsKey(s.toString())){
@@ -272,7 +290,7 @@ void line(Map map, boolean execute, Map local) :
     System.out.println("Result: " + b);
     return;
   }
-| s = < FLOAT_VARNAME > "=" c = floatExpression(map, local) ";" 
+| s = < FLOAT_VARNAME > <EQUAL> c = floatExpression(map, local) <SEMICOLON> 
   {
     if(!execute){return;}
     if(!map.containsKey(s.toString())){
@@ -353,7 +371,7 @@ boolean booleanExpression(Map map, Map local) :
 {boolean a,b;}
 {
   a = bterm(map, local)
-  ( "OR"  b = bterm(map, local) {a = a || b; } )*
+  ( <OR>  b = bterm(map, local) {a = a || b; } )*
   { return a;}
 }
 
@@ -361,22 +379,22 @@ boolean bterm(Map map, Map local) :
 {boolean a, b;}
 {
   a = bsubterm(map, local)
-  ( "AND" b = bsubterm(map, local) {a = a && b;} )*
+  ( <AND> b = bsubterm(map, local) {a = a && b;} )*
   {return a;}
 }
 
 boolean bsubterm(Map map, Map local) :
 {boolean a;}
 {
-  "NOT" a = bbase(map, local) {return !a;} | a = bbase(map, local) {return a;}
+  <NOT> a = bbase(map, local) {return !a;} | a = bbase(map, local) {return a;}
 }
 
 boolean bbase(Map map, Map local) :
 {boolean a;}
 {
   (
-  "TRUE" {a = Boolean.parseBoolean(token.image);} |
-  "FALSE" {a = Boolean.parseBoolean(token.image);} |
+  <TRUE> {a = Boolean.parseBoolean(token.image);} |
+  <FALSE> {a = Boolean.parseBoolean(token.image);} |
   "(" a=booleanExpression(map, local) ")" |
   < BOOL_VARNAME > { a = true;
 		try {
@@ -637,10 +655,10 @@ void ProcedureDeclaration(Map map, Map localvariables):
 			System.out.println("Function/Procedure/Variable with this name has already been defined"); System.exit(-1);
 		}
 	}
-	(	  	(	  		"(" (("INT" < INT_VARNAME >) | ("FLOAT" < FLOAT_VARNAME >) | ("BOOLEAN" < BOOL_VARNAME >)) 
+	(	  	(	  		"(" ((<INT> < INT_VARNAME >) | (<DOUBLE> < FLOAT_VARNAME >) | (<BOOLEAN> < BOOL_VARNAME >)) 
 		)
 		(
-	  		"," (("INT" < INT_VARNAME >) | ("FLOAT" < FLOAT_VARNAME >) | ("BOOLEAN" < BOOL_VARNAME >))
+	  		<COMMA> ((<INT> < INT_VARNAME >) | (<DOUBLE> < FLOAT_VARNAME >) | (<BOOLEAN> < BOOL_VARNAME >))
 		)* ")"
 		| "()"
 	)

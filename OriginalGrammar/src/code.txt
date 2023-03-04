@@ -23,6 +23,7 @@ MAIN
 WHILE EQI 1 1
 DO
 INT Iy = 15;
+Iy = Iy + Iy;
 ENDWHILE
 
 INT Ix = 10;

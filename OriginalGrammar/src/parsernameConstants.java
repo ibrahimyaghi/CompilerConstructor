@@ -17,21 +17,43 @@ public interface parsernameConstants {
   /** RegularExpression Id. */
   int DIVIDE = 12;
   /** RegularExpression Id. */
-  int INTEGER = 13;
+  int EQUAL = 13;
   /** RegularExpression Id. */
-  int FLOAT = 14;
+  int AND = 14;
   /** RegularExpression Id. */
-  int DIGIT = 15;
+  int OR = 15;
   /** RegularExpression Id. */
-  int VARNAME = 16;
+  int NOT = 16;
   /** RegularExpression Id. */
-  int LETTER = 17;
+  int INTEGER = 17;
   /** RegularExpression Id. */
-  int INT_VARNAME = 18;
+  int FLOAT = 18;
   /** RegularExpression Id. */
-  int BOOL_VARNAME = 19;
+  int DIGIT = 19;
   /** RegularExpression Id. */
-  int FLOAT_VARNAME = 20;
+  int VARNAME = 20;
+  /** RegularExpression Id. */
+  int LETTER = 21;
+  /** RegularExpression Id. */
+  int SEMICOLON = 22;
+  /** RegularExpression Id. */
+  int COMMA = 23;
+  /** RegularExpression Id. */
+  int INT = 24;
+  /** RegularExpression Id. */
+  int DOUBLE = 25;
+  /** RegularExpression Id. */
+  int BOOLEAN = 26;
+  /** RegularExpression Id. */
+  int TRUE = 27;
+  /** RegularExpression Id. */
+  int FALSE = 28;
+  /** RegularExpression Id. */
+  int INT_VARNAME = 29;
+  /** RegularExpression Id. */
+  int BOOL_VARNAME = 30;
+  /** RegularExpression Id. */
+  int FLOAT_VARNAME = 31;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -53,30 +75,30 @@ public interface parsernameConstants {
     "\"-\"",
     "\"*\"",
     "\"/\"",
+    "\"=\"",
+    "\"AND\"",
+    "\"OR\"",
+    "\"NOT\"",
     "<INTEGER>",
     "<FLOAT>",
     "<DIGIT>",
     "<VARNAME>",
     "<LETTER>",
-    "<INT_VARNAME>",
-    "<BOOL_VARNAME>",
-    "<FLOAT_VARNAME>",
-    "\"INT\"",
-    "\"=\"",
     "\";\"",
     "\",\"",
+    "\"INT\"",
+    "\"FLOAT\"",
     "\"BOOLEAN\"",
     "\"TRUE\"",
     "\"FALSE\"",
-    "\"FLOAT\"",
+    "<INT_VARNAME>",
+    "<BOOL_VARNAME>",
+    "<FLOAT_VARNAME>",
+    "\"(\"",
+    "\")\"",
     "\"PROGRAM\"",
     "\"MAIN\"",
     "\"ENDMAIN\"",
-    "\"(\"",
-    "\")\"",
-    "\"OR\"",
-    "\"AND\"",
-    "\"NOT\"",
     "\"EQB\"",
     "\"NEQB\"",
     "\"EQI\"",
