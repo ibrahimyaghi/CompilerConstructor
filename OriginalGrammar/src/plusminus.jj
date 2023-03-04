@@ -131,8 +131,10 @@ treated as LETTER and result in errors
 
 TOKEN : /* SEPARATORS */
 {
-  < SEMICOLON : ";" >
-| < COMMA     : "," >
+  < SEMICOLON 		: ";" >
+| < COMMA     		: "," >
+| < LPARENTHESIS    : "(" >
+| < RPARENTHESIS    : ")" >
 }
 
 TOKEN : /* DATATYPES */
@@ -178,7 +180,7 @@ Token any():{Token t;}
 	  | t = <PLUS> | t = <MINUS> | t = <MULTIPLY> | t = <DIVIDE>
 	  | t = <INT> | t = <DOUBLE> | t = < BOOLEAN> | t = <TRUE> | t = <FALSE>
 	  | t = <EQUAL> | t = <SEMICOLON>
-	  | t = "(" | t = ")"
+	  | t = <LPARENTHESIS> | t = <RPARENTHESIS>
 	  | t = <AND> | t = <OR> | t = <NOT>
 	  | t = <IF> | t = <ELSE> | t = <ELSEIF> | t = <THEN> | t = <ENDIF> 
 	  | t = <WHILE>
@@ -360,7 +362,7 @@ int integerExpression(Map map, Map local) :
 {int a, b;}
 {
   a = aterm(map, local)
-  ( < PLUS >   b = aterm(map, local) {a += b; } | < MINUS >  b = aterm(map, local) {a -= b; } )*
+ ( < PLUS >  b = aterm(map, local) {a += b; } | < MINUS > b = aterm(map, local) {a -= b; })*
   {return a; }
 }
 
@@ -382,7 +384,7 @@ int abase(Map map, Map local) :
 {int a;}
 {
   (
-    < INTEGER > {a = Integer.parseInt(token.image);} | "(" a=integerExpression(map, local) ")"
+    < INTEGER > {a = Integer.parseInt(token.image);} | <LPARENTHESIS> a=integerExpression(map, local) <RPARENTHESIS>
   | < INT_VARNAME > { a = 1;
 		try {
 	  		a = (Integer) map.get(token.toString());
@@ -432,7 +434,7 @@ boolean bbase(Map map, Map local) :
   (
   <TRUE> {a = Boolean.parseBoolean(token.image);} |
   <FALSE> {a = Boolean.parseBoolean(token.image);} |
-  "(" a=booleanExpression(map, local) ")" |
+  <LPARENTHESIS> a=booleanExpression(map, local) <RPARENTHESIS> |
   < BOOL_VARNAME > { a = true;
 		try {
 	  		a = (Boolean) map.get(token.toString());
@@ -480,7 +482,7 @@ double fbase(Map map, Map local) :
 {double a;}
 {
   (
-    < FLOAT > {a = Double.parseDouble(token.image);} | "(" a=floatExpression(map, local) ")"
+    < FLOAT > {a = Double.parseDouble(token.image);} | <LPARENTHESIS> a=floatExpression(map, local) <RPARENTHESIS>
   | < FLOAT_VARNAME >{ a = 1.0;
 		try {
 	  		a = (double) map.get(token.toString());
@@ -585,7 +587,7 @@ void ifStatement(Map map, Map locals) :
 void print(Map map, Map local):
 {boolean a; int b; double c;}
 {
-  <PRINT>"(" {}(
+  <PRINT><LPARENTHESIS>(
     < FLOAT_VARNAME > {
 		try {
 	  		c = (double) map.get(token.toString()); System.out.println(token.toString()+"="+c);
@@ -628,7 +630,7 @@ void print(Map map, Map local):
 			}
 		}
 	}
-  )")"<SEMICOLON>
+  )<RPARENTHESIS><SEMICOLON>
 }
 
 /*---------------------------------------------------------------------*/
@@ -695,12 +697,12 @@ void ProcedureDeclaration(Map map, Map localvariables):
 			System.out.println("Function/Procedure/Variable with this name has already been defined"); System.exit(-1);
 		}
 	}
-	(	  	(	  		"(" ((<INT> < INT_VARNAME >) | (<DOUBLE> < FLOAT_VARNAME >) | (<BOOLEAN> < BOOL_VARNAME >)) 
+	(	LOOKAHEAD(2)	  	(		  		<LPARENTHESIS> ((<INT> < INT_VARNAME >) | (<DOUBLE> < FLOAT_VARNAME >) | (<BOOLEAN> < BOOL_VARNAME >)) 
 		)
 		(
 	  		<COMMA> ((<INT> < INT_VARNAME >) | (<DOUBLE> < FLOAT_VARNAME >) | (<BOOLEAN> < BOOL_VARNAME >))
-		)* ")"
-		| "()"
+		)* <RPARENTHESIS>
+		| <LPARENTHESIS><RPARENTHESIS>
 	)
 	//SAVE THOSE INSTRUCTIONS SOMEWHERE TO EXECUTE LATER
 	//ADD LOCAL VARIABLE ASSIGNMENT - > VARIABLE PASSED AS FUNCTION PARAMETERS

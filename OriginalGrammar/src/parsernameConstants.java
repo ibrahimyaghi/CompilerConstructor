@@ -39,39 +39,43 @@ public interface parsernameConstants {
   /** RegularExpression Id. */
   int COMMA = 23;
   /** RegularExpression Id. */
-  int INT = 24;
+  int LPARENTHESIS = 24;
   /** RegularExpression Id. */
-  int DOUBLE = 25;
+  int RPARENTHESIS = 25;
   /** RegularExpression Id. */
-  int BOOLEAN = 26;
+  int INT = 26;
   /** RegularExpression Id. */
-  int TRUE = 27;
+  int DOUBLE = 27;
   /** RegularExpression Id. */
-  int FALSE = 28;
+  int BOOLEAN = 28;
   /** RegularExpression Id. */
-  int IF = 29;
+  int TRUE = 29;
   /** RegularExpression Id. */
-  int ELSE = 30;
+  int FALSE = 30;
   /** RegularExpression Id. */
-  int ELSEIF = 31;
+  int IF = 31;
   /** RegularExpression Id. */
-  int THEN = 32;
+  int ELSE = 32;
   /** RegularExpression Id. */
-  int ENDIF = 33;
+  int ELSEIF = 33;
   /** RegularExpression Id. */
-  int WHILE = 34;
+  int THEN = 34;
   /** RegularExpression Id. */
-  int DO = 35;
+  int ENDIF = 35;
   /** RegularExpression Id. */
-  int ENDWHILE = 36;
+  int WHILE = 36;
   /** RegularExpression Id. */
-  int PRINT = 37;
+  int DO = 37;
   /** RegularExpression Id. */
-  int INT_VARNAME = 38;
+  int ENDWHILE = 38;
   /** RegularExpression Id. */
-  int BOOL_VARNAME = 39;
+  int PRINT = 39;
   /** RegularExpression Id. */
-  int FLOAT_VARNAME = 40;
+  int INT_VARNAME = 40;
+  /** RegularExpression Id. */
+  int BOOL_VARNAME = 41;
+  /** RegularExpression Id. */
+  int FLOAT_VARNAME = 42;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -104,6 +108,8 @@ public interface parsernameConstants {
     "<LETTER>",
     "\";\"",
     "\",\"",
+    "\"(\"",
+    "\")\"",
     "\"INT\"",
     "\"FLOAT\"",
     "\"BOOLEAN\"",
@@ -121,8 +127,6 @@ public interface parsernameConstants {
     "<INT_VARNAME>",
     "<BOOL_VARNAME>",
     "<FLOAT_VARNAME>",
-    "\"(\"",
-    "\")\"",
     "\"EQB\"",
     "\"NEQB\"",
     "\"EQI\"",
@@ -141,7 +145,6 @@ public interface parsernameConstants {
     "\"MAIN\"",
     "\"ENDMAIN\"",
     "\"PROC\"",
-    "\"()\"",
     "\"ENDPROC\"",
     "\"FUNC\"",
   };
