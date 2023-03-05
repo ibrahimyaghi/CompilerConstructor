@@ -22,11 +22,13 @@ MAIN
 
 INT Iy = 1;
 
-WHILE NEQI Iy 8
+WHILE NEQI Ia 16
 DO
 Iy = Iy + Iy;
+Ia = 16;
 PRINT(Iy);
 ENDWHILE
+PRINT(Iy);
 
 INT Ix = 10;
 FLOAT Ff = 1.2;
