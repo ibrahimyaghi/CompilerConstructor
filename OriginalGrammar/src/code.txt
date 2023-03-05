@@ -16,12 +16,15 @@ Ia = 5 * Ia;
 ENDPROC
 
 PROC Pdosth2(FLOAT Fvar1, INT Ivar2, BOOLEAN Bvar3)
+Ia = 5 * Ivar2;
+Fc = 2.0 * Fvar1;
 ENDPROC
 
 MAIN
 
 INT Iy = 1;
 Pdosth();
+Pdosth2(Fc, Ia, Bb);
 
 WHILE NEQI Iy 16
 DO

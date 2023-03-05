@@ -33,6 +33,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.ByteArrayInputStream;
+import java.lang.reflect.Field;
 
 public class parsername
 {
@@ -775,27 +776,48 @@ void procedureDeclaration(Map map, Map localvariables):
 	(		tmp = anyProcedure(){body.add(tmp);}
 	)*
 	{
+	  	//Save contents of the procedure
 	  	localVariables.put("BODY", body);
-	  	System.out.println(localVariables+"Procedure saved\n");
+	  	//Save procedure to the global memory
+	  	map.put(s.toString(), localVariables);
+	  	System.out.println(map.get(s.toString())+"Procedure saved\n");
 	}	
 	"ENDPROC"
 }
 
+//We only accept variables as variables in the procedure call 
 void procedureCall(Map map):
 {
   	Map<String,Object> localVariables = new HashMap<String,Object>();
 	Token tmp;
 	int parameter = 1;
+	Object data;
 }
 {
-	tmp=<PROCEDURE_VARNAME>
+	tmp=<PROCEDURE_VARNAME> {
+	  	data = map.get(tmp.toString()); System.out.println(data);
+	   	//Rewrite data as local variables
+        System.out.println(localVariables);
+	}
 	(	LOOKAHEAD(2)
 	  	(	
 	  		<LPARENTHESIS> ((tmp=<INT_VARNAME>) | (tmp=<FLOAT_VARNAME >) | (tmp=<BOOL_VARNAME>)) 
+	  		//Find the appropriate variable
+			{
+		  		for (Map.Entry<String, Object> entry : localVariables.entrySet()) {
+	        		if (entry.getValue().equals(parameter)) {
+	        		  	localVariables.put(entry.getKey(), map.get(tmp.toString()));
+			        }
+			    }
+			    parameter++;
+		  	} 
 		)
 		(
 	  		<COMMA> ((tmp=<INT_VARNAME>) | (tmp=<FLOAT_VARNAME>) | (tmp=<BOOL_VARNAME>))
-		)* <RPARENTHESIS>
+	  		{
+				
+	  		}
+		)* <RPARENTHESIS><SEMICOLON>
 		| <LPARENTHESIS><RPARENTHESIS><SEMICOLON>
 	)
 }

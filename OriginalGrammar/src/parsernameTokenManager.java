@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.ByteArrayInputStream;
+import java.lang.reflect.Field;
 
 /** Token Manager. */
 public class parsernameTokenManager implements parsernameConstants

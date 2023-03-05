@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.ByteArrayInputStream;
+import java.lang.reflect.Field;
 
 public class parsername implements parsernameConstants {
   public static void main(String args []) throws ParseException
@@ -1885,15 +1886,28 @@ public class parsername implements parsernameConstants {
       tmp = anyProcedure();
                                      body.add(tmp);
     }
+                //Save contents of the procedure
                 localVariables.put("BODY", body);
-                System.out.println(localVariables+"Procedure saved\u005cn");
+                //Save procedure to the global memory
+                map.put(s.toString(), localVariables);
+                System.out.println(map.get(s.toString())+"Procedure saved\u005cn");
     jj_consume_token(62);
   }
 
+//We only accept variables as variables in the procedure call 
   final public void procedureCall(Map map) throws ParseException {
         Map<String,Object> localVariables = new HashMap<String,Object>();
         Token tmp;
+        int parameter = 1;
+        Object data;
     tmp = jj_consume_token(PROCEDURE_VARNAME);
+                data = map.get(tmp.toString()); System.out.println(data);
+            for (Field field : data.getClass().getDeclaredFields()) {
+            field.setAccessible(true);
+            try{map.put(field.getName(), field.get(data));}
+            catch(Exception e){System.out.println("Exception in reading procedure data"); System.exit(-1);}
+        }
+        System.out.println(localVariables);
     if (jj_2_4(2)) {
       jj_consume_token(LPARENTHESIS);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1911,6 +1925,12 @@ public class parsername implements parsernameConstants {
         jj_consume_token(-1);
         throw new ParseException();
       }
+                                for (Map.Entry<String, Object> entry : localVariables.entrySet()) {
+                                if (entry.getValue().equals(parameter)) {
+                                        localVariables.put(entry.getKey(), map.get(tmp.toString()));
+                                }
+                            }
+                            parameter++;
       label_21:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1937,8 +1957,10 @@ public class parsername implements parsernameConstants {
           jj_consume_token(-1);
           throw new ParseException();
         }
+
       }
       jj_consume_token(RPARENTHESIS);
+      jj_consume_token(SEMICOLON);
     } else {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case LPARENTHESIS:
@@ -2148,6 +2170,20 @@ public class parsername implements parsernameConstants {
     return false;
   }
 
+  private boolean jj_3_4() {
+    if (jj_scan_token(LPARENTHESIS)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(40)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(42)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(41)) return true;
+    }
+    }
+    return false;
+  }
+
   private boolean jj_3R_37() {
     Token xsp;
     xsp = jj_scanpos;
@@ -2208,20 +2244,6 @@ public class parsername implements parsernameConstants {
 
   private boolean jj_3R_31() {
     if (jj_3R_36()) return true;
-    return false;
-  }
-
-  private boolean jj_3_4() {
-    if (jj_scan_token(LPARENTHESIS)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(40)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(42)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(41)) return true;
-    }
-    }
     return false;
   }
 
