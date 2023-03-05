@@ -20,9 +20,10 @@ ENDPROC
 
 MAIN
 
-WHILE EQI 1 1
+INT Iy = 1;
+
+WHILE NEQI Iy 8
 DO
-INT Iy = 15;
 Iy = Iy + Iy;
 PRINT(Iy);
 ENDWHILE

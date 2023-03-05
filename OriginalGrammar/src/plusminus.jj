@@ -3,7 +3,7 @@
  */
 options
 {
-  static = true;
+  static = false;
 }
 
 /*---------------------------------------------------------------------*/
@@ -61,7 +61,7 @@ public class parsername
       	//Map for global variables
         Map<String,Object> map=new HashMap<String,Object>();
         //This is the entry point for our language - sth like "main"
-        parsername.multipleLines(map);
+        parser.multipleLines(map);
     }
     catch (Exception e)
     {
@@ -638,6 +638,12 @@ void print(Map map, Map local):
 /*---------------------------------------------------------------------*/
 /*WHILE START HERE*/
 /*---------------------------------------------------------------------*/
+void linesInLoop(Map map, Map local):{}
+{
+	(line(map, true, local))*
+}
+
+
 void whileLoop(Map map, Map locals):
 {
   	boolean execute = false;
@@ -681,11 +687,29 @@ void whileLoop(Map map, Map locals):
 		//Convert strings into input stream
 		InputStream bodyStream = new ByteArrayInputStream(body_string.getBytes());
 		InputStream conditionStream = new ByteArrayInputStream(condition_string.getBytes());
+
+		System.out.println("Condition: "+condition_string);
+	  	System.out.println("Body: "+body_string);
 		
 		parsername parser2 = new parsername(bodyStream);
+		try
+	    {
+	      	parser2.linesInLoop(map, localVariables);
+	      	System.out.println("Loop executed");
+	    }
+	    catch (Exception e)
+	    {
+	        System.out.println("Something went wrong in a loop - exception detected.");
+	        System.out.println(e.getMessage());
+	        System.exit(-1) ;
+	    }
+	    catch (Error e)
+	    {
+	        System.out.println("Something went wrong in a loop - error detected.");
+	        System.out.println(e.getMessage());
+	        System.exit(-1) ;
+	    }
 
-	  	System.out.println("Condition: "+condition_string);
-	  	System.out.println("Body: "+body_string);
  	}
  	
   	//Check if any of the local variables were changed
