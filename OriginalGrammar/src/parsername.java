@@ -2,6 +2,8 @@
 import java.util.*;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.ByteArrayInputStream;
 
 public class parsername implements parsernameConstants {
   public static void main(String args []) throws ParseException
@@ -1571,7 +1573,11 @@ public class parsername implements parsernameConstants {
                     body_string+=body.get(i).toString();
                 }
 
-                //parsername parser2 = new parsername(body);
+                //Convert strings into input stream
+                InputStream bodyStream = new ByteArrayInputStream(body_string.getBytes());
+                InputStream conditionStream = new ByteArrayInputStream(condition_string.getBytes());
+
+                parsername parser2 = new parsername(bodyStream);
 
                 System.out.println("Condition: "+condition_string);
                 System.out.println("Body: "+body_string);
@@ -1712,11 +1718,6 @@ public class parsername implements parsernameConstants {
     try { return !jj_3_3(); }
     catch(LookaheadSuccess ls) { return true; }
     finally { jj_save(2, xla); }
-  }
-
-  static private boolean jj_3R_23() {
-    if (jj_scan_token(INT)) return true;
-    return false;
   }
 
   static private boolean jj_3R_28() {
@@ -1898,13 +1899,13 @@ public class parsername implements parsernameConstants {
     return false;
   }
 
-  static private boolean jj_3R_43() {
-    if (jj_scan_token(44)) return true;
+  static private boolean jj_3R_25() {
+    if (jj_scan_token(BOOLEAN)) return true;
     return false;
   }
 
-  static private boolean jj_3R_25() {
-    if (jj_scan_token(BOOLEAN)) return true;
+  static private boolean jj_3R_43() {
+    if (jj_scan_token(44)) return true;
     return false;
   }
 
@@ -1983,13 +1984,13 @@ public class parsername implements parsernameConstants {
     return false;
   }
 
-  static private boolean jj_3R_32() {
-    if (jj_3R_37()) return true;
+  static private boolean jj_3R_24() {
+    if (jj_scan_token(DOUBLE)) return true;
     return false;
   }
 
-  static private boolean jj_3R_24() {
-    if (jj_scan_token(DOUBLE)) return true;
+  static private boolean jj_3R_32() {
+    if (jj_3R_37()) return true;
     return false;
   }
 
@@ -2040,6 +2041,11 @@ public class parsername implements parsernameConstants {
 
   static private boolean jj_3R_38() {
     if (jj_scan_token(MINUS)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_23() {
+    if (jj_scan_token(INT)) return true;
     return false;
   }
 

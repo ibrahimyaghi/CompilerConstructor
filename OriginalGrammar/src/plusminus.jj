@@ -31,6 +31,8 @@ PARSER_BEGIN(parsername)
 import java.util.*;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.ByteArrayInputStream;
 
 public class parsername
 {
@@ -675,8 +677,12 @@ void whileLoop(Map map, Map locals):
 	  	  	body_string+=" ";
 		    body_string+=body.get(i).toString();
 		}
+
+		//Convert strings into input stream
+		InputStream bodyStream = new ByteArrayInputStream(body_string.getBytes());
+		InputStream conditionStream = new ByteArrayInputStream(condition_string.getBytes());
 		
-		//parsername parser2 = new parsername(body);
+		parsername parser2 = new parsername(bodyStream);
 
 	  	System.out.println("Condition: "+condition_string);
 	  	System.out.println("Body: "+body_string);
