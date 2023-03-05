@@ -10,7 +10,7 @@ options
 /* TO DO LIST / BUGS TO FIX 										   */
 /*-----------------------------------------------------------------------
 
-[TO DO] While statement (including local variables) - Ibrahim
+[TO DO] Nested while statement - Ibrahim
 
 [TO DO] Functions (including local variables) - Amarilda
 
@@ -201,6 +201,7 @@ Token anyCondition():{Token t;}
 }
 
 //DO NOT put <ENDWHILE> in body, otherwise loop will not end
+//Paradox is that we need <ENDWHILE> here for nested loops
 Token anyBody():{Token t;}
 {
 	(t = <DO> | t = any()){return t;}
@@ -672,9 +673,7 @@ void whileLoop(Map map, Map locals):
 	(t = anyBody() {body.add(t);})*
   	<ENDWHILE> 
 
-
-	//TODO - > Create a new parser and perform checks based on condition array
-	//		   then execute body (and check again like it is done in a loop)
+	//Perform the loop
 	{
 	  	//Convert condition and body into a string
 		String condition_string = ""; 
@@ -725,11 +724,8 @@ void whileLoop(Map map, Map locals):
 	        System.out.println(e.getMessage());
 	        System.exit(-1) ;
 	    }
-
- 	}
- 	
-  	//Check if any of the local variables were changed
-	{
+  	
+		//Check if any of the local variables were changed
 		Iterator<Map.Entry<String, Object>> iterator2 = locals.entrySet().iterator();
 	    while (iterator2.hasNext()) {
 	      	Map.Entry<String, Object> entry = iterator2.next();

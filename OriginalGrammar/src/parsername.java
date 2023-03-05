@@ -249,6 +249,7 @@ public class parsername implements parsernameConstants {
   }
 
 //DO NOT put <ENDWHILE> in body, otherwise loop will not end
+//Paradox is that we need <ENDWHILE> here for nested loops
   final public Token anyBody() throws ParseException {
                  Token t;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1806,11 +1807,6 @@ public class parsername implements parsernameConstants {
     finally { jj_save(2, xla); }
   }
 
-  private boolean jj_3R_29() {
-    if (jj_3R_34()) return true;
-    return false;
-  }
-
   private boolean jj_3R_22() {
     if (jj_3R_28()) return true;
     return false;
@@ -2137,6 +2133,11 @@ public class parsername implements parsernameConstants {
 
   private boolean jj_3R_42() {
     if (jj_3R_58()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_29() {
+    if (jj_3R_34()) return true;
     return false;
   }
 
