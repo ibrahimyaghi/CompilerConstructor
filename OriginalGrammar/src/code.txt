@@ -11,16 +11,17 @@ BOOLEAN Bb = TRUE;
 FUNC
 FLOAT Fc = -1.5, Fd = 2.0, Fe = -1.2;
 
-PROC dosth()
+PROC Pdosth()
 Ia = 5 * Ia;
 ENDPROC
 
-PROC dosth2(FLOAT Fvar1, INT Ivar2, BOOLEAN Bvar3)
+PROC Pdosth2(FLOAT Fvar1, INT Ivar2, BOOLEAN Bvar3)
 ENDPROC
 
 MAIN
 
 INT Iy = 1;
+Pdosth();
 
 WHILE NEQI Iy 16
 DO

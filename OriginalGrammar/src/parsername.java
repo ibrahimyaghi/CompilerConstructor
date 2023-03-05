@@ -134,9 +134,6 @@ public class parsername implements parsernameConstants {
     case WHILE:
       t = jj_consume_token(WHILE);
       break;
-    case 43:
-      t = jj_consume_token(43);
-      break;
     case 44:
       t = jj_consume_token(44);
       break;
@@ -175,6 +172,9 @@ public class parsername implements parsernameConstants {
       break;
     case 56:
       t = jj_consume_token(56);
+      break;
+    case 57:
+      t = jj_consume_token(57);
       break;
     case PRINT:
       t = jj_consume_token(PRINT);
@@ -223,7 +223,6 @@ public class parsername implements parsernameConstants {
     case INT_VARNAME:
     case BOOL_VARNAME:
     case FLOAT_VARNAME:
-    case 43:
     case 44:
     case 45:
     case 46:
@@ -237,6 +236,7 @@ public class parsername implements parsernameConstants {
     case 54:
     case 55:
     case 56:
+    case 57:
       t = any();
       break;
     default:
@@ -284,7 +284,6 @@ public class parsername implements parsernameConstants {
     case INT_VARNAME:
     case BOOL_VARNAME:
     case FLOAT_VARNAME:
-    case 43:
     case 44:
     case 45:
     case 46:
@@ -298,6 +297,7 @@ public class parsername implements parsernameConstants {
     case 54:
     case 55:
     case 56:
+    case 57:
       t = any();
       break;
     default:
@@ -346,7 +346,6 @@ public class parsername implements parsernameConstants {
     case INT_VARNAME:
     case BOOL_VARNAME:
     case FLOAT_VARNAME:
-    case 43:
     case 44:
     case 45:
     case 46:
@@ -360,6 +359,7 @@ public class parsername implements parsernameConstants {
     case 54:
     case 55:
     case 56:
+    case 57:
       t = any();
       break;
     default:
@@ -550,7 +550,7 @@ public class parsername implements parsernameConstants {
 /*---------------------------------------------------------------------*/
   final public void multipleLines(Map map) throws ParseException {
  boolean a, execute = true; int b; Map<String,Object> mainLocal = new HashMap<String,Object>();
-    jj_consume_token(57);
+    jj_consume_token(58);
     jj_consume_token(VARNAME);
     label_4:
     while (true) {
@@ -558,8 +558,8 @@ public class parsername implements parsernameConstants {
       case INT:
       case DOUBLE:
       case BOOLEAN:
-      case 60:
-      case 62:
+      case 61:
+      case 63:
         ;
         break;
       default:
@@ -567,12 +567,12 @@ public class parsername implements parsernameConstants {
         break label_4;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 62:
+      case 63:
         IntegerFunction(map);
                  System.out.println("Integer function recognized");
         break;
-      case 60:
-        ProcedureDeclaration(map, map);
+      case 61:
+        procedureDeclaration(map, map);
                  System.out.println("Procedure recognized");
         break;
       case INT:
@@ -594,7 +594,7 @@ public class parsername implements parsernameConstants {
       }
     }
    System.out.println("\u005cnEntering main");
-    jj_consume_token(58);
+    jj_consume_token(59);
     label_5:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -607,6 +607,7 @@ public class parsername implements parsernameConstants {
       case INT_VARNAME:
       case BOOL_VARNAME:
       case FLOAT_VARNAME:
+      case PROCEDURE_VARNAME:
         ;
         break;
       default:
@@ -615,7 +616,7 @@ public class parsername implements parsernameConstants {
       }
       line(map, true, mainLocal);
     }
-    jj_consume_token(59);
+    jj_consume_token(60);
          System.out.println("Exiting main\u005cn") ;{if (true) return;}
   }
 
@@ -632,7 +633,6 @@ public class parsername implements parsernameConstants {
       case BOOL_VARNAME:
         a = booleanExpression(map, local);
         break;
-      case 43:
       case 44:
       case 45:
       case 46:
@@ -646,6 +646,7 @@ public class parsername implements parsernameConstants {
       case 54:
       case 55:
       case 56:
+      case 57:
         a = comparison(map, local);
         break;
       default:
@@ -722,6 +723,10 @@ public class parsername implements parsernameConstants {
       case WHILE:
         whileLoop(map, local);
                                                          System.out.println("End of loop\u005cn"); {if (true) return;}
+        break;
+      case PROCEDURE_VARNAME:
+        procedureCall(map);
+                                                         System.out.println("End of procedure execution\u005cn"); {if (true) return;}
         break;
       case PRINT:
         print(map, local);
@@ -1114,24 +1119,24 @@ public class parsername implements parsernameConstants {
   final public boolean comparison(Map map, Map local) throws ParseException {
  boolean a;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case 43:
     case 44:
+    case 45:
       a = booleanComparison(map, local);
       break;
-    case 45:
     case 46:
     case 47:
     case 48:
     case 49:
     case 50:
+    case 51:
       a = integerComparison(map, local);
       break;
-    case 51:
     case 52:
     case 53:
     case 54:
     case 55:
     case 56:
+    case 57:
       a = floatComparison(map, local);
       break;
     default:
@@ -1146,14 +1151,14 @@ public class parsername implements parsernameConstants {
   final public boolean booleanComparison(Map map, Map local) throws ParseException {
  boolean a, b;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case 43:
-      jj_consume_token(43);
+    case 44:
+      jj_consume_token(44);
       a = booleanExpression(map, local);
       b = booleanExpression(map, local);
                                                                                     {if (true) return a == b;}
       break;
-    case 44:
-      jj_consume_token(44);
+    case 45:
+      jj_consume_token(45);
       a = booleanExpression(map, local);
       b = booleanExpression(map, local);
                                                                                     {if (true) return a != b;}
@@ -1169,38 +1174,38 @@ public class parsername implements parsernameConstants {
   final public boolean integerComparison(Map map, Map local) throws ParseException {
  int a, b;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case 45:
-      jj_consume_token(45);
-      a = integerExpression(map, local);
-      b = integerExpression(map, local);
-                                                                                    {if (true) return a == b;}
-      break;
     case 46:
       jj_consume_token(46);
       a = integerExpression(map, local);
       b = integerExpression(map, local);
-                                                                                    {if (true) return a != b;}
+                                                                                    {if (true) return a == b;}
       break;
     case 47:
       jj_consume_token(47);
       a = integerExpression(map, local);
       b = integerExpression(map, local);
-                                                                                    {if (true) return a >= b;}
+                                                                                    {if (true) return a != b;}
       break;
     case 48:
       jj_consume_token(48);
       a = integerExpression(map, local);
       b = integerExpression(map, local);
-                                                                                    {if (true) return a <= b;}
+                                                                                    {if (true) return a >= b;}
       break;
     case 49:
       jj_consume_token(49);
       a = integerExpression(map, local);
       b = integerExpression(map, local);
-                                                                                    {if (true) return a > b;}
+                                                                                    {if (true) return a <= b;}
       break;
     case 50:
       jj_consume_token(50);
+      a = integerExpression(map, local);
+      b = integerExpression(map, local);
+                                                                                    {if (true) return a > b;}
+      break;
+    case 51:
+      jj_consume_token(51);
       a = integerExpression(map, local);
       b = integerExpression(map, local);
                                                                                     {if (true) return a < b;}
@@ -1216,38 +1221,38 @@ public class parsername implements parsernameConstants {
   final public boolean floatComparison(Map map, Map local) throws ParseException {
  double a, b;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case 51:
-      jj_consume_token(51);
-      a = floatExpression(map, local);
-      b = floatExpression(map, local);
-                                                                                {if (true) return a == b;}
-      break;
     case 52:
       jj_consume_token(52);
       a = floatExpression(map, local);
       b = floatExpression(map, local);
-                                                                                {if (true) return a != b;}
+                                                                                {if (true) return a == b;}
       break;
     case 53:
       jj_consume_token(53);
       a = floatExpression(map, local);
       b = floatExpression(map, local);
-                                                                                {if (true) return a >= b;}
+                                                                                {if (true) return a != b;}
       break;
     case 54:
       jj_consume_token(54);
       a = floatExpression(map, local);
       b = floatExpression(map, local);
-                                                                                {if (true) return a <= b;}
+                                                                                {if (true) return a >= b;}
       break;
     case 55:
       jj_consume_token(55);
       a = floatExpression(map, local);
       b = floatExpression(map, local);
-                                                                                {if (true) return a > b;}
+                                                                                {if (true) return a <= b;}
       break;
     case 56:
       jj_consume_token(56);
+      a = floatExpression(map, local);
+      b = floatExpression(map, local);
+                                                                                {if (true) return a > b;}
+      break;
+    case 57:
+      jj_consume_token(57);
       a = floatExpression(map, local);
       b = floatExpression(map, local);
                                                                                 {if (true) return a < b;}
@@ -1275,7 +1280,6 @@ public class parsername implements parsernameConstants {
     }
     jj_consume_token(IF);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case 43:
     case 44:
     case 45:
     case 46:
@@ -1289,6 +1293,7 @@ public class parsername implements parsernameConstants {
     case 54:
     case 55:
     case 56:
+    case 57:
       execute = comparison(map, localVariables);
       break;
     case NOT:
@@ -1317,6 +1322,7 @@ public class parsername implements parsernameConstants {
       case INT_VARNAME:
       case BOOL_VARNAME:
       case FLOAT_VARNAME:
+      case PROCEDURE_VARNAME:
         ;
         break;
       default:
@@ -1337,7 +1343,6 @@ public class parsername implements parsernameConstants {
       }
       jj_consume_token(ELSEIF);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 43:
       case 44:
       case 45:
       case 46:
@@ -1351,6 +1356,7 @@ public class parsername implements parsernameConstants {
       case 54:
       case 55:
       case 56:
+      case 57:
         execute = comparison(map, localVariables);
         break;
       case NOT:
@@ -1379,6 +1385,7 @@ public class parsername implements parsernameConstants {
         case INT_VARNAME:
         case BOOL_VARNAME:
         case FLOAT_VARNAME:
+        case PROCEDURE_VARNAME:
           ;
           break;
         default:
@@ -1405,6 +1412,7 @@ public class parsername implements parsernameConstants {
         case INT_VARNAME:
         case BOOL_VARNAME:
         case FLOAT_VARNAME:
+        case PROCEDURE_VARNAME:
           ;
           break;
         default:
@@ -1510,6 +1518,7 @@ public class parsername implements parsernameConstants {
       case INT_VARNAME:
       case BOOL_VARNAME:
       case FLOAT_VARNAME:
+      case PROCEDURE_VARNAME:
         ;
         break;
       default:
@@ -1523,7 +1532,6 @@ public class parsername implements parsernameConstants {
   final public boolean conditionInLoop(Map map, Map local) throws ParseException {
                                               boolean execute;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case 43:
     case 44:
     case 45:
     case 46:
@@ -1537,6 +1545,7 @@ public class parsername implements parsernameConstants {
     case 54:
     case 55:
     case 56:
+    case 57:
       execute = comparison(map, local);
       break;
     case NOT:
@@ -1601,7 +1610,6 @@ public class parsername implements parsernameConstants {
       case INT_VARNAME:
       case BOOL_VARNAME:
       case FLOAT_VARNAME:
-      case 43:
       case 44:
       case 45:
       case 46:
@@ -1615,6 +1623,7 @@ public class parsername implements parsernameConstants {
       case 54:
       case 55:
       case 56:
+      case 57:
         ;
         break;
       default:
@@ -1657,7 +1666,6 @@ public class parsername implements parsernameConstants {
       case INT_VARNAME:
       case BOOL_VARNAME:
       case FLOAT_VARNAME:
-      case 43:
       case 44:
       case 45:
       case 46:
@@ -1671,6 +1679,7 @@ public class parsername implements parsernameConstants {
       case 54:
       case 55:
       case 56:
+      case 57:
         ;
         break;
       default:
@@ -1744,16 +1753,16 @@ public class parsername implements parsernameConstants {
 /*---------------------------------------------------------------------*/
 /*PROCEDURE START HERE*/
 /*---------------------------------------------------------------------*/
-  final public void ProcedureDeclaration(Map map, Map localvariables) throws ParseException {
+  final public void procedureDeclaration(Map map, Map localvariables) throws ParseException {
         Map<String,Object> localVariables = new HashMap<String,Object>();
         Token tmp = null, s;
         List<Token> body = new ArrayList<Token>();
         int position = 1;
-    jj_consume_token(60);
-    s = jj_consume_token(VARNAME);
+    jj_consume_token(61);
+    s = jj_consume_token(PROCEDURE_VARNAME);
                 //Look for name collisions
                 if(map.containsKey(s.toString())){
-                        System.out.println("Function/Procedure/Variable with this name has already been defined"); System.exit(-1);
+                        System.out.println("Procedure with this name has already been defined"); System.exit(-1);
                 }
     if (jj_2_3(2)) {
       jj_consume_token(LPARENTHESIS);
@@ -1853,7 +1862,6 @@ public class parsername implements parsernameConstants {
       case INT_VARNAME:
       case BOOL_VARNAME:
       case FLOAT_VARNAME:
-      case 43:
       case 44:
       case 45:
       case 46:
@@ -1867,6 +1875,7 @@ public class parsername implements parsernameConstants {
       case 54:
       case 55:
       case 56:
+      case 57:
         ;
         break;
       default:
@@ -1878,7 +1887,71 @@ public class parsername implements parsernameConstants {
     }
                 localVariables.put("BODY", body);
                 System.out.println(localVariables+"Procedure saved\u005cn");
-    jj_consume_token(61);
+    jj_consume_token(62);
+  }
+
+  final public void procedureCall(Map map) throws ParseException {
+        Map<String,Object> localVariables = new HashMap<String,Object>();
+        Token tmp;
+    tmp = jj_consume_token(PROCEDURE_VARNAME);
+    if (jj_2_4(2)) {
+      jj_consume_token(LPARENTHESIS);
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case INT_VARNAME:
+        tmp = jj_consume_token(INT_VARNAME);
+        break;
+      case FLOAT_VARNAME:
+        tmp = jj_consume_token(FLOAT_VARNAME);
+        break;
+      case BOOL_VARNAME:
+        tmp = jj_consume_token(BOOL_VARNAME);
+        break;
+      default:
+        jj_la1[55] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+      label_21:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case COMMA:
+          ;
+          break;
+        default:
+          jj_la1[56] = jj_gen;
+          break label_21;
+        }
+        jj_consume_token(COMMA);
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case INT_VARNAME:
+          tmp = jj_consume_token(INT_VARNAME);
+          break;
+        case FLOAT_VARNAME:
+          tmp = jj_consume_token(FLOAT_VARNAME);
+          break;
+        case BOOL_VARNAME:
+          tmp = jj_consume_token(BOOL_VARNAME);
+          break;
+        default:
+          jj_la1[57] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
+      }
+      jj_consume_token(RPARENTHESIS);
+    } else {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case LPARENTHESIS:
+        jj_consume_token(LPARENTHESIS);
+        jj_consume_token(RPARENTHESIS);
+        jj_consume_token(SEMICOLON);
+        break;
+      default:
+        jj_la1[58] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+    }
   }
 
 /*---------------------------------------------------------------------*/
@@ -1887,7 +1960,7 @@ public class parsername implements parsernameConstants {
 
 //TO BE DONE
   final public int IntegerFunction(Map map) throws ParseException {
-    jj_consume_token(62);
+    jj_consume_token(63);
                 {if (true) return 0;}
     throw new Error("Missing return statement in function");
   }
@@ -1913,13 +1986,15 @@ public class parsername implements parsernameConstants {
     finally { jj_save(2, xla); }
   }
 
-  private boolean jj_3R_23() {
-    if (jj_3R_29()) return true;
-    return false;
+  private boolean jj_2_4(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_4(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(3, xla); }
   }
 
-  private boolean jj_3R_32() {
-    if (jj_3R_37()) return true;
+  private boolean jj_3R_57() {
+    if (jj_scan_token(57)) return true;
     return false;
   }
 
@@ -1943,16 +2018,9 @@ public class parsername implements parsernameConstants {
     return false;
   }
 
-  private boolean jj_3R_52() {
-    if (jj_scan_token(52)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_38() {
+  private boolean jj_3R_39() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_51()) {
-    jj_scanpos = xsp;
     if (jj_3R_52()) {
     jj_scanpos = xsp;
     if (jj_3R_53()) {
@@ -1961,12 +2029,24 @@ public class parsername implements parsernameConstants {
     jj_scanpos = xsp;
     if (jj_3R_55()) {
     jj_scanpos = xsp;
-    if (jj_3R_56()) return true;
+    if (jj_3R_56()) {
+    jj_scanpos = xsp;
+    if (jj_3R_57()) return true;
     }
     }
     }
     }
     }
+    return false;
+  }
+
+  private boolean jj_3R_52() {
+    if (jj_scan_token(52)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_26() {
+    if (jj_scan_token(DOUBLE)) return true;
     return false;
   }
 
@@ -1975,8 +2055,8 @@ public class parsername implements parsernameConstants {
     return false;
   }
 
-  private boolean jj_3R_25() {
-    if (jj_scan_token(DOUBLE)) return true;
+  private boolean jj_3R_61() {
+    if (jj_scan_token(LPARENTHESIS)) return true;
     return false;
   }
 
@@ -1985,13 +2065,13 @@ public class parsername implements parsernameConstants {
     return false;
   }
 
-  private boolean jj_3R_60() {
-    if (jj_scan_token(LPARENTHESIS)) return true;
+  private boolean jj_3R_49() {
+    if (jj_scan_token(49)) return true;
     return false;
   }
 
-  private boolean jj_3R_49() {
-    if (jj_scan_token(49)) return true;
+  private boolean jj_3R_66() {
+    if (jj_scan_token(BOOL_VARNAME)) return true;
     return false;
   }
 
@@ -2001,7 +2081,7 @@ public class parsername implements parsernameConstants {
   }
 
   private boolean jj_3R_65() {
-    if (jj_scan_token(BOOL_VARNAME)) return true;
+    if (jj_scan_token(LPARENTHESIS)) return true;
     return false;
   }
 
@@ -2011,7 +2091,29 @@ public class parsername implements parsernameConstants {
   }
 
   private boolean jj_3R_64() {
-    if (jj_scan_token(LPARENTHESIS)) return true;
+    if (jj_scan_token(FALSE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_38() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_46()) {
+    jj_scanpos = xsp;
+    if (jj_3R_47()) {
+    jj_scanpos = xsp;
+    if (jj_3R_48()) {
+    jj_scanpos = xsp;
+    if (jj_3R_49()) {
+    jj_scanpos = xsp;
+    if (jj_3R_50()) {
+    jj_scanpos = xsp;
+    if (jj_3R_51()) return true;
+    }
+    }
+    }
+    }
+    }
     return false;
   }
 
@@ -2021,26 +2123,20 @@ public class parsername implements parsernameConstants {
   }
 
   private boolean jj_3R_63() {
-    if (jj_scan_token(FALSE)) return true;
+    if (jj_scan_token(TRUE)) return true;
     return false;
   }
 
-  private boolean jj_3R_37() {
+  private boolean jj_3R_59() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_45()) {
+    if (jj_3R_63()) {
     jj_scanpos = xsp;
-    if (jj_3R_46()) {
+    if (jj_3R_64()) {
     jj_scanpos = xsp;
-    if (jj_3R_47()) {
+    if (jj_3R_65()) {
     jj_scanpos = xsp;
-    if (jj_3R_48()) {
-    jj_scanpos = xsp;
-    if (jj_3R_49()) {
-    jj_scanpos = xsp;
-    if (jj_3R_50()) return true;
-    }
-    }
+    if (jj_3R_66()) return true;
     }
     }
     }
@@ -2052,23 +2148,12 @@ public class parsername implements parsernameConstants {
     return false;
   }
 
-  private boolean jj_3R_62() {
-    if (jj_scan_token(TRUE)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_58() {
+  private boolean jj_3R_37() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_62()) {
+    if (jj_3R_44()) {
     jj_scanpos = xsp;
-    if (jj_3R_63()) {
-    jj_scanpos = xsp;
-    if (jj_3R_64()) {
-    jj_scanpos = xsp;
-    if (jj_3R_65()) return true;
-    }
-    }
+    if (jj_3R_45()) return true;
     }
     return false;
   }
@@ -2081,40 +2166,43 @@ public class parsername implements parsernameConstants {
   private boolean jj_3R_36() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_43()) {
+    if (jj_3R_42()) {
     jj_scanpos = xsp;
-    if (jj_3R_44()) return true;
+    if (jj_3R_43()) return true;
     }
     return false;
   }
 
-  private boolean jj_3R_43() {
-    if (jj_scan_token(43)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_35() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_41()) {
-    jj_scanpos = xsp;
-    if (jj_3R_42()) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3R_41() {
+  private boolean jj_3R_42() {
     if (jj_scan_token(NOT)) return true;
     return false;
   }
 
-  private boolean jj_3R_40() {
-    if (jj_3R_57()) return true;
+  private boolean jj_3R_41() {
+    if (jj_3R_58()) return true;
     return false;
   }
 
-  private boolean jj_3R_21() {
-    if (jj_3R_27()) return true;
+  private boolean jj_3R_22() {
+    if (jj_3R_28()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_32() {
+    if (jj_3R_37()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_29() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_32()) {
+    jj_scanpos = xsp;
+    if (jj_3R_33()) {
+    jj_scanpos = xsp;
+    if (jj_3R_34()) return true;
+    }
+    }
     return false;
   }
 
@@ -2123,43 +2211,39 @@ public class parsername implements parsernameConstants {
     return false;
   }
 
-  private boolean jj_3R_28() {
+  private boolean jj_3_4() {
+    if (jj_scan_token(LPARENTHESIS)) return true;
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_31()) {
+    if (jj_scan_token(40)) {
     jj_scanpos = xsp;
-    if (jj_3R_32()) {
+    if (jj_scan_token(42)) {
     jj_scanpos = xsp;
-    if (jj_3R_33()) return true;
+    if (jj_scan_token(41)) return true;
     }
     }
     return false;
   }
 
-  private boolean jj_3R_30() {
-    if (jj_3R_35()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_24() {
+  private boolean jj_3R_25() {
     if (jj_scan_token(INT)) return true;
     return false;
   }
 
-  private boolean jj_3R_27() {
-    if (jj_3R_30()) return true;
+  private boolean jj_3R_28() {
+    if (jj_3R_31()) return true;
     return false;
   }
 
   private boolean jj_3_2() {
     if (jj_scan_token(INT_VARNAME)) return true;
     if (jj_scan_token(EQUAL)) return true;
-    if (jj_3R_23()) return true;
+    if (jj_3R_24()) return true;
     return false;
   }
 
-  private boolean jj_3R_33() {
-    if (jj_3R_38()) return true;
+  private boolean jj_3R_34() {
+    if (jj_3R_39()) return true;
     return false;
   }
 
@@ -2168,19 +2252,19 @@ public class parsername implements parsernameConstants {
     if (jj_scan_token(EQUAL)) return true;
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_21()) {
+    if (jj_3R_22()) {
     jj_scanpos = xsp;
-    if (jj_3R_22()) return true;
+    if (jj_3R_23()) return true;
     }
     return false;
   }
 
-  private boolean jj_3R_61() {
+  private boolean jj_3R_62() {
     if (jj_scan_token(INT_VARNAME)) return true;
     return false;
   }
 
-  private boolean jj_3R_59() {
+  private boolean jj_3R_60() {
     if (jj_scan_token(INTEGER)) return true;
     return false;
   }
@@ -2189,61 +2273,71 @@ public class parsername implements parsernameConstants {
     if (jj_scan_token(LPARENTHESIS)) return true;
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_24()) {
-    jj_scanpos = xsp;
     if (jj_3R_25()) {
     jj_scanpos = xsp;
-    if (jj_3R_26()) return true;
+    if (jj_3R_26()) {
+    jj_scanpos = xsp;
+    if (jj_3R_27()) return true;
     }
     }
     return false;
   }
 
-  private boolean jj_3R_57() {
+  private boolean jj_3R_58() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_59()) {
-    jj_scanpos = xsp;
     if (jj_3R_60()) {
     jj_scanpos = xsp;
-    if (jj_3R_61()) return true;
+    if (jj_3R_61()) {
+    jj_scanpos = xsp;
+    if (jj_3R_62()) return true;
     }
     }
     return false;
   }
 
-  private boolean jj_3R_26() {
+  private boolean jj_3R_27() {
     if (jj_scan_token(BOOLEAN)) return true;
     return false;
   }
 
-  private boolean jj_3R_34() {
+  private boolean jj_3R_35() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_39()) {
+    if (jj_3R_40()) {
     jj_scanpos = xsp;
-    if (jj_3R_40()) return true;
+    if (jj_3R_41()) return true;
     }
     return false;
   }
 
-  private boolean jj_3R_39() {
+  private boolean jj_3R_40() {
     if (jj_scan_token(MINUS)) return true;
     return false;
   }
 
-  private boolean jj_3R_42() {
-    if (jj_3R_58()) return true;
+  private boolean jj_3R_43() {
+    if (jj_3R_59()) return true;
     return false;
   }
 
-  private boolean jj_3R_29() {
-    if (jj_3R_34()) return true;
+  private boolean jj_3R_30() {
+    if (jj_3R_35()) return true;
     return false;
   }
 
-  private boolean jj_3R_22() {
-    if (jj_3R_28()) return true;
+  private boolean jj_3R_23() {
+    if (jj_3R_29()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_24() {
+    if (jj_3R_30()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_33() {
+    if (jj_3R_38()) return true;
     return false;
   }
 
@@ -2258,7 +2352,7 @@ public class parsername implements parsernameConstants {
   private Token jj_scanpos, jj_lastpos;
   private int jj_la;
   private int jj_gen;
-  final private int[] jj_la1 = new int[55];
+  final private int[] jj_la1 = new int[59];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static {
@@ -2266,12 +2360,12 @@ public class parsername implements parsernameConstants {
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0xff47fe00,0xff47fe00,0xff47fe00,0xff47fe00,0x20400,0x800000,0x20400,0x60000000,0x800000,0x60000000,0x40400,0x800000,0x40400,0x1c000000,0x1c000000,0x9c000000,0x61010000,0x9c000000,0x600,0x600,0x1800,0x1800,0x1020400,0x1020000,0x8000,0x4000,0x61010000,0x61000000,0x600,0x600,0x1800,0x1800,0x1040400,0x1040000,0x0,0x0,0x0,0x0,0x61010000,0x9c000000,0x0,0x61010000,0x9c000000,0x9c000000,0x0,0x0,0x9c000000,0x61010000,0xff47fe00,0xff47fe00,0x1c000000,0x800000,0x1c000000,0x1000000,0xff47fe00,};
+      jj_la1_0 = new int[] {0xff47fe00,0xff47fe00,0xff47fe00,0xff47fe00,0x20400,0x800000,0x20400,0x60000000,0x800000,0x60000000,0x40400,0x800000,0x40400,0x1c000000,0x1c000000,0x9c000000,0x61010000,0x9c000000,0x600,0x600,0x1800,0x1800,0x1020400,0x1020000,0x8000,0x4000,0x61010000,0x61000000,0x600,0x600,0x1800,0x1800,0x1040400,0x1040000,0x0,0x0,0x0,0x0,0x61010000,0x9c000000,0x0,0x61010000,0x9c000000,0x9c000000,0x0,0x0,0x9c000000,0x61010000,0xff47fe00,0xff47fe00,0x1c000000,0x800000,0x1c000000,0x1000000,0xff47fe00,0x0,0x800000,0x0,0x1000000,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x1ffff9f,0x1ffffdf,0x1ffffbf,0x1ffffff,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x50000000,0x50000000,0x790,0x1fffa00,0x490,0x0,0x0,0x0,0x0,0x100,0x100,0x0,0x0,0x200,0x200,0x0,0x0,0x0,0x0,0x400,0x400,0x1fff800,0x1800,0x7e000,0x1f80000,0x1fffa00,0x790,0x2,0x1fffa00,0x790,0x790,0x9,0x700,0x790,0x1fffa00,0x1ffffdf,0x1ffffbf,0x0,0x0,0x0,0x0,0x1ffffff,};
+      jj_la1_1 = new int[] {0x3fff79f,0x3fff7df,0x3fff7bf,0x3fff7ff,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xa0000000,0xa0000000,0xf90,0x3fff200,0xc90,0x0,0x0,0x0,0x0,0x100,0x100,0x0,0x0,0x200,0x200,0x0,0x0,0x0,0x0,0x400,0x400,0x3fff000,0x3000,0xfc000,0x3f00000,0x3fff200,0xf90,0x2,0x3fff200,0xf90,0xf90,0x9,0x700,0xf90,0x3fff200,0x3fff7df,0x3fff7bf,0x0,0x0,0x0,0x0,0x3fff7ff,0x700,0x0,0x700,0x0,};
    }
-  final private JJCalls[] jj_2_rtns = new JJCalls[3];
+  final private JJCalls[] jj_2_rtns = new JJCalls[4];
   private boolean jj_rescan = false;
   private int jj_gc = 0;
 
@@ -2286,7 +2380,7 @@ public class parsername implements parsernameConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 55; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 59; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -2301,7 +2395,7 @@ public class parsername implements parsernameConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 55; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 59; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -2312,7 +2406,7 @@ public class parsername implements parsernameConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 55; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 59; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -2323,7 +2417,7 @@ public class parsername implements parsernameConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 55; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 59; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -2333,7 +2427,7 @@ public class parsername implements parsernameConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 55; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 59; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -2343,7 +2437,7 @@ public class parsername implements parsernameConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 55; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 59; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -2455,12 +2549,12 @@ public class parsername implements parsernameConstants {
   /** Generate ParseException. */
   public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[63];
+    boolean[] la1tokens = new boolean[64];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 55; i++) {
+    for (int i = 0; i < 59; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
@@ -2472,7 +2566,7 @@ public class parsername implements parsernameConstants {
         }
       }
     }
-    for (int i = 0; i < 63; i++) {
+    for (int i = 0; i < 64; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;
@@ -2499,7 +2593,7 @@ public class parsername implements parsernameConstants {
 
   private void jj_rescan_token() {
     jj_rescan = true;
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 4; i++) {
     try {
       JJCalls p = jj_2_rtns[i];
       do {
@@ -2509,6 +2603,7 @@ public class parsername implements parsernameConstants {
             case 0: jj_3_1(); break;
             case 1: jj_3_2(); break;
             case 2: jj_3_3(); break;
+            case 3: jj_3_4(); break;
           }
         }
         p = p.next;

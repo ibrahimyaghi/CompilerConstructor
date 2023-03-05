@@ -76,6 +76,8 @@ public interface parsernameConstants {
   int BOOL_VARNAME = 41;
   /** RegularExpression Id. */
   int FLOAT_VARNAME = 42;
+  /** RegularExpression Id. */
+  int PROCEDURE_VARNAME = 43;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -127,6 +129,7 @@ public interface parsernameConstants {
     "<INT_VARNAME>",
     "<BOOL_VARNAME>",
     "<FLOAT_VARNAME>",
+    "<PROCEDURE_VARNAME>",
     "\"EQB\"",
     "\"NEQB\"",
     "\"EQI\"",

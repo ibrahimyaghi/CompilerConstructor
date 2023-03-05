@@ -168,9 +168,10 @@ TOKEN : /* SPECIAL TOKENS */
 
 TOKEN: /* DATA TYPES */
 {
-  < INT_VARNAME   : "I" <VARNAME> > 
-| < BOOL_VARNAME  : "B" <VARNAME> > 
-| < FLOAT_VARNAME : "F" <VARNAME> > 
+  < INT_VARNAME   		: "I" <VARNAME> > 
+| < BOOL_VARNAME 		: "B" <VARNAME> > 
+| < FLOAT_VARNAME 		: "F" <VARNAME> >
+| < PROCEDURE_VARNAME 	: "P" <VARNAME> >
 }
 
 
@@ -281,7 +282,7 @@ void multipleLines(Map map):
   //Then declaration of global variables and functions
   (	  IntegerFunction(map)
   		{System.out.println("Integer function recognized");}
- 	| ProcedureDeclaration(map, map)
+ 	| procedureDeclaration(map, map)
  		{System.out.println("Procedure recognized");}
   	| declareINT(map, execute, map)
   		{System.out.println("Global variable(s) declared: " + execute);}
@@ -359,6 +360,9 @@ void line(Map map, boolean execute, Map local) :
 
 | ifStatement(map, local)				{System.out.println("End of IF statement\n"); return;}
 | whileLoop(map, local)					{System.out.println("End of loop\n"); return;}
+
+| procedureCall(map)					{System.out.println("End of procedure execution\n"); return;}
+
 | print(map, local)						{return;}
 }
 
@@ -744,7 +748,7 @@ void whileLoop(Map map, Map locals):
 /*---------------------------------------------------------------------*/
 /*PROCEDURE START HERE*/
 /*---------------------------------------------------------------------*/
-void ProcedureDeclaration(Map map, Map localvariables):
+void procedureDeclaration(Map map, Map localvariables):
 {
   	Map<String,Object> localVariables = new HashMap<String,Object>();
 	Token tmp = null, s;
@@ -752,11 +756,11 @@ void ProcedureDeclaration(Map map, Map localvariables):
 	int position = 1;
 }
 {
-	"PROC" s = <VARNAME>
+	"PROC" s = <PROCEDURE_VARNAME>
 	{
 	  	//Look for name collisions
 	  	if(map.containsKey(s.toString())){
-			System.out.println("Function/Procedure/Variable with this name has already been defined"); System.exit(-1);
+			System.out.println("Procedure with this name has already been defined"); System.exit(-1);
 		}
 	}
 	(	LOOKAHEAD(2)	  	(		  		<LPARENTHESIS> ((<INT> tmp=<INT_VARNAME>) | (<DOUBLE> tmp=<FLOAT_VARNAME >) | (<BOOLEAN> tmp=<BOOL_VARNAME>)) 
@@ -776,7 +780,26 @@ void ProcedureDeclaration(Map map, Map localvariables):
 	}	
 	"ENDPROC"
 }
- 
+
+void procedureCall(Map map):
+{
+  	Map<String,Object> localVariables = new HashMap<String,Object>();
+	Token tmp;
+	int parameter = 1;
+}
+{
+	tmp=<PROCEDURE_VARNAME>
+	(	LOOKAHEAD(2)
+	  	(	
+	  		<LPARENTHESIS> ((tmp=<INT_VARNAME>) | (tmp=<FLOAT_VARNAME >) | (tmp=<BOOL_VARNAME>)) 
+		)
+		(
+	  		<COMMA> ((tmp=<INT_VARNAME>) | (tmp=<FLOAT_VARNAME>) | (tmp=<BOOL_VARNAME>))
+		)* <RPARENTHESIS>
+		| <LPARENTHESIS><RPARENTHESIS><SEMICOLON>
+	)
+}
+
 /*---------------------------------------------------------------------*/
 /*FUNCTIONS START HERE*/
 /*---------------------------------------------------------------------*/
