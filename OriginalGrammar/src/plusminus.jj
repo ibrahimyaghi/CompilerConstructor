@@ -792,12 +792,15 @@ void procedureCall(Map map):
 	Token tmp;
 	int parameter = 1;
 	Object data;
+	List<Token> body = new ArrayList<Token>();
 }
 {
-	tmp=<PROCEDURE_VARNAME> {
+	tmp=<PROCEDURE_VARNAME>
+	{
 	  	data = map.get(tmp.toString()); System.out.println(data);
-	   	//Rewrite data as local variables
+	   	//TO DO - > REWRITE DATA AS LOCAL VARIABLES
         System.out.println(localVariables);
+		//TO DO - > COPY CODE INTO LIST
 	}
 	(	LOOKAHEAD(2)
 	  	(	
@@ -815,7 +818,12 @@ void procedureCall(Map map):
 		(
 	  		<COMMA> ((tmp=<INT_VARNAME>) | (tmp=<FLOAT_VARNAME>) | (tmp=<BOOL_VARNAME>))
 	  		{
-				
+				for (Map.Entry<String, Object> entry : localVariables.entrySet()) {
+	        		if (entry.getValue().equals(parameter)) {
+	        		  	localVariables.put(entry.getKey(), map.get(tmp.toString()));
+			        }
+			    }
+			    parameter++;
 	  		}
 		)* <RPARENTHESIS><SEMICOLON>
 		| <LPARENTHESIS><RPARENTHESIS><SEMICOLON>

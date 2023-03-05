@@ -1900,14 +1900,13 @@ public class parsername implements parsernameConstants {
         Token tmp;
         int parameter = 1;
         Object data;
+        List<Token> body = new ArrayList<Token>();
     tmp = jj_consume_token(PROCEDURE_VARNAME);
                 data = map.get(tmp.toString()); System.out.println(data);
-            for (Field field : data.getClass().getDeclaredFields()) {
-            field.setAccessible(true);
-            try{map.put(field.getName(), field.get(data));}
-            catch(Exception e){System.out.println("Exception in reading procedure data"); System.exit(-1);}
-        }
+                //TO DO - > REWRITE DATA AS LOCAL VARIABLES
         System.out.println(localVariables);
+                //TO DO - > COPY CODE INTO LIST
+
     if (jj_2_4(2)) {
       jj_consume_token(LPARENTHESIS);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1957,7 +1956,12 @@ public class parsername implements parsernameConstants {
           jj_consume_token(-1);
           throw new ParseException();
         }
-
+                                for (Map.Entry<String, Object> entry : localVariables.entrySet()) {
+                                if (entry.getValue().equals(parameter)) {
+                                        localVariables.put(entry.getKey(), map.get(tmp.toString()));
+                                }
+                            }
+                            parameter++;
       }
       jj_consume_token(RPARENTHESIS);
       jj_consume_token(SEMICOLON);
@@ -2170,20 +2174,6 @@ public class parsername implements parsernameConstants {
     return false;
   }
 
-  private boolean jj_3_4() {
-    if (jj_scan_token(LPARENTHESIS)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(40)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(42)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(41)) return true;
-    }
-    }
-    return false;
-  }
-
   private boolean jj_3R_37() {
     Token xsp;
     xsp = jj_scanpos;
@@ -2196,6 +2186,20 @@ public class parsername implements parsernameConstants {
 
   private boolean jj_3R_44() {
     if (jj_scan_token(44)) return true;
+    return false;
+  }
+
+  private boolean jj_3_4() {
+    if (jj_scan_token(LPARENTHESIS)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(40)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(42)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(41)) return true;
+    }
+    }
     return false;
   }
 
