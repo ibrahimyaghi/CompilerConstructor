@@ -207,6 +207,11 @@ Token anyBody():{Token t;}
 	(t = <DO> | t = any()){return t;}
 }
 
+Token anyProcedure():{Token t;}
+{
+	(t = <ENDWHILE> | t = <DO> | t = any()){return t;}
+}
+
 /*---------------------------------------------------------------------*/
 /* DECLARE VARIABLES
 /* We allow only simple initializations by values
@@ -742,7 +747,9 @@ void whileLoop(Map map, Map locals):
 void ProcedureDeclaration(Map map, Map localvariables):
 {
   	Map<String,Object> localVariables = new HashMap<String,Object>();
-	Token s;
+	Token tmp = null, s;
+	List<Token> body = new ArrayList<Token>();
+	int position = 1;
 }
 {
 	"PROC" s = <VARNAME>
@@ -752,16 +759,21 @@ void ProcedureDeclaration(Map map, Map localvariables):
 			System.out.println("Function/Procedure/Variable with this name has already been defined"); System.exit(-1);
 		}
 	}
-	(	LOOKAHEAD(2)	  	(		  		<LPARENTHESIS> ((<INT> < INT_VARNAME >) | (<DOUBLE> < FLOAT_VARNAME >) | (<BOOLEAN> < BOOL_VARNAME >)) 
+	(	LOOKAHEAD(2)	  	(		  		<LPARENTHESIS> ((<INT> tmp=<INT_VARNAME>) | (<DOUBLE> tmp=<FLOAT_VARNAME >) | (<BOOLEAN> tmp=<BOOL_VARNAME>)) 
+			{localVariables.put(tmp.toString(), position); position++;}
 		)
 		(
-	  		<COMMA> ((<INT> < INT_VARNAME >) | (<DOUBLE> < FLOAT_VARNAME >) | (<BOOLEAN> < BOOL_VARNAME >))
+	  		<COMMA> ((<INT> tmp=<INT_VARNAME>) | (<DOUBLE> tmp=<FLOAT_VARNAME>) | (<BOOLEAN> tmp=<BOOL_VARNAME>))
+			{localVariables.put(tmp.toString(), position); position++;}
 		)* <RPARENTHESIS>
 		| <LPARENTHESIS><RPARENTHESIS>
 	)
-	//SAVE THOSE INSTRUCTIONS SOMEWHERE TO EXECUTE LATER
-	//ADD LOCAL VARIABLE ASSIGNMENT - > VARIABLE PASSED AS FUNCTION PARAMETERS
-	(line(map, false, localVariables))*
+	(		tmp = anyProcedure(){body.add(tmp);}
+	)*
+	{
+	  	localVariables.put("BODY", body);
+	  	System.out.println(localVariables+"Procedure saved\n");
+	}	
 	"ENDPROC"
 }
  
