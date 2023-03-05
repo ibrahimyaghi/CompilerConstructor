@@ -1904,6 +1904,18 @@ public class parsername implements parsernameConstants {
     tmp = jj_consume_token(PROCEDURE_VARNAME);
                 data = map.get(tmp.toString()); System.out.println(data);
                 //TO DO - > REWRITE DATA AS LOCAL VARIABLES
+                //Convert object into a map
+                Field[] fields = data.getClass().getDeclaredFields();
+                for (Field field : fields) {
+                    field.setAccessible(true);
+                    String name = field.getName();
+                    Object value = null;
+                    try { value = field.get(data); } catch(Exception e) {  System.out.println("XDD"); System.exit(-1);}
+                    if (value != null) {
+                        System.out.println(name + " = " + value);
+                    }
+                }
+
         System.out.println(localVariables);
                 //TO DO - > COPY CODE INTO LIST
 
@@ -1924,6 +1936,7 @@ public class parsername implements parsernameConstants {
         jj_consume_token(-1);
         throw new ParseException();
       }
+                                //CHECK LATER IF WORKS
                                 for (Map.Entry<String, Object> entry : localVariables.entrySet()) {
                                 if (entry.getValue().equals(parameter)) {
                                         localVariables.put(entry.getKey(), map.get(tmp.toString()));
@@ -1956,6 +1969,7 @@ public class parsername implements parsernameConstants {
           jj_consume_token(-1);
           throw new ParseException();
         }
+                                //CHECK LATER IF WORKS
                                 for (Map.Entry<String, Object> entry : localVariables.entrySet()) {
                                 if (entry.getValue().equals(parameter)) {
                                         localVariables.put(entry.getKey(), map.get(tmp.toString()));
@@ -2081,6 +2095,20 @@ public class parsername implements parsernameConstants {
     return false;
   }
 
+  private boolean jj_3_4() {
+    if (jj_scan_token(LPARENTHESIS)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(40)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(42)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(41)) return true;
+    }
+    }
+    return false;
+  }
+
   private boolean jj_3R_61() {
     if (jj_scan_token(LPARENTHESIS)) return true;
     return false;
@@ -2186,20 +2214,6 @@ public class parsername implements parsernameConstants {
 
   private boolean jj_3R_44() {
     if (jj_scan_token(44)) return true;
-    return false;
-  }
-
-  private boolean jj_3_4() {
-    if (jj_scan_token(LPARENTHESIS)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(40)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(42)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(41)) return true;
-    }
-    }
     return false;
   }
 

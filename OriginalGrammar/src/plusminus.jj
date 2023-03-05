@@ -799,6 +799,23 @@ void procedureCall(Map map):
 	{
 	  	data = map.get(tmp.toString()); System.out.println(data);
 	   	//TO DO - > REWRITE DATA AS LOCAL VARIABLES
+	   	//Convert object into a map
+	   	//Or somehow extract data from an object
+	   	//Or create a special map of maps with global range, accessible only at procedure/function calls
+	   	//Last one sounds promising 
+
+	   	/*This code does not work
+		Field[] fields = data.getClass().getDeclaredFields();
+		for (Field field : fields) {
+		    field.setAccessible(true);
+		    String name = field.getName();
+		    Object value = null;
+		    try { value = field.get(data); } catch(Exception e) {  System.out.println("XDD"); System.exit(-1);}
+		    if (value != null) {
+		        System.out.println(name + " = " + value);
+		    }
+		}*/
+	   	
         System.out.println(localVariables);
 		//TO DO - > COPY CODE INTO LIST
 	}
@@ -807,6 +824,7 @@ void procedureCall(Map map):
 	  		<LPARENTHESIS> ((tmp=<INT_VARNAME>) | (tmp=<FLOAT_VARNAME >) | (tmp=<BOOL_VARNAME>)) 
 	  		//Find the appropriate variable
 			{
+			  	//CHECK LATER IF WORKS
 		  		for (Map.Entry<String, Object> entry : localVariables.entrySet()) {
 	        		if (entry.getValue().equals(parameter)) {
 	        		  	localVariables.put(entry.getKey(), map.get(tmp.toString()));
@@ -818,6 +836,7 @@ void procedureCall(Map map):
 		(
 	  		<COMMA> ((tmp=<INT_VARNAME>) | (tmp=<FLOAT_VARNAME>) | (tmp=<BOOL_VARNAME>))
 	  		{
+	  		  	//CHECK LATER IF WORKS
 				for (Map.Entry<String, Object> entry : localVariables.entrySet()) {
 	        		if (entry.getValue().equals(parameter)) {
 	        		  	localVariables.put(entry.getKey(), map.get(tmp.toString()));
