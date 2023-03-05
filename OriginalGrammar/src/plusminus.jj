@@ -261,7 +261,7 @@ void declareFLOAT(Map map, boolean execute, Map globals):
 }
 
 /*---------------------------------------------------------------------*/
-/* SINGLE/MULTIPLE LINES STATS HERE*/
+/* SINGLE/MULTIPLE LINES STARTS HERE*/
 /*---------------------------------------------------------------------*/
 
 void multipleLines(Map map):
@@ -662,11 +662,24 @@ void whileLoop(Map map, Map locals):
 
 	//TODO - > Create a new parser and perform checks based on condition array
 	//		   then execute body (and check again like it is done in a loop)
-	//parser2 = new parsername(new FileInputStream(path));
-	
 	{
-	  System.out.println("Condition: "+condition);
-	  System.out.println("Body: "+body);
+	  	//Convert condition and body into a string
+		String condition_string = ""; 
+		for (int i = 0; i < condition.size(); i++) {
+	  	  	condition_string+=" ";
+		    condition_string+=condition.get(i).toString();
+		}
+	  
+	  	String body_string = "";  
+	  	for (int i = 0; i < body.size(); i++) {
+	  	  	body_string+=" ";
+		    body_string+=body.get(i).toString();
+		}
+		
+		//parsername parser2 = new parsername(body);
+
+	  	System.out.println("Condition: "+condition_string);
+	  	System.out.println("Body: "+body_string);
  	}
  	
   	//Check if any of the local variables were changed

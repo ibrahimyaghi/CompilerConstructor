@@ -481,7 +481,7 @@ public class parsername implements parsernameConstants {
   }
 
 /*---------------------------------------------------------------------*/
-/* SINGLE/MULTIPLE LINES STATS HERE*/
+/* SINGLE/MULTIPLE LINES STARTS HERE*/
 /*---------------------------------------------------------------------*/
   static final public void multipleLines(Map map) throws ParseException {
  boolean a, execute = true; int b; Map<String,Object> mainLocal = new HashMap<String,Object>();
@@ -1558,8 +1558,23 @@ public class parsername implements parsernameConstants {
                         body.add(t);
     }
     jj_consume_token(ENDWHILE);
-          System.out.println("Condition: "+condition);
-          System.out.println("Body: "+body);
+                //Convert condition and body into a string
+                String condition_string = "";
+                for (int i = 0; i < condition.size(); i++) {
+                        condition_string+=" ";
+                    condition_string+=condition.get(i).toString();
+                }
+
+                String body_string = "";
+                for (int i = 0; i < body.size(); i++) {
+                        body_string+=" ";
+                    body_string+=body.get(i).toString();
+                }
+
+                //parsername parser2 = new parsername(body);
+
+                System.out.println("Condition: "+condition_string);
+                System.out.println("Body: "+body_string);
                 Iterator<Map.Entry<String, Object>> iterator2 = locals.entrySet().iterator();
             while (iterator2.hasNext()) {
                 Map.Entry<String, Object> entry = iterator2.next();
@@ -1699,6 +1714,11 @@ public class parsername implements parsernameConstants {
     finally { jj_save(2, xla); }
   }
 
+  static private boolean jj_3R_23() {
+    if (jj_scan_token(INT)) return true;
+    return false;
+  }
+
   static private boolean jj_3R_28() {
     if (jj_3R_33()) return true;
     return false;
@@ -1716,11 +1736,6 @@ public class parsername implements parsernameConstants {
 
   static private boolean jj_3R_31() {
     if (jj_3R_36()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_23() {
-    if (jj_scan_token(INT)) return true;
     return false;
   }
 
@@ -1773,6 +1788,20 @@ public class parsername implements parsernameConstants {
 
   static private boolean jj_3R_50() {
     if (jj_scan_token(51)) return true;
+    return false;
+  }
+
+  static private boolean jj_3_3() {
+    if (jj_scan_token(LPARENTHESIS)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_23()) {
+    jj_scanpos = xsp;
+    if (jj_3R_24()) {
+    jj_scanpos = xsp;
+    if (jj_3R_25()) return true;
+    }
+    }
     return false;
   }
 
@@ -1874,6 +1903,11 @@ public class parsername implements parsernameConstants {
     return false;
   }
 
+  static private boolean jj_3R_25() {
+    if (jj_scan_token(BOOLEAN)) return true;
+    return false;
+  }
+
   static private boolean jj_3R_35() {
     Token xsp;
     xsp = jj_scanpos;
@@ -1886,20 +1920,6 @@ public class parsername implements parsernameConstants {
 
   static private boolean jj_3R_42() {
     if (jj_scan_token(43)) return true;
-    return false;
-  }
-
-  static private boolean jj_3_3() {
-    if (jj_scan_token(LPARENTHESIS)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_23()) {
-    jj_scanpos = xsp;
-    if (jj_3R_24()) {
-    jj_scanpos = xsp;
-    if (jj_3R_25()) return true;
-    }
-    }
     return false;
   }
 
@@ -1951,11 +1971,6 @@ public class parsername implements parsernameConstants {
     return false;
   }
 
-  static private boolean jj_3R_25() {
-    if (jj_scan_token(BOOLEAN)) return true;
-    return false;
-  }
-
   static private boolean jj_3R_26() {
     if (jj_3R_29()) return true;
     return false;
@@ -1970,6 +1985,11 @@ public class parsername implements parsernameConstants {
 
   static private boolean jj_3R_32() {
     if (jj_3R_37()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_24() {
+    if (jj_scan_token(DOUBLE)) return true;
     return false;
   }
 
@@ -2005,11 +2025,6 @@ public class parsername implements parsernameConstants {
     if (jj_3R_60()) return true;
     }
     }
-    return false;
-  }
-
-  static private boolean jj_3R_24() {
-    if (jj_scan_token(DOUBLE)) return true;
     return false;
   }
 
