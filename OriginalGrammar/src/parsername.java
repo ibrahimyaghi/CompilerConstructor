@@ -1891,8 +1891,8 @@ public class parsername implements parsernameConstants {
                 //Save contents of the procedure
                 localVariables.put("BODY", body);
                 //Save procedure to the global memory
-                map.put(s.toString(), localVariables);
-                System.out.println(map.get(s.toString())+"Procedure saved\u005cn");
+                fps.put(s.toString(), localVariables);
+                System.out.println(fps.get(s.toString())+"Procedure saved\u005cn");
     jj_consume_token(62);
   }
 
@@ -1901,30 +1901,16 @@ public class parsername implements parsernameConstants {
         Map<String,Object> localVariables = new HashMap<String,Object>();
         Token tmp;
         int parameter = 1;
-        Object data;
+        Map<String, Object> data;
         List<Token> body = new ArrayList<Token>();
+        boolean found = false;
     tmp = jj_consume_token(PROCEDURE_VARNAME);
-                data = map.get(tmp.toString()); System.out.println(data);
+                data = (Map<String, Object>) fps.get(tmp.toString()); System.out.println(data);
                 //TO DO - > REWRITE DATA AS LOCAL VARIABLES
                 //Convert object into a map
                 //Or somehow extract data from an object
                 //Or create a special map of maps with global range, accessible only at procedure/function calls
                 //Last one sounds promising 
-
-                /*This code does not work
-		Field[] fields = data.getClass().getDeclaredFields();
-		for (Field field : fields) {
-		    field.setAccessible(true);
-		    String name = field.getName();
-		    Object value = null;
-		    try { value = field.get(data); } catch(Exception e) {  System.out.println("XDD"); System.exit(-1);}
-		    if (value != null) {
-		        System.out.println(name + " = " + value);
-		    }
-		}*/
-
-        System.out.println(localVariables);
-                //TO DO - > COPY CODE INTO LIST
 
     if (jj_2_4(2)) {
       jj_consume_token(LPARENTHESIS);
@@ -1943,13 +1929,19 @@ public class parsername implements parsernameConstants {
         jj_consume_token(-1);
         throw new ParseException();
       }
-                                //CHECK LATER IF WORKS
-                                for (Map.Entry<String, Object> entry : localVariables.entrySet()) {
+                                for (Map.Entry<String, Object> entry : data.entrySet()) {
                                 if (entry.getValue().equals(parameter)) {
                                         localVariables.put(entry.getKey(), map.get(tmp.toString()));
+                                        found = true;
                                 }
                             }
-                            parameter++;
+                                //Check if parameter was correctly found and substituted
+                                if(!found){
+                                        System.out.println("Incorrect parameter, exiting"); System.exit(-1);
+                                }
+                                //Prepare for next iteration
+                                parameter++;
+                                found = false;
       label_21:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1976,13 +1968,20 @@ public class parsername implements parsernameConstants {
           jj_consume_token(-1);
           throw new ParseException();
         }
-                                //CHECK LATER IF WORKS
-                                for (Map.Entry<String, Object> entry : localVariables.entrySet()) {
+                                for (Map.Entry<String, Object> entry : data.entrySet()) {
                                 if (entry.getValue().equals(parameter)) {
                                         localVariables.put(entry.getKey(), map.get(tmp.toString()));
+                                        found = true;
                                 }
                             }
-                            parameter++;
+
+                                //Check if parameter was correctly found and substituted
+                                if(!found){
+                                        System.out.println("Incorrect parameter, exiting."); System.exit(-1);
+                                }
+                                //Prepare for next iteration
+                                parameter++;
+                                found = false;
       }
       jj_consume_token(RPARENTHESIS);
       jj_consume_token(SEMICOLON);
@@ -1999,6 +1998,15 @@ public class parsername implements parsernameConstants {
         throw new ParseException();
       }
     }
+                for (Map.Entry<String, Object> entry : data.entrySet()) {
+                if (entry.getValue().equals(parameter)) {
+                                System.out.println("Too few parameters passed to the function, exiting."); System.exit(-1);
+                        }
+                }
+
+                System.out.println(localVariables);
+                //TO DO - > COPY CODE INTO LIST
+
   }
 
 /*---------------------------------------------------------------------*/
@@ -2092,20 +2100,6 @@ public class parsername implements parsernameConstants {
     return false;
   }
 
-  private boolean jj_3_4() {
-    if (jj_scan_token(LPARENTHESIS)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(40)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(42)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(41)) return true;
-    }
-    }
-    return false;
-  }
-
   private boolean jj_3R_26() {
     if (jj_scan_token(DOUBLE)) return true;
     return false;
@@ -2185,6 +2179,20 @@ public class parsername implements parsernameConstants {
 
   private boolean jj_3R_63() {
     if (jj_scan_token(TRUE)) return true;
+    return false;
+  }
+
+  private boolean jj_3_4() {
+    if (jj_scan_token(LPARENTHESIS)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(40)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(42)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(41)) return true;
+    }
+    }
     return false;
   }
 
