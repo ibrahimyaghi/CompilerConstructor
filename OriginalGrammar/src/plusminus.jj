@@ -959,7 +959,7 @@ Object functionCall(Map map, Map fps):
 	boolean found = false;
 }
 {
-  	tmp=<PROCEDURE_VARNAME>
+  	tmp=<VARNAME>
 	{
 	  	//Recover data gathered during declaration
 	  	data = (Map<String, Object>) fps.get(tmp.toString()); System.out.println(data);
@@ -1029,6 +1029,7 @@ Object functionCall(Map map, Map fps):
 		procedure_contents = procedure_contents.replace("]","");
 
 		String return_contents = data.get("RETURN").toString();
+		return_contents = return_contents.replaceAll(", "," ");
 	  	return_contents = return_contents.replace("[","");
 		return_contents = return_contents.replace("]","");
 	  	
@@ -1040,13 +1041,16 @@ Object functionCall(Map map, Map fps):
 
 		System.out.println("\nStarting procedure execution");
 	  	System.out.println("Body: "+procedure_contents);
+	  	System.out.println("Return: "+return_contents);
 
 		try
 	    {
 	      	//Perform body of the function
 			parser_body.linesInLoop(map, localVariables, fps);
 			Integer a; Double b; Boolean c;
-			
+
+				
+			System.out.println("Local vars: "+localVariables);
 			//Return a value
 			if(data.get("TYPE").toString().equals("INT")) {
 				a = parser_return.integerExpression(map, localVariables, fps);
@@ -1075,7 +1079,5 @@ Object functionCall(Map map, Map fps):
 	        System.out.println(e.getMessage());
 	        System.exit(-1) ;
 	    }
-	
-		System.out.println("Local vars: "+localVariables);
 	}
 }

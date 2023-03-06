@@ -636,11 +636,11 @@ public class parsername implements parsernameConstants {
       jj_consume_token(EQUAL);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case NOT:
+      case VARNAME:
       case LPARENTHESIS:
       case TRUE:
       case FALSE:
       case BOOL_VARNAME:
-      case PROCEDURE_VARNAME:
         a = booleanExpression(map, local, fps);
         break;
       case 44:
@@ -832,9 +832,9 @@ public class parsername implements parsernameConstants {
                                         {if (true) return -a;}
       break;
     case INTEGER:
+    case VARNAME:
     case LPARENTHESIS:
     case INT_VARNAME:
-    case PROCEDURE_VARNAME:
       a = abase(map, local, fps);
                                                                                   {if (true) return a;}
       break;
@@ -874,7 +874,7 @@ public class parsername implements parsernameConstants {
                         }
                 }
       break;
-    case PROCEDURE_VARNAME:
+    case VARNAME:
       tmp = functionCall(map, fps);
                                  a = (Integer)tmp;
       break;
@@ -940,11 +940,11 @@ public class parsername implements parsernameConstants {
       a = bbase(map, local, fps);
                                     {if (true) return !a;}
       break;
+    case VARNAME:
     case LPARENTHESIS:
     case TRUE:
     case FALSE:
     case BOOL_VARNAME:
-    case PROCEDURE_VARNAME:
       a = bbase(map, local, fps);
                                                                               {if (true) return a;}
       break;
@@ -967,7 +967,7 @@ public class parsername implements parsernameConstants {
       jj_consume_token(FALSE);
            a = Boolean.parseBoolean(token.image);
       break;
-    case PROCEDURE_VARNAME:
+    case VARNAME:
       tmp = functionCall(map, fps);
                                a = (boolean) tmp;
       break;
@@ -1083,9 +1083,9 @@ public class parsername implements parsernameConstants {
                                         {if (true) return -a;}
       break;
     case FLOAT:
+    case VARNAME:
     case LPARENTHESIS:
     case FLOAT_VARNAME:
-    case PROCEDURE_VARNAME:
       a = fbase(map, local, fps);
                                                                                   {if (true) return a;}
       break;
@@ -1125,7 +1125,7 @@ public class parsername implements parsernameConstants {
                         }
                 }
       break;
-    case PROCEDURE_VARNAME:
+    case VARNAME:
       tmp = functionCall(map, fps);
                                  a = (Double) tmp;
       break;
@@ -1322,11 +1322,11 @@ public class parsername implements parsernameConstants {
       execute = comparison(map, localVariables, fps);
       break;
     case NOT:
+    case VARNAME:
     case LPARENTHESIS:
     case TRUE:
     case FALSE:
     case BOOL_VARNAME:
-    case PROCEDURE_VARNAME:
       execute = booleanExpression(map, localVariables, fps);
       break;
     default:
@@ -1386,11 +1386,11 @@ public class parsername implements parsernameConstants {
         execute = comparison(map, localVariables, fps);
         break;
       case NOT:
+      case VARNAME:
       case LPARENTHESIS:
       case TRUE:
       case FALSE:
       case BOOL_VARNAME:
-      case PROCEDURE_VARNAME:
         execute = booleanExpression(map, localVariables, fps);
         break;
       default:
@@ -1576,11 +1576,11 @@ public class parsername implements parsernameConstants {
       execute = comparison(map, local, fps);
       break;
     case NOT:
+    case VARNAME:
     case LPARENTHESIS:
     case TRUE:
     case FALSE:
     case BOOL_VARNAME:
-    case PROCEDURE_VARNAME:
       execute = booleanExpression(map, local, fps);
       break;
     default:
@@ -2294,7 +2294,7 @@ public class parsername implements parsernameConstants {
         int parameter = 1;
         Map<String, Object> data = null;
         boolean found = false;
-    tmp = jj_consume_token(PROCEDURE_VARNAME);
+    tmp = jj_consume_token(VARNAME);
                 //Recover data gathered during declaration
                 data = (Map<String, Object>) fps.get(tmp.toString()); System.out.println(data);
                 //Check if procedure exists at all
@@ -2401,6 +2401,7 @@ public class parsername implements parsernameConstants {
                 procedure_contents = procedure_contents.replace("]","");
 
                 String return_contents = data.get("RETURN").toString();
+                return_contents = return_contents.replaceAll(", "," ");
                 return_contents = return_contents.replace("[","");
                 return_contents = return_contents.replace("]","");
 
@@ -2412,6 +2413,7 @@ public class parsername implements parsernameConstants {
 
                 System.out.println("\u005cnStarting procedure execution");
                 System.out.println("Body: "+procedure_contents);
+                System.out.println("Return: "+return_contents);
 
                 try
             {
@@ -2419,6 +2421,8 @@ public class parsername implements parsernameConstants {
                         parser_body.linesInLoop(map, localVariables, fps);
                         Integer a; Double b; Boolean c;
 
+
+                        System.out.println("Local vars: "+localVariables);
                         //Return a value
                         if(data.get("TYPE").toString().equals("INT")) {
                                 a = parser_return.integerExpression(map, localVariables, fps);
@@ -2447,8 +2451,6 @@ public class parsername implements parsernameConstants {
                 System.out.println(e.getMessage());
                 System.exit(-1) ;
             }
-
-                System.out.println("Local vars: "+localVariables);
     throw new Error("Missing return statement in function");
   }
 
@@ -2852,7 +2854,7 @@ public class parsername implements parsernameConstants {
   }
 
   private boolean jj_3R_77() {
-    if (jj_scan_token(PROCEDURE_VARNAME)) return true;
+    if (jj_scan_token(VARNAME)) return true;
     return false;
   }
 
@@ -2953,10 +2955,10 @@ public class parsername implements parsernameConstants {
       jj_la1_init_2();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0xffc7fe00,0xffc7fe00,0xffc7fe00,0xffc7fe00,0x20400,0x800000,0x20400,0x60000000,0x800000,0x60000000,0x40400,0x800000,0x40400,0x1c000000,0x1c000000,0x9c000000,0x61010000,0x9c000000,0x600,0x600,0x1800,0x1800,0x1020400,0x1020000,0x8000,0x4000,0x61010000,0x61000000,0x600,0x600,0x1800,0x1800,0x1040400,0x1040000,0x0,0x0,0x0,0x0,0x61010000,0x9c000000,0x0,0x61010000,0x9c000000,0x9c000000,0x0,0x0,0x9c000000,0x61010000,0xffc7fe00,0xffc7fe00,0x1c000000,0x800000,0x1c000000,0x1000000,0xffc7fe00,0x0,0x800000,0x0,0x1000000,0x1c000000,0x1c000000,0x800000,0x1c000000,0x1000000,0xffc7fe00,0xffc7fe00,0x0,0x800000,0x0,0x1000000,};
+      jj_la1_0 = new int[] {0xffc7fe00,0xffc7fe00,0xffc7fe00,0xffc7fe00,0x20400,0x800000,0x20400,0x60000000,0x800000,0x60000000,0x40400,0x800000,0x40400,0x1c000000,0x1c000000,0x9c000000,0x61110000,0x9c000000,0x600,0x600,0x1800,0x1800,0x1120400,0x1120000,0x8000,0x4000,0x61110000,0x61100000,0x600,0x600,0x1800,0x1800,0x1140400,0x1140000,0x0,0x0,0x0,0x0,0x61110000,0x9c000000,0x0,0x61110000,0x9c000000,0x9c000000,0x0,0x0,0x9c000000,0x61110000,0xffc7fe00,0xffc7fe00,0x1c000000,0x800000,0x1c000000,0x1000000,0xffc7fe00,0x0,0x800000,0x0,0x1000000,0x1c000000,0x1c000000,0x800000,0x1c000000,0x1000000,0xffc7fe00,0xffc7fe00,0x0,0x800000,0x0,0x1000000,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x3fff79f,0x3fff7df,0x3fff7bf,0x3fff7ff,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x20000000,0x20000000,0xf90,0x3fffa00,0xc90,0x0,0x0,0x0,0x0,0x900,0x900,0x0,0x0,0xa00,0xa00,0x0,0x0,0x0,0x0,0xc00,0xc00,0x3fff000,0x3000,0xfc000,0x3f00000,0x3fffa00,0xf90,0x2,0x3fffa00,0xf90,0xf90,0x9,0x700,0xf90,0x3fffa00,0x3fff7df,0x3fff7bf,0x0,0x0,0x0,0x0,0x3fff7ff,0x700,0x0,0x700,0x0,0x0,0x0,0x0,0x0,0x0,0x3fff7ff,0x3fff7ff,0x700,0x0,0x700,0x0,};
+      jj_la1_1 = new int[] {0x3fff79f,0x3fff7df,0x3fff7bf,0x3fff7ff,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x20000000,0x20000000,0xf90,0x3fff200,0xc90,0x0,0x0,0x0,0x0,0x100,0x100,0x0,0x0,0x200,0x200,0x0,0x0,0x0,0x0,0x400,0x400,0x3fff000,0x3000,0xfc000,0x3f00000,0x3fff200,0xf90,0x2,0x3fff200,0xf90,0xf90,0x9,0x700,0xf90,0x3fff200,0x3fff7df,0x3fff7bf,0x0,0x0,0x0,0x0,0x3fff7ff,0x700,0x0,0x700,0x0,0x0,0x0,0x0,0x0,0x0,0x3fff7ff,0x3fff7ff,0x700,0x0,0x700,0x0,};
    }
    private static void jj_la1_init_2() {
       jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};

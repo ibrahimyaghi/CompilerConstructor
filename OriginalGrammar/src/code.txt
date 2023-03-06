@@ -8,18 +8,15 @@ a = 1+1 Another comment
 INT Ia = 1;
 INT Ib = -2, Ic = -15, Id = 10;
 BOOLEAN Bb = TRUE;
-FLOAT Fc = -1.5, Fd = 2.0, Fe = -1.2;
+FLOAT Fc = -1.5, Fd = 2.1, Fe = -1.2;
 
 INT FUNC fun1()
 Ib = 69 * Ib;
 RETURN Ib;
 ENDFUNC
 
-FLOAT FUNC fun2(FLOAT Fvar1, INT Ivar2, BOOLEAN Bvar3)
-INT Iabc = 15, Ifc = 10;
-Ia = 2333 * Ivar2;
-Fc = 2.5 * Fvar1;
-RETURN 1.5*1.7;
+FLOAT FUNC fun2(FLOAT Fvar1, FLOAT Fvar2)
+RETURN 0.5*Fvar1*Fvar2;
 ENDFUNC
 
 PROC Pdosth()
@@ -35,12 +32,20 @@ ENDPROC
 MAIN
 
 INT Iy = 1;
+Iy = fun1();
+PRINT(Iy);
 
+PRINT(Fd);
+Fc = fun2(Fd, Fd);
+PRINT(Fc);
+
+ENDMAIN
 Pdosth();
 PRINT(Ia);
 
 Pdosth2(Fc, Ia, Bb);
 
+Iy = 1;
 WHILE NEQI Iy 16
 DO
 Iy = Iy + Iy;
