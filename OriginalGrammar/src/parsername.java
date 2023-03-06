@@ -104,6 +104,9 @@ public class parsername implements parsernameConstants {
     case SEMICOLON:
       t = jj_consume_token(SEMICOLON);
       break;
+    case COMMA:
+      t = jj_consume_token(COMMA);
+      break;
     case LPARENTHESIS:
       t = jj_consume_token(LPARENTHESIS);
       break;
@@ -209,6 +212,7 @@ public class parsername implements parsernameConstants {
     case INTEGER:
     case FLOAT:
     case SEMICOLON:
+    case COMMA:
     case LPARENTHESIS:
     case RPARENTHESIS:
     case INT:
@@ -270,6 +274,7 @@ public class parsername implements parsernameConstants {
     case INTEGER:
     case FLOAT:
     case SEMICOLON:
+    case COMMA:
     case LPARENTHESIS:
     case RPARENTHESIS:
     case INT:
@@ -332,6 +337,7 @@ public class parsername implements parsernameConstants {
     case INTEGER:
     case FLOAT:
     case SEMICOLON:
+    case COMMA:
     case LPARENTHESIS:
     case RPARENTHESIS:
     case INT:
@@ -1595,6 +1601,7 @@ public class parsername implements parsernameConstants {
       case INTEGER:
       case FLOAT:
       case SEMICOLON:
+      case COMMA:
       case LPARENTHESIS:
       case RPARENTHESIS:
       case INT:
@@ -1651,6 +1658,7 @@ public class parsername implements parsernameConstants {
       case INTEGER:
       case FLOAT:
       case SEMICOLON:
+      case COMMA:
       case LPARENTHESIS:
       case RPARENTHESIS:
       case INT:
@@ -1846,6 +1854,7 @@ public class parsername implements parsernameConstants {
       case INTEGER:
       case FLOAT:
       case SEMICOLON:
+      case COMMA:
       case LPARENTHESIS:
       case RPARENTHESIS:
       case INT:
@@ -1901,17 +1910,16 @@ public class parsername implements parsernameConstants {
         Map<String,Object> localVariables = new HashMap<String,Object>();
         Token tmp;
         int parameter = 1;
-        Map<String, Object> data;
-        List<Token> body = new ArrayList<Token>();
+        Map<String, Object> data = null;
+        Object procedure_contents;
         boolean found = false;
     tmp = jj_consume_token(PROCEDURE_VARNAME);
+                //Recover data gathered during declaration
                 data = (Map<String, Object>) fps.get(tmp.toString()); System.out.println(data);
-                //TO DO - > REWRITE DATA AS LOCAL VARIABLES
-                //Convert object into a map
-                //Or somehow extract data from an object
-                //Or create a special map of maps with global range, accessible only at procedure/function calls
-                //Last one sounds promising 
-
+                //Check if procedure exists at all
+                if(data == null) {
+                        System.out.println("Procedure with this name does not exist, exiting"); System.exit(-1);
+                }
     if (jj_2_4(2)) {
       jj_consume_token(LPARENTHESIS);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1998,11 +2006,37 @@ public class parsername implements parsernameConstants {
         throw new ParseException();
       }
     }
+                //Safety check - case of too few parameters passed to the function
                 for (Map.Entry<String, Object> entry : data.entrySet()) {
                 if (entry.getValue().equals(parameter)) {
                                 System.out.println("Too few parameters passed to the function, exiting."); System.exit(-1);
                         }
                 }
+
+                //Time to execute the procedure
+                //Get the contents of the procecure into body
+                procedure_contents = data.get("BODY").toString();
+
+                //Convert condition and body into a string
+                /*
+	  	String body_string = "";  
+	  	for (int i = 0; i < procedure_contents.size(); i++) {
+	  	  	body_string+=" ";
+		    body_string+=procedure_contents.get(i).toString();
+		}*/
+
+                    System.out.println("AAA"+procedure_contents.toString());
+
+
+        /*
+		//Convert string into input stream and pass to the parser
+		InputStream bodyStream = new ByteArrayInputStream(body_string.getBytes());
+		parsername parser_body = new parsername(bodyStream);
+
+		System.out.println("\nStarting procedure execution");
+	  	System.out.println("Body: "+body_string);
+		*/
+
 
                 System.out.println(localVariables);
                 //TO DO - > COPY CODE INTO LIST
@@ -2182,20 +2216,6 @@ public class parsername implements parsernameConstants {
     return false;
   }
 
-  private boolean jj_3_4() {
-    if (jj_scan_token(LPARENTHESIS)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(40)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(42)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(41)) return true;
-    }
-    }
-    return false;
-  }
-
   private boolean jj_3R_59() {
     Token xsp;
     xsp = jj_scanpos;
@@ -2214,6 +2234,20 @@ public class parsername implements parsernameConstants {
 
   private boolean jj_3R_41() {
     if (jj_3R_58()) return true;
+    return false;
+  }
+
+  private boolean jj_3_4() {
+    if (jj_scan_token(LPARENTHESIS)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(40)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(42)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(41)) return true;
+    }
+    }
     return false;
   }
 
@@ -2415,7 +2449,7 @@ public class parsername implements parsernameConstants {
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0xff47fe00,0xff47fe00,0xff47fe00,0xff47fe00,0x20400,0x800000,0x20400,0x60000000,0x800000,0x60000000,0x40400,0x800000,0x40400,0x1c000000,0x1c000000,0x9c000000,0x61010000,0x9c000000,0x600,0x600,0x1800,0x1800,0x1020400,0x1020000,0x8000,0x4000,0x61010000,0x61000000,0x600,0x600,0x1800,0x1800,0x1040400,0x1040000,0x0,0x0,0x0,0x0,0x61010000,0x9c000000,0x0,0x61010000,0x9c000000,0x9c000000,0x0,0x0,0x9c000000,0x61010000,0xff47fe00,0xff47fe00,0x1c000000,0x800000,0x1c000000,0x1000000,0xff47fe00,0x0,0x800000,0x0,0x1000000,};
+      jj_la1_0 = new int[] {0xffc7fe00,0xffc7fe00,0xffc7fe00,0xffc7fe00,0x20400,0x800000,0x20400,0x60000000,0x800000,0x60000000,0x40400,0x800000,0x40400,0x1c000000,0x1c000000,0x9c000000,0x61010000,0x9c000000,0x600,0x600,0x1800,0x1800,0x1020400,0x1020000,0x8000,0x4000,0x61010000,0x61000000,0x600,0x600,0x1800,0x1800,0x1040400,0x1040000,0x0,0x0,0x0,0x0,0x61010000,0x9c000000,0x0,0x61010000,0x9c000000,0x9c000000,0x0,0x0,0x9c000000,0x61010000,0xffc7fe00,0xffc7fe00,0x1c000000,0x800000,0x1c000000,0x1000000,0xffc7fe00,0x0,0x800000,0x0,0x1000000,};
    }
    private static void jj_la1_init_1() {
       jj_la1_1 = new int[] {0x3fff79f,0x3fff7df,0x3fff7bf,0x3fff7ff,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xa0000000,0xa0000000,0xf90,0x3fff200,0xc90,0x0,0x0,0x0,0x0,0x100,0x100,0x0,0x0,0x200,0x200,0x0,0x0,0x0,0x0,0x400,0x400,0x3fff000,0x3000,0xfc000,0x3f00000,0x3fff200,0xf90,0x2,0x3fff200,0xf90,0xf90,0x9,0x700,0xf90,0x3fff200,0x3fff7df,0x3fff7bf,0x0,0x0,0x0,0x0,0x3fff7ff,0x700,0x0,0x700,0x0,};

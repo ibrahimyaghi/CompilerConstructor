@@ -185,7 +185,7 @@ Token any():{Token t;}
 	  | t = <INT_VARNAME> | t = <BOOL_VARNAME> | t = <FLOAT_VARNAME>
 	  | t = <PLUS> | t = <MINUS> | t = <MULTIPLY> | t = <DIVIDE>
 	  | t = <INT> | t = <DOUBLE> | t = < BOOLEAN> | t = <TRUE> | t = <FALSE>
-	  | t = <EQUAL> | t = <SEMICOLON>
+	  | t = <EQUAL> | t = <SEMICOLON> | t = <COMMA>
 	  | t = <LPARENTHESIS> | t = <RPARENTHESIS>
 	  | t = <AND> | t = <OR> | t = <NOT>
 	  | t = <IF> | t = <ELSE> | t = <ELSEIF> | t = <THEN> | t = <ENDIF> 
@@ -793,22 +793,19 @@ void procedureCall(Map map, Map fps):
   	Map<String,Object> localVariables = new HashMap<String,Object>();
 	Token tmp;
 	int parameter = 1;
-	Map<String, Object> data;
-	List<Token> body = new ArrayList<Token>();
+	Map<String, Object> data = null;
+	Object procedure_contents;
 	boolean found = false;
 }
 {
 	tmp=<PROCEDURE_VARNAME>
 	{
+	  	//Recover data gathered during declaration
 	  	data = (Map<String, Object>) fps.get(tmp.toString()); System.out.println(data);
-	   	//TO DO - > REWRITE DATA AS LOCAL VARIABLES
-	   	//Convert object into a map
-	   	//Or somehow extract data from an object
-	   	//Or create a special map of maps with global range, accessible only at procedure/function calls
-	   	//Last one sounds promising 
-
-	   	
-
+	  	//Check if procedure exists at all
+	  	if(data == null) {
+			System.out.println("Procedure with this name does not exist, exiting"); System.exit(-1);
+	  	}
 	}
 	(	LOOKAHEAD(2)
 	  	(	
@@ -861,7 +858,32 @@ void procedureCall(Map map, Map fps):
 				System.out.println("Too few parameters passed to the function, exiting."); System.exit(-1);
 			}
 		}
-			  	
+
+		//Time to execute the procedure
+		//Get the contents of the procecure into body
+		procedure_contents = data.get("BODY").toString();
+
+	  	//Convert condition and body into a string
+	  	/*
+	  	String body_string = "";  
+	  	for (int i = 0; i < procedure_contents.size(); i++) {
+	  	  	body_string+=" ";
+		    body_string+=procedure_contents.get(i).toString();
+		}*/
+
+		    System.out.println("AAA"+procedure_contents.toString());        
+		
+
+	/*
+		//Convert string into input stream and pass to the parser
+		InputStream bodyStream = new ByteArrayInputStream(body_string.getBytes());
+		parsername parser_body = new parsername(bodyStream);
+
+		System.out.println("\nStarting procedure execution");
+	  	System.out.println("Body: "+body_string);
+		*/
+
+	
 		System.out.println(localVariables);
 		//TO DO - > COPY CODE INTO LIST
 	}
