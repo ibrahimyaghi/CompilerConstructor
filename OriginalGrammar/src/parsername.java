@@ -31,8 +31,10 @@ public class parsername implements parsernameConstants {
     {
         //Map for global variables
         Map<String,Object> map=new HashMap<String,Object>();
+                //Map for global functions and procedures
+        Map<String,Map> fps=new HashMap<String,Map>();
         //This is the entry point for our language - sth like "main"
-        parser.multipleLines(map);
+        parser.multipleLines(map, fps);
     }
     catch (Exception e)
     {
@@ -549,7 +551,7 @@ public class parsername implements parsernameConstants {
 /*---------------------------------------------------------------------*/
 /* SINGLE/MULTIPLE LINES STARTS HERE*/
 /*---------------------------------------------------------------------*/
-  final public void multipleLines(Map map) throws ParseException {
+  final public void multipleLines(Map map, Map fps) throws ParseException {
  boolean a, execute = true; int b; Map<String,Object> mainLocal = new HashMap<String,Object>();
     jj_consume_token(58);
     jj_consume_token(VARNAME);
@@ -573,7 +575,7 @@ public class parsername implements parsernameConstants {
                  System.out.println("Integer function recognized");
         break;
       case 61:
-        procedureDeclaration(map, map);
+        procedureDeclaration(map, map, fps);
                  System.out.println("Procedure recognized");
         break;
       case INT:
@@ -615,13 +617,13 @@ public class parsername implements parsernameConstants {
         jj_la1[15] = jj_gen;
         break label_5;
       }
-      line(map, true, mainLocal);
+      line(map, true, mainLocal, fps);
     }
     jj_consume_token(60);
          System.out.println("Exiting main\u005cn") ;{if (true) return;}
   }
 
-  final public void line(Map map, boolean execute, Map local) throws ParseException {
+  final public void line(Map map, boolean execute, Map local, Map fps) throws ParseException {
  boolean a; int b; double c; Token s;
     if (jj_2_1(3)) {
       s = jj_consume_token(BOOL_VARNAME);
@@ -632,7 +634,7 @@ public class parsername implements parsernameConstants {
       case TRUE:
       case FALSE:
       case BOOL_VARNAME:
-        a = booleanExpression(map, local);
+        a = booleanExpression(map, local, fps);
         break;
       case 44:
       case 45:
@@ -648,7 +650,7 @@ public class parsername implements parsernameConstants {
       case 55:
       case 56:
       case 57:
-        a = comparison(map, local);
+        a = comparison(map, local, fps);
         break;
       default:
         jj_la1[16] = jj_gen;
@@ -671,7 +673,7 @@ public class parsername implements parsernameConstants {
     } else if (jj_2_2(3)) {
       s = jj_consume_token(INT_VARNAME);
       jj_consume_token(EQUAL);
-      b = integerExpression(map, local);
+      b = integerExpression(map, local, fps);
       jj_consume_token(SEMICOLON);
     if(!execute){{if (true) return;}}
     if(!map.containsKey(s.toString())){
@@ -690,7 +692,7 @@ public class parsername implements parsernameConstants {
       case FLOAT_VARNAME:
         s = jj_consume_token(FLOAT_VARNAME);
         jj_consume_token(EQUAL);
-        c = floatExpression(map, local);
+        c = floatExpression(map, local, fps);
         jj_consume_token(SEMICOLON);
     if(!execute){{if (true) return;}}
     if(!map.containsKey(s.toString())){
@@ -718,15 +720,15 @@ public class parsername implements parsernameConstants {
                                          System.out.println("Local variable(s) declared: " + execute); {if (true) return;}
         break;
       case IF:
-        ifStatement(map, local);
-                                                         System.out.println("End of IF statement\u005cn"); {if (true) return;}
+        ifStatement(map, local, fps);
+                                                 System.out.println("End of IF statement\u005cn"); {if (true) return;}
         break;
       case WHILE:
-        whileLoop(map, local);
-                                                         System.out.println("End of loop\u005cn"); {if (true) return;}
+        whileLoop(map, local, fps);
+                                                 System.out.println("End of loop\u005cn"); {if (true) return;}
         break;
       case PROCEDURE_VARNAME:
-        procedureCall(map);
+        procedureCall(map, fps);
                                                          System.out.println("End of procedure execution\u005cn"); {if (true) return;}
         break;
       case PRINT:
@@ -744,9 +746,9 @@ public class parsername implements parsernameConstants {
 /*---------------------------------------------------------------------*/
 /*INTEGER ARITHMETIC STATS HERE*/
 /*---------------------------------------------------------------------*/
-  final public int integerExpression(Map map, Map local) throws ParseException {
+  final public int integerExpression(Map map, Map local, Map fps) throws ParseException {
  int a, b;
-    a = aterm(map, local);
+    a = aterm(map, local, fps);
     label_6:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -761,13 +763,13 @@ public class parsername implements parsernameConstants {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case PLUS:
         jj_consume_token(PLUS);
-        b = aterm(map, local);
-                                    a += b;
+        b = aterm(map, local, fps);
+                                         a += b;
         break;
       case MINUS:
         jj_consume_token(MINUS);
-        b = aterm(map, local);
-                                                                                 a -= b;
+        b = aterm(map, local, fps);
+                                                                                           a -= b;
         break;
       default:
         jj_la1[19] = jj_gen;
@@ -779,9 +781,9 @@ public class parsername implements parsernameConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public int aterm(Map map, Map local) throws ParseException {
+  final public int aterm(Map map, Map local, Map fps) throws ParseException {
  int a, b;
-    a = asubterm(map, local);
+    a = asubterm(map, local, fps);
     label_7:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -796,13 +798,13 @@ public class parsername implements parsernameConstants {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case MULTIPLY:
         jj_consume_token(MULTIPLY);
-        b = asubterm(map, local);
-                                           a *= b;
+        b = asubterm(map, local, fps);
+                                                a *= b;
         break;
       case DIVIDE:
         jj_consume_token(DIVIDE);
-        b = asubterm(map, local);
-                                                                                           a /= b;
+        b = asubterm(map, local, fps);
+                                                                                                     a /= b;
         break;
       default:
         jj_la1[21] = jj_gen;
@@ -814,19 +816,19 @@ public class parsername implements parsernameConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public int asubterm(Map map, Map local) throws ParseException {
+  final public int asubterm(Map map, Map local, Map fps) throws ParseException {
  int a;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case MINUS:
       jj_consume_token(MINUS);
-      a = abase(map, local);
-                                   {if (true) return -a;}
+      a = abase(map, local, fps);
+                                        {if (true) return -a;}
       break;
     case INTEGER:
     case LPARENTHESIS:
     case INT_VARNAME:
-      a = abase(map, local);
-                                                                        {if (true) return a;}
+      a = abase(map, local, fps);
+                                                                                  {if (true) return a;}
       break;
     default:
       jj_la1[22] = jj_gen;
@@ -836,7 +838,7 @@ public class parsername implements parsernameConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public int abase(Map map, Map local) throws ParseException {
+  final public int abase(Map map, Map local, Map fps) throws ParseException {
  int a;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case INTEGER:
@@ -845,7 +847,7 @@ public class parsername implements parsernameConstants {
       break;
     case LPARENTHESIS:
       jj_consume_token(LPARENTHESIS);
-      a = integerExpression(map, local);
+      a = integerExpression(map, local, fps);
       jj_consume_token(RPARENTHESIS);
       break;
     case INT_VARNAME:
@@ -876,9 +878,9 @@ public class parsername implements parsernameConstants {
 /*---------------------------------------------------------------------*/
 /*BOOLEAN ARITHMETIC STATS HERE*/
 /*---------------------------------------------------------------------*/
-  final public boolean booleanExpression(Map map, Map local) throws ParseException {
+  final public boolean booleanExpression(Map map, Map local, Map fps) throws ParseException {
  boolean a,b;
-    a = bterm(map, local);
+    a = bterm(map, local, fps);
     label_8:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -890,16 +892,16 @@ public class parsername implements parsernameConstants {
         break label_8;
       }
       jj_consume_token(OR);
-      b = bterm(map, local);
-                                 a = a || b;
+      b = bterm(map, local, fps);
+                                      a = a || b;
     }
     {if (true) return a;}
     throw new Error("Missing return statement in function");
   }
 
-  final public boolean bterm(Map map, Map local) throws ParseException {
+  final public boolean bterm(Map map, Map local, Map fps) throws ParseException {
  boolean a, b;
-    a = bsubterm(map, local);
+    a = bsubterm(map, local, fps);
     label_9:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -911,27 +913,27 @@ public class parsername implements parsernameConstants {
         break label_9;
       }
       jj_consume_token(AND);
-      b = bsubterm(map, local);
-                                    a = a && b;
+      b = bsubterm(map, local, fps);
+                                         a = a && b;
     }
    {if (true) return a;}
     throw new Error("Missing return statement in function");
   }
 
-  final public boolean bsubterm(Map map, Map local) throws ParseException {
+  final public boolean bsubterm(Map map, Map local, Map fps) throws ParseException {
  boolean a;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case NOT:
       jj_consume_token(NOT);
-      a = bbase(map, local);
-                               {if (true) return !a;}
+      a = bbase(map, local, fps);
+                                    {if (true) return !a;}
       break;
     case LPARENTHESIS:
     case TRUE:
     case FALSE:
     case BOOL_VARNAME:
-      a = bbase(map, local);
-                                                                    {if (true) return a;}
+      a = bbase(map, local, fps);
+                                                                              {if (true) return a;}
       break;
     default:
       jj_la1[26] = jj_gen;
@@ -941,7 +943,7 @@ public class parsername implements parsernameConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public boolean bbase(Map map, Map local) throws ParseException {
+  final public boolean bbase(Map map, Map local, Map fps) throws ParseException {
  boolean a;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case TRUE:
@@ -954,7 +956,7 @@ public class parsername implements parsernameConstants {
       break;
     case LPARENTHESIS:
       jj_consume_token(LPARENTHESIS);
-      a = booleanExpression(map, local);
+      a = booleanExpression(map, local, fps);
       jj_consume_token(RPARENTHESIS);
       break;
     case BOOL_VARNAME:
@@ -985,9 +987,9 @@ public class parsername implements parsernameConstants {
 /*---------------------------------------------------------------------*/
 /*FLOAT ARITHMETIC STATS HERE*/
 /*---------------------------------------------------------------------*/
-  final public double floatExpression(Map map, Map local) throws ParseException {
+  final public double floatExpression(Map map, Map local, Map fps) throws ParseException {
  double a, b;
-    a = fterm(map, local);
+    a = fterm(map, local, fps);
     label_10:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1002,13 +1004,13 @@ public class parsername implements parsernameConstants {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case PLUS:
         jj_consume_token(PLUS);
-        b = fterm(map, local);
-                                      a += b;
+        b = fterm(map, local, fps);
+                                           a += b;
         break;
       case MINUS:
         jj_consume_token(MINUS);
-        b = fterm(map, local);
-                                                                                    a -= b;
+        b = fterm(map, local, fps);
+                                                                                              a -= b;
         break;
       default:
         jj_la1[29] = jj_gen;
@@ -1020,9 +1022,9 @@ public class parsername implements parsernameConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public double fterm(Map map, Map local) throws ParseException {
+  final public double fterm(Map map, Map local, Map fps) throws ParseException {
  double a, b;
-    a = fsubterm(map, local);
+    a = fsubterm(map, local, fps);
     label_11:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1037,13 +1039,13 @@ public class parsername implements parsernameConstants {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case MULTIPLY:
         jj_consume_token(MULTIPLY);
-        b = fsubterm(map, local);
-                                           a *= b;
+        b = fsubterm(map, local, fps);
+                                                a *= b;
         break;
       case DIVIDE:
         jj_consume_token(DIVIDE);
-        b = fsubterm(map, local);
-                                                                                           a /= b;
+        b = fsubterm(map, local, fps);
+                                                                                                     a /= b;
         break;
       default:
         jj_la1[31] = jj_gen;
@@ -1055,19 +1057,19 @@ public class parsername implements parsernameConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public double fsubterm(Map map, Map local) throws ParseException {
+  final public double fsubterm(Map map, Map local, Map fps) throws ParseException {
  double a;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case MINUS:
       jj_consume_token(MINUS);
-      a = fbase(map, local);
-                                   {if (true) return -a;}
+      a = fbase(map, local, fps);
+                                        {if (true) return -a;}
       break;
     case FLOAT:
     case LPARENTHESIS:
     case FLOAT_VARNAME:
-      a = fbase(map, local);
-                                                                        {if (true) return a;}
+      a = fbase(map, local, fps);
+                                                                                  {if (true) return a;}
       break;
     default:
       jj_la1[32] = jj_gen;
@@ -1077,7 +1079,7 @@ public class parsername implements parsernameConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public double fbase(Map map, Map local) throws ParseException {
+  final public double fbase(Map map, Map local, Map fps) throws ParseException {
  double a;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case FLOAT:
@@ -1086,7 +1088,7 @@ public class parsername implements parsernameConstants {
       break;
     case LPARENTHESIS:
       jj_consume_token(LPARENTHESIS);
-      a = floatExpression(map, local);
+      a = floatExpression(map, local, fps);
       jj_consume_token(RPARENTHESIS);
       break;
     case FLOAT_VARNAME:
@@ -1117,12 +1119,12 @@ public class parsername implements parsernameConstants {
 /*---------------------------------------------------------------------*/
 /*COMPARISON STATEMENTS STATS HERE*/
 /*---------------------------------------------------------------------*/
-  final public boolean comparison(Map map, Map local) throws ParseException {
+  final public boolean comparison(Map map, Map local, Map fps) throws ParseException {
  boolean a;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case 44:
     case 45:
-      a = booleanComparison(map, local);
+      a = booleanComparison(map, local, fps);
       break;
     case 46:
     case 47:
@@ -1130,7 +1132,7 @@ public class parsername implements parsernameConstants {
     case 49:
     case 50:
     case 51:
-      a = integerComparison(map, local);
+      a = integerComparison(map, local, fps);
       break;
     case 52:
     case 53:
@@ -1138,7 +1140,7 @@ public class parsername implements parsernameConstants {
     case 55:
     case 56:
     case 57:
-      a = floatComparison(map, local);
+      a = floatComparison(map, local, fps);
       break;
     default:
       jj_la1[34] = jj_gen;
@@ -1149,20 +1151,20 @@ public class parsername implements parsernameConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public boolean booleanComparison(Map map, Map local) throws ParseException {
+  final public boolean booleanComparison(Map map, Map local, Map fps) throws ParseException {
  boolean a, b;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case 44:
       jj_consume_token(44);
-      a = booleanExpression(map, local);
-      b = booleanExpression(map, local);
-                                                                                    {if (true) return a == b;}
+      a = booleanExpression(map, local, fps);
+      b = booleanExpression(map, local, fps);
+                                                                                              {if (true) return a == b;}
       break;
     case 45:
       jj_consume_token(45);
-      a = booleanExpression(map, local);
-      b = booleanExpression(map, local);
-                                                                                    {if (true) return a != b;}
+      a = booleanExpression(map, local, fps);
+      b = booleanExpression(map, local, fps);
+                                                                                              {if (true) return a != b;}
       break;
     default:
       jj_la1[35] = jj_gen;
@@ -1172,44 +1174,44 @@ public class parsername implements parsernameConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public boolean integerComparison(Map map, Map local) throws ParseException {
+  final public boolean integerComparison(Map map, Map local, Map fps) throws ParseException {
  int a, b;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case 46:
       jj_consume_token(46);
-      a = integerExpression(map, local);
-      b = integerExpression(map, local);
-                                                                                    {if (true) return a == b;}
+      a = integerExpression(map, local, fps);
+      b = integerExpression(map, local, fps);
+                                                                                              {if (true) return a == b;}
       break;
     case 47:
       jj_consume_token(47);
-      a = integerExpression(map, local);
-      b = integerExpression(map, local);
-                                                                                    {if (true) return a != b;}
+      a = integerExpression(map, local, fps);
+      b = integerExpression(map, local, fps);
+                                                                                              {if (true) return a != b;}
       break;
     case 48:
       jj_consume_token(48);
-      a = integerExpression(map, local);
-      b = integerExpression(map, local);
-                                                                                    {if (true) return a >= b;}
+      a = integerExpression(map, local, fps);
+      b = integerExpression(map, local, fps);
+                                                                                              {if (true) return a >= b;}
       break;
     case 49:
       jj_consume_token(49);
-      a = integerExpression(map, local);
-      b = integerExpression(map, local);
-                                                                                    {if (true) return a <= b;}
+      a = integerExpression(map, local, fps);
+      b = integerExpression(map, local, fps);
+                                                                                              {if (true) return a <= b;}
       break;
     case 50:
       jj_consume_token(50);
-      a = integerExpression(map, local);
-      b = integerExpression(map, local);
-                                                                                    {if (true) return a > b;}
+      a = integerExpression(map, local, fps);
+      b = integerExpression(map, local, fps);
+                                                                                              {if (true) return a > b;}
       break;
     case 51:
       jj_consume_token(51);
-      a = integerExpression(map, local);
-      b = integerExpression(map, local);
-                                                                                    {if (true) return a < b;}
+      a = integerExpression(map, local, fps);
+      b = integerExpression(map, local, fps);
+                                                                                              {if (true) return a < b;}
       break;
     default:
       jj_la1[36] = jj_gen;
@@ -1219,44 +1221,44 @@ public class parsername implements parsernameConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public boolean floatComparison(Map map, Map local) throws ParseException {
+  final public boolean floatComparison(Map map, Map local, Map fps) throws ParseException {
  double a, b;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case 52:
       jj_consume_token(52);
-      a = floatExpression(map, local);
-      b = floatExpression(map, local);
-                                                                                {if (true) return a == b;}
+      a = floatExpression(map, local, fps);
+      b = floatExpression(map, local, fps);
+                                                                                          {if (true) return a == b;}
       break;
     case 53:
       jj_consume_token(53);
-      a = floatExpression(map, local);
-      b = floatExpression(map, local);
-                                                                                {if (true) return a != b;}
+      a = floatExpression(map, local, fps);
+      b = floatExpression(map, local, fps);
+                                                                                          {if (true) return a != b;}
       break;
     case 54:
       jj_consume_token(54);
-      a = floatExpression(map, local);
-      b = floatExpression(map, local);
-                                                                                {if (true) return a >= b;}
+      a = floatExpression(map, local, fps);
+      b = floatExpression(map, local, fps);
+                                                                                          {if (true) return a >= b;}
       break;
     case 55:
       jj_consume_token(55);
-      a = floatExpression(map, local);
-      b = floatExpression(map, local);
-                                                                                {if (true) return a <= b;}
+      a = floatExpression(map, local, fps);
+      b = floatExpression(map, local, fps);
+                                                                                          {if (true) return a <= b;}
       break;
     case 56:
       jj_consume_token(56);
-      a = floatExpression(map, local);
-      b = floatExpression(map, local);
-                                                                                {if (true) return a > b;}
+      a = floatExpression(map, local, fps);
+      b = floatExpression(map, local, fps);
+                                                                                          {if (true) return a > b;}
       break;
     case 57:
       jj_consume_token(57);
-      a = floatExpression(map, local);
-      b = floatExpression(map, local);
-                                                                                {if (true) return a < b;}
+      a = floatExpression(map, local, fps);
+      b = floatExpression(map, local, fps);
+                                                                                          {if (true) return a < b;}
       break;
     default:
       jj_la1[37] = jj_gen;
@@ -1269,7 +1271,7 @@ public class parsername implements parsernameConstants {
 /*---------------------------------------------------------------------*/
 /*IF STATEMENT STARTS HERE*/
 /*---------------------------------------------------------------------*/
-  final public void ifStatement(Map map, Map locals) throws ParseException {
+  final public void ifStatement(Map map, Map locals, Map fps) throws ParseException {
         boolean execute = false; boolean done = false;
         Map<String,Object> localVariables = new HashMap<String,Object>();
 
@@ -1295,14 +1297,14 @@ public class parsername implements parsernameConstants {
     case 55:
     case 56:
     case 57:
-      execute = comparison(map, localVariables);
+      execute = comparison(map, localVariables, fps);
       break;
     case NOT:
     case LPARENTHESIS:
     case TRUE:
     case FALSE:
     case BOOL_VARNAME:
-      execute = booleanExpression(map, localVariables);
+      execute = booleanExpression(map, localVariables, fps);
       break;
     default:
       jj_la1[38] = jj_gen;
@@ -1330,7 +1332,7 @@ public class parsername implements parsernameConstants {
         jj_la1[39] = jj_gen;
         break label_12;
       }
-      line(map, execute, localVariables);
+      line(map, execute, localVariables, fps);
     }
     label_13:
     while (true) {
@@ -1358,14 +1360,14 @@ public class parsername implements parsernameConstants {
       case 55:
       case 56:
       case 57:
-        execute = comparison(map, localVariables);
+        execute = comparison(map, localVariables, fps);
         break;
       case NOT:
       case LPARENTHESIS:
       case TRUE:
       case FALSE:
       case BOOL_VARNAME:
-        execute = booleanExpression(map, localVariables);
+        execute = booleanExpression(map, localVariables, fps);
         break;
       default:
         jj_la1[41] = jj_gen;
@@ -1393,7 +1395,7 @@ public class parsername implements parsernameConstants {
           jj_la1[42] = jj_gen;
           break label_14;
         }
-        line(map, execute, localVariables);
+        line(map, execute, localVariables, fps);
       }
     }
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1420,7 +1422,7 @@ public class parsername implements parsernameConstants {
           jj_la1[43] = jj_gen;
           break label_15;
         }
-        line(map, !done, localVariables);
+        line(map, !done, localVariables, fps);
       }
       jj_consume_token(ENDIF);
       break;
@@ -1506,7 +1508,7 @@ public class parsername implements parsernameConstants {
 /*---------------------------------------------------------------------*/
 /*WHILE START HERE*/
 /*---------------------------------------------------------------------*/
-  final public void linesInLoop(Map map, Map local) throws ParseException {
+  final public void linesInLoop(Map map, Map local, Map fps) throws ParseException {
     label_16:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1526,12 +1528,12 @@ public class parsername implements parsernameConstants {
         jj_la1[46] = jj_gen;
         break label_16;
       }
-      line(map, true, local);
+      line(map, true, local, fps);
     }
   }
 
-  final public boolean conditionInLoop(Map map, Map local) throws ParseException {
-                                              boolean execute;
+  final public boolean conditionInLoop(Map map, Map local, Map fps) throws ParseException {
+                                                       boolean execute;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case 44:
     case 45:
@@ -1547,14 +1549,14 @@ public class parsername implements parsernameConstants {
     case 55:
     case 56:
     case 57:
-      execute = comparison(map, local);
+      execute = comparison(map, local, fps);
       break;
     case NOT:
     case LPARENTHESIS:
     case TRUE:
     case FALSE:
     case BOOL_VARNAME:
-      execute = booleanExpression(map, local);
+      execute = booleanExpression(map, local, fps);
       break;
     default:
       jj_la1[47] = jj_gen;
@@ -1565,7 +1567,7 @@ public class parsername implements parsernameConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public void whileLoop(Map map, Map locals) throws ParseException {
+  final public void whileLoop(Map map, Map locals, Map fps) throws ParseException {
         boolean execute = false;
         Map<String,Object> localVariables = new HashMap<String,Object>();
 
@@ -1717,8 +1719,8 @@ public class parsername implements parsernameConstants {
 
                 try
             {
-                while(parser_condition.conditionInLoop(map, localVariables)){
-                                parser_body.linesInLoop(map, localVariables);
+                while(parser_condition.conditionInLoop(map, localVariables, fps)){
+                                parser_body.linesInLoop(map, localVariables, fps);
                                 System.out.println("Loop interation executed");
 
                                 //Reseting input stream and parsers for potential next iteration
@@ -1754,7 +1756,7 @@ public class parsername implements parsernameConstants {
 /*---------------------------------------------------------------------*/
 /*PROCEDURE START HERE*/
 /*---------------------------------------------------------------------*/
-  final public void procedureDeclaration(Map map, Map localvariables) throws ParseException {
+  final public void procedureDeclaration(Map map, Map localvariables, Map fps) throws ParseException {
         Map<String,Object> localVariables = new HashMap<String,Object>();
         Token tmp = null, s;
         List<Token> body = new ArrayList<Token>();
@@ -1895,7 +1897,7 @@ public class parsername implements parsernameConstants {
   }
 
 //We only accept variables as variables in the procedure call 
-  final public void procedureCall(Map map) throws ParseException {
+  final public void procedureCall(Map map, Map fps) throws ParseException {
         Map<String,Object> localVariables = new HashMap<String,Object>();
         Token tmp;
         int parameter = 1;
@@ -1905,16 +1907,21 @@ public class parsername implements parsernameConstants {
                 data = map.get(tmp.toString()); System.out.println(data);
                 //TO DO - > REWRITE DATA AS LOCAL VARIABLES
                 //Convert object into a map
-                Field[] fields = data.getClass().getDeclaredFields();
-                for (Field field : fields) {
-                    field.setAccessible(true);
-                    String name = field.getName();
-                    Object value = null;
-                    try { value = field.get(data); } catch(Exception e) {  System.out.println("XDD"); System.exit(-1);}
-                    if (value != null) {
-                        System.out.println(name + " = " + value);
-                    }
-                }
+                //Or somehow extract data from an object
+                //Or create a special map of maps with global range, accessible only at procedure/function calls
+                //Last one sounds promising 
+
+                /*This code does not work
+		Field[] fields = data.getClass().getDeclaredFields();
+		for (Field field : fields) {
+		    field.setAccessible(true);
+		    String name = field.getName();
+		    Object value = null;
+		    try { value = field.get(data); } catch(Exception e) {  System.out.println("XDD"); System.exit(-1);}
+		    if (value != null) {
+		        System.out.println(name + " = " + value);
+		    }
+		}*/
 
         System.out.println(localVariables);
                 //TO DO - > COPY CODE INTO LIST
@@ -2085,16 +2092,6 @@ public class parsername implements parsernameConstants {
     return false;
   }
 
-  private boolean jj_3R_26() {
-    if (jj_scan_token(DOUBLE)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_51() {
-    if (jj_scan_token(51)) return true;
-    return false;
-  }
-
   private boolean jj_3_4() {
     if (jj_scan_token(LPARENTHESIS)) return true;
     Token xsp;
@@ -2106,6 +2103,16 @@ public class parsername implements parsernameConstants {
     if (jj_scan_token(41)) return true;
     }
     }
+    return false;
+  }
+
+  private boolean jj_3R_26() {
+    if (jj_scan_token(DOUBLE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_51() {
+    if (jj_scan_token(51)) return true;
     return false;
   }
 
@@ -2197,6 +2204,11 @@ public class parsername implements parsernameConstants {
     return false;
   }
 
+  private boolean jj_3R_41() {
+    if (jj_3R_58()) return true;
+    return false;
+  }
+
   private boolean jj_3R_45() {
     if (jj_scan_token(45)) return true;
     return false;
@@ -2229,11 +2241,6 @@ public class parsername implements parsernameConstants {
 
   private boolean jj_3R_42() {
     if (jj_scan_token(NOT)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_41() {
-    if (jj_3R_58()) return true;
     return false;
   }
 
@@ -2275,15 +2282,15 @@ public class parsername implements parsernameConstants {
     return false;
   }
 
+  private boolean jj_3R_34() {
+    if (jj_3R_39()) return true;
+    return false;
+  }
+
   private boolean jj_3_2() {
     if (jj_scan_token(INT_VARNAME)) return true;
     if (jj_scan_token(EQUAL)) return true;
     if (jj_3R_24()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_34() {
-    if (jj_3R_39()) return true;
     return false;
   }
 
@@ -2336,6 +2343,11 @@ public class parsername implements parsernameConstants {
     return false;
   }
 
+  private boolean jj_3R_43() {
+    if (jj_3R_59()) return true;
+    return false;
+  }
+
   private boolean jj_3R_27() {
     if (jj_scan_token(BOOLEAN)) return true;
     return false;
@@ -2356,11 +2368,6 @@ public class parsername implements parsernameConstants {
     return false;
   }
 
-  private boolean jj_3R_43() {
-    if (jj_3R_59()) return true;
-    return false;
-  }
-
   private boolean jj_3R_30() {
     if (jj_3R_35()) return true;
     return false;
@@ -2371,13 +2378,13 @@ public class parsername implements parsernameConstants {
     return false;
   }
 
-  private boolean jj_3R_24() {
-    if (jj_3R_30()) return true;
+  private boolean jj_3R_33() {
+    if (jj_3R_38()) return true;
     return false;
   }
 
-  private boolean jj_3R_33() {
-    if (jj_3R_38()) return true;
+  private boolean jj_3R_24() {
+    if (jj_3R_30()) return true;
     return false;
   }
 
