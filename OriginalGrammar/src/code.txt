@@ -12,7 +12,7 @@ FLOAT Fc = -1.5, Fd = 2.1, Fe = -1.2;
 
 INT FUNC fun1()
 Ib = 69 * Ib;
-RETURN Ib;
+RETURN Ia;
 ENDFUNC
 
 FLOAT FUNC fun2(FLOAT Fvar1, FLOAT Fvar2)

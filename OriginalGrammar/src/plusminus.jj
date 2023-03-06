@@ -400,7 +400,7 @@ int asubterm(Map map, Map local, Map fps) :
 }
 
 int abase(Map map, Map local, Map fps) :
-{int a; Object tmp;}
+{int a=0; Object tmp;}
 {
   (
     < INTEGER > {a = Integer.parseInt(token.image);} | <LPARENTHESIS> a=integerExpression(map, local, fps) <RPARENTHESIS>
@@ -418,7 +418,7 @@ int abase(Map map, Map local, Map fps) :
 			}
 		}
 	}
-  | tmp = functionCall(map, fps){a = (Integer)tmp;}
+  | tmp = functionCall(map, fps){try{a = (Integer)tmp;}catch(Exception e){System.out.println("Incompatible function return type."); System.exit(-1);}}
   ){return a;}
 }
 
@@ -449,12 +449,12 @@ boolean bsubterm(Map map, Map local, Map fps) :
 }
 
 boolean bbase(Map map, Map local, Map fps) :
-{boolean a; Object tmp;}
+{boolean a = false; Object tmp;}
 {
   (
   <TRUE> {a = Boolean.parseBoolean(token.image);} |
   <FALSE> {a = Boolean.parseBoolean(token.image);} |
-  tmp = functionCall(map, fps){a = (boolean) tmp;}|
+  tmp = functionCall(map, fps){try{a = (boolean) tmp;}catch(Exception e){System.out.println("Incompatible function return type."); System.exit(-1);}}|
   <LPARENTHESIS> a=booleanExpression(map, local, fps) <RPARENTHESIS> |
   < BOOL_VARNAME > { a = true;
 		try {
@@ -500,7 +500,7 @@ double fsubterm(Map map, Map local, Map fps) :
 }
 
 double fbase(Map map, Map local, Map fps) :
-{double a; Object tmp;}
+{double a=0.0; Object tmp;}
 {
   (
     < FLOAT > {a = Double.parseDouble(token.image);} | <LPARENTHESIS> a=floatExpression(map, local, fps) <RPARENTHESIS>
@@ -518,7 +518,7 @@ double fbase(Map map, Map local, Map fps) :
 			}
 		}
 	}
-  | tmp = functionCall(map, fps){a = (Double) tmp;}
+  | tmp = functionCall(map, fps){try{a = (Double) tmp;}catch(Exception e){System.out.println("Incompatible function return type."); System.exit(-1);}}
   )
   {return a;}
 }
@@ -1043,7 +1043,7 @@ Object functionCall(Map map, Map fps):
 		parsername parser_body 		= new parsername(bodyStream);
 		parsername parser_return 	= new parsername(returnStream);
 
-		System.out.println("\nStarting procedure execution");
+		System.out.println("\nStarting function execution");
 	  	System.out.println("Body: "+procedure_contents);
 	  	System.out.println("Return: "+return_contents);
 
@@ -1051,23 +1051,38 @@ Object functionCall(Map map, Map fps):
 	    {
 	      	//Perform body of the function
 			parser_body.linesInLoop(map, localVariables, fps);
-			Integer a; Double b; Boolean c;
+			Integer a = 0; Double b = 0.0; Boolean c = false;
 
 				
 			System.out.println("Local vars: "+localVariables);
 			//Return a value
 			if(data.get("TYPE").toString().equals("INT")) {
-				a = parser_return.integerExpression(map, localVariables, fps);
+			  	try { 
+					a = parser_return.integerExpression(map, localVariables, fps);
+				}catch (Exception e){
+					System.out.println("Incorrect return type - should be INT");
+			        System.exit(-1) ;
+				}
 				return a;
 			}
 			else if(data.get("TYPE").toString().equals("FLOAT"))
 			{
-				b = parser_return.floatExpression(map, localVariables, fps);
+			  	try { 
+					b = parser_return.floatExpression(map, localVariables, fps);
+				}catch (Exception e){
+					System.out.println("Incorrect return type - should be FLOAT");
+			        System.exit(-1) ;
+				}
 				return b;
 			}
 			else {
 			  	//TO DO - > ADD COMPARATIVE STATEMENTS HERE
-				c = parser_return.booleanExpression(map, localVariables, fps);
+			  	try { 
+					c = parser_return.booleanExpression(map, localVariables, fps);
+				}catch (Exception e){
+					System.out.println("Incorrect return type - should be BOOLEAN");
+			        System.exit(-1) ;
+				}
 				return c;
 			}
 	    }

@@ -847,7 +847,7 @@ public class parsername implements parsernameConstants {
   }
 
   final public int abase(Map map, Map local, Map fps) throws ParseException {
- int a; Object tmp;
+ int a=0; Object tmp;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case INTEGER:
       jj_consume_token(INTEGER);
@@ -876,7 +876,7 @@ public class parsername implements parsernameConstants {
       break;
     case VARNAME:
       tmp = functionCall(map, fps);
-                                 a = (Integer)tmp;
+                                 try{a = (Integer)tmp;}catch(Exception e){System.out.println("Incompatible function return type."); System.exit(-1);}
       break;
     default:
       jj_la1[23] = jj_gen;
@@ -957,7 +957,7 @@ public class parsername implements parsernameConstants {
   }
 
   final public boolean bbase(Map map, Map local, Map fps) throws ParseException {
- boolean a; Object tmp;
+ boolean a = false; Object tmp;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case TRUE:
       jj_consume_token(TRUE);
@@ -969,7 +969,7 @@ public class parsername implements parsernameConstants {
       break;
     case VARNAME:
       tmp = functionCall(map, fps);
-                               a = (boolean) tmp;
+                               try{a = (boolean) tmp;}catch(Exception e){System.out.println("Incompatible function return type."); System.exit(-1);}
       break;
     case LPARENTHESIS:
       jj_consume_token(LPARENTHESIS);
@@ -1098,7 +1098,7 @@ public class parsername implements parsernameConstants {
   }
 
   final public double fbase(Map map, Map local, Map fps) throws ParseException {
- double a; Object tmp;
+ double a=0.0; Object tmp;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case FLOAT:
       jj_consume_token(FLOAT);
@@ -1127,7 +1127,7 @@ public class parsername implements parsernameConstants {
       break;
     case VARNAME:
       tmp = functionCall(map, fps);
-                                 a = (Double) tmp;
+                                 try{a = (Double) tmp;}catch(Exception e){System.out.println("Incompatible function return type."); System.exit(-1);}
       break;
     default:
       jj_la1[33] = jj_gen;
@@ -2411,7 +2411,7 @@ public class parsername implements parsernameConstants {
                 parsername parser_body          = new parsername(bodyStream);
                 parsername parser_return        = new parsername(returnStream);
 
-                System.out.println("\u005cnStarting procedure execution");
+                System.out.println("\u005cnStarting function execution");
                 System.out.println("Body: "+procedure_contents);
                 System.out.println("Return: "+return_contents);
 
@@ -2419,23 +2419,38 @@ public class parsername implements parsernameConstants {
             {
                 //Perform body of the function
                         parser_body.linesInLoop(map, localVariables, fps);
-                        Integer a; Double b; Boolean c;
+                        Integer a = 0; Double b = 0.0; Boolean c = false;
 
 
                         System.out.println("Local vars: "+localVariables);
                         //Return a value
                         if(data.get("TYPE").toString().equals("INT")) {
-                                a = parser_return.integerExpression(map, localVariables, fps);
+                                try {
+                                        a = parser_return.integerExpression(map, localVariables, fps);
+                                }catch (Exception e){
+                                        System.out.println("Incorrect return type - should be INT");
+                                System.exit(-1) ;
+                                }
                                 {if (true) return a;}
                         }
                         else if(data.get("TYPE").toString().equals("FLOAT"))
                         {
-                                b = parser_return.floatExpression(map, localVariables, fps);
+                                try {
+                                        b = parser_return.floatExpression(map, localVariables, fps);
+                                }catch (Exception e){
+                                        System.out.println("Incorrect return type - should be FLOAT");
+                                System.exit(-1) ;
+                                }
                                 {if (true) return b;}
                         }
                         else {
                                 //TO DO - > ADD COMPARATIVE STATEMENTS HERE
-                                c = parser_return.booleanExpression(map, localVariables, fps);
+                                try {
+                                        c = parser_return.booleanExpression(map, localVariables, fps);
+                                }catch (Exception e){
+                                        System.out.println("Incorrect return type - should be BOOLEAN");
+                                System.exit(-1) ;
+                                }
                                 {if (true) return c;}
                         }
             }
@@ -2501,26 +2516,6 @@ public class parsername implements parsernameConstants {
     try { return !jj_3_7(); }
     catch(LookaheadSuccess ls) { return true; }
     finally { jj_save(6, xla); }
-  }
-
-  private boolean jj_3R_64() {
-    if (jj_scan_token(56)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_63() {
-    if (jj_scan_token(55)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_62() {
-    if (jj_scan_token(54)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_61() {
-    if (jj_scan_token(53)) return true;
-    return false;
   }
 
   private boolean jj_3R_60() {
@@ -2931,6 +2926,26 @@ public class parsername implements parsernameConstants {
 
   private boolean jj_3R_65() {
     if (jj_scan_token(57)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_64() {
+    if (jj_scan_token(56)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_63() {
+    if (jj_scan_token(55)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_62() {
+    if (jj_scan_token(54)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_61() {
+    if (jj_scan_token(53)) return true;
     return false;
   }
 
