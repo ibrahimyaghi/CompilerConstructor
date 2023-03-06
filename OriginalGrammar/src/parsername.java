@@ -1911,7 +1911,6 @@ public class parsername implements parsernameConstants {
         Token tmp;
         int parameter = 1;
         Map<String, Object> data = null;
-        Object procedure_contents;
         boolean found = false;
     tmp = jj_consume_token(PROCEDURE_VARNAME);
                 //Recover data gathered during declaration
@@ -2015,32 +2014,37 @@ public class parsername implements parsernameConstants {
 
                 //Time to execute the procedure
                 //Get the contents of the procecure into body
-                procedure_contents = data.get("BODY").toString();
-
                 //Convert condition and body into a string
-                /*
-	  	String body_string = "";  
-	  	for (int i = 0; i < procedure_contents.size(); i++) {
-	  	  	body_string+=" ";
-		    body_string+=procedure_contents.get(i).toString();
-		}*/
+                String procedure_contents = data.get("BODY").toString();
+                procedure_contents = procedure_contents.replaceAll(", "," ");
+                procedure_contents = procedure_contents.replace("[","");
+                procedure_contents = procedure_contents.replace("]","");
 
-                    System.out.println("AAA"+procedure_contents.toString());
+                //Convert string into input stream and pass to the parser
+                InputStream bodyStream = new ByteArrayInputStream(procedure_contents.getBytes());
+                parsername parser_body = new parsername(bodyStream);
 
+                System.out.println("\u005cnStarting procedure execution");
+                System.out.println("Body: "+procedure_contents);
 
-        /*
-		//Convert string into input stream and pass to the parser
-		InputStream bodyStream = new ByteArrayInputStream(body_string.getBytes());
-		parsername parser_body = new parsername(bodyStream);
+                try
+            {
+                        parser_body.linesInLoop(map, localVariables, fps);
+            }
+            catch (Exception e)
+            {
+                System.out.println("Something went wrong in a procedure - exception detected.");
+                System.out.println(e.getMessage());
+                System.exit(-1) ;
+            }
+            catch (Error e)
+            {
+                System.out.println("Something went wrong in a procedure - error detected.");
+                System.out.println(e.getMessage());
+                System.exit(-1) ;
+            }
 
-		System.out.println("\nStarting procedure execution");
-	  	System.out.println("Body: "+body_string);
-		*/
-
-
-                System.out.println(localVariables);
-                //TO DO - > COPY CODE INTO LIST
-
+                System.out.println("Local vars: "+localVariables);
   }
 
 /*---------------------------------------------------------------------*/

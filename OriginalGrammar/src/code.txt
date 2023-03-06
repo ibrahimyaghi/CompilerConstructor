@@ -24,7 +24,10 @@ ENDPROC
 MAIN
 
 INT Iy = 1;
+
 Pdosth();
+PRINT(Ia);
+
 Pdosth2(Fc, Ia, Bb);
 
 WHILE NEQI Iy 16
