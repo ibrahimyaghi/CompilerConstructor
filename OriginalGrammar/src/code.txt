@@ -39,7 +39,7 @@ PRINT(Fd);
 Fc = fun2(Fd, Fd);
 PRINT(Fc);
 
-ENDMAIN
+ENDMAIN //Comment endmain out to run all the code
 Pdosth();
 PRINT(Ia);
 

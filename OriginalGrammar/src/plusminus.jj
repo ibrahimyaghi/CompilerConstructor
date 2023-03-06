@@ -10,9 +10,13 @@ options
 /* TO DO LIST / BUGS TO FIX 										   */
 /*-----------------------------------------------------------------------
 
-[TO DO] Nested while statement - Ibrahim
+[TO DO] Write code samples using our language
 
-[TO DO] Functions (including local variables) - Amarilda
+[TO DO] Nested while statements
+
+[TO DO] Functions and procedures - take expressions as parameters rather than just variables
+
+[TO DO] Functions - allow return of comparative statements
 
 [TO DO / CHANGE] Extend printing to expression values (Variables for now) + add writing
 
