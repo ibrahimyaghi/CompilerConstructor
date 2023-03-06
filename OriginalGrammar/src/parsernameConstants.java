@@ -150,6 +150,8 @@ public interface parsernameConstants {
     "\"PROC\"",
     "\"ENDPROC\"",
     "\"FUNC\"",
+    "\"RETURN\"",
+    "\"ENDFUNC\"",
   };
 
 }

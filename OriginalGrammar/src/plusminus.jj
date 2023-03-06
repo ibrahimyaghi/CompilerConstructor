@@ -14,8 +14,6 @@ options
 
 [TO DO] Functions (including local variables) - Amarilda
 
-[TO DO] Procedures (including local variables) - Paweł
-
 [TO DO / CHANGE] Extend printing to expression values (Variables for now) + add writing
 
 [MAYBE CHANGE] Delete ELSEIF
@@ -283,10 +281,12 @@ void multipleLines(Map map, Map fps):
   "PROGRAM" <VARNAME>
   
   //Then declaration of global variables and functions
-  (	  IntegerFunction(map)
-  		{System.out.println("Integer function recognized");}
- 	| procedureDeclaration(map, map, fps)
- 		{System.out.println("Procedure recognized");}
+  (
+      LOOKAHEAD(2)
+      functionDeclaration(map, fps)
+  		{System.out.println("Function declared");}
+ 	| procedureDeclaration(map, fps)
+ 		{System.out.println("Procedure declared");}
   	| declareINT(map, execute, map)
   		{System.out.println("Global variable(s) declared: " + execute);}
 	| declareFLOAT(map, execute, map)
@@ -396,7 +396,7 @@ int asubterm(Map map, Map local, Map fps) :
 }
 
 int abase(Map map, Map local, Map fps) :
-{int a;}
+{int a; Object tmp;}
 {
   (
     < INTEGER > {a = Integer.parseInt(token.image);} | <LPARENTHESIS> a=integerExpression(map, local, fps) <RPARENTHESIS>
@@ -414,6 +414,7 @@ int abase(Map map, Map local, Map fps) :
 			}
 		}
 	}
+  | tmp = functionCall(map, fps){a = (Integer)tmp;}
   ){return a;}
 }
 
@@ -444,11 +445,12 @@ boolean bsubterm(Map map, Map local, Map fps) :
 }
 
 boolean bbase(Map map, Map local, Map fps) :
-{boolean a;}
+{boolean a; Object tmp;}
 {
   (
   <TRUE> {a = Boolean.parseBoolean(token.image);} |
   <FALSE> {a = Boolean.parseBoolean(token.image);} |
+  tmp = functionCall(map, fps){a = (boolean) tmp;}|
   <LPARENTHESIS> a=booleanExpression(map, local, fps) <RPARENTHESIS> |
   < BOOL_VARNAME > { a = true;
 		try {
@@ -494,7 +496,7 @@ double fsubterm(Map map, Map local, Map fps) :
 }
 
 double fbase(Map map, Map local, Map fps) :
-{double a;}
+{double a; Object tmp;}
 {
   (
     < FLOAT > {a = Double.parseDouble(token.image);} | <LPARENTHESIS> a=floatExpression(map, local, fps) <RPARENTHESIS>
@@ -512,6 +514,7 @@ double fbase(Map map, Map local, Map fps) :
 			}
 		}
 	}
+  | tmp = functionCall(map, fps){a = (Double) tmp;}
   )
   {return a;}
 }
@@ -751,7 +754,7 @@ void whileLoop(Map map, Map locals, Map fps):
 /*---------------------------------------------------------------------*/
 /*PROCEDURE START HERE*/
 /*---------------------------------------------------------------------*/
-void procedureDeclaration(Map map, Map localvariables, Map fps):
+void procedureDeclaration(Map map, Map fps):
 {
   	Map<String,Object> localVariables = new HashMap<String,Object>();
 	Token tmp = null, s;
@@ -762,7 +765,7 @@ void procedureDeclaration(Map map, Map localvariables, Map fps):
 	"PROC" s = <PROCEDURE_VARNAME>
 	{
 	  	//Look for name collisions
-	  	if(map.containsKey(s.toString())){
+	  	if(fps.containsKey(s.toString())){
 			System.out.println("Procedure with this name has already been defined"); System.exit(-1);
 		}
 	}
@@ -859,7 +862,7 @@ void procedureCall(Map map, Map fps):
 		}
 
 		//Time to execute the procedure
-		//Get the contents of the procecure into body
+		//Get the contents of the procedure into body
 		//Convert condition and body into a string
 		String procedure_contents = data.get("BODY").toString();
 		procedure_contents = procedure_contents.replaceAll(", "," ");
@@ -898,10 +901,181 @@ void procedureCall(Map map, Map fps):
 /*FUNCTIONS START HERE*/
 /*---------------------------------------------------------------------*/
 
-//TO BE DONE
-int IntegerFunction(Map map):
-{}
+void functionDeclaration(Map map, Map fps):
 {
-	"FUNC" {return 0;}
+  	Map<String,Object> localVariables = new HashMap<String,Object>();
+	Token tmp = null, s;
+	List<Token> body = new ArrayList<Token>();
+	List<Token> ret = new ArrayList<Token>();
+	int position = 1;
+}
+{  	
+	(tmp=<INT>|tmp=<DOUBLE>|tmp=<BOOLEAN>) "FUNC" s = <VARNAME>
+	{
+	  	//Look for name collisions
+	  	if(fps.containsKey(s.toString())){
+			System.out.println("Function with this name has already been defined"); System.exit(-1);
+		}
+		//Save return type
+		localVariables.put("TYPE", tmp);
+	}
+	(	LOOKAHEAD(2)
+	  	(	
+	  		<LPARENTHESIS> ((<INT> tmp=<INT_VARNAME>) | (<DOUBLE> tmp=<FLOAT_VARNAME >) | (<BOOLEAN> tmp=<BOOL_VARNAME>)) 
+			{localVariables.put(tmp.toString(), position); position++;}
+		)
+		(
+	  		<COMMA> ((<INT> tmp=<INT_VARNAME>) | (<DOUBLE> tmp=<FLOAT_VARNAME>) | (<BOOLEAN> tmp=<BOOL_VARNAME>))
+			{localVariables.put(tmp.toString(), position); position++;}
+		)* <RPARENTHESIS>
+		| <LPARENTHESIS><RPARENTHESIS>
+	)
+	(
+		tmp = anyProcedure(){body.add(tmp);}
+	)*
+	"RETURN"
+	{
+	  	//Save contents of the function
+		localVariables.put("BODY", body);
+	}
+	(		tmp = anyProcedure(){ret.add(tmp);}
+	)*
+	{
+	  	//Save return of the function
+	  	localVariables.put("RETURN", ret);
+	  	//Save function to the global memory
+	  	fps.put(s.toString(), localVariables);
+	  	System.out.println(fps.get(s.toString())+"Function saved\n");
+	}	
+	"ENDFUNC"
 }
 
+Object functionCall(Map map, Map fps):
+{
+  	Map<String,Object> localVariables = new HashMap<String,Object>();
+	Token tmp;
+	int parameter = 1;
+	Map<String, Object> data = null;
+	boolean found = false;
+}
+{
+  	tmp=<PROCEDURE_VARNAME>
+	{
+	  	//Recover data gathered during declaration
+	  	data = (Map<String, Object>) fps.get(tmp.toString()); System.out.println(data);
+	  	//Check if procedure exists at all
+	  	if(data == null) {
+			System.out.println("Function with this name does not exist, exiting"); System.exit(-1);
+	  	}
+	}
+	(	LOOKAHEAD(2)
+	  	(	
+	  		<LPARENTHESIS> ((tmp=<INT_VARNAME>) | (tmp=<FLOAT_VARNAME >) | (tmp=<BOOL_VARNAME>)) 
+	  		//Find the appropriate variable
+			{
+		  		for (Map.Entry<String, Object> entry : data.entrySet()) {
+	        		if (entry.getValue().equals(parameter)) {
+	        		  	localVariables.put(entry.getKey(), map.get(tmp.toString()));
+	        		  	found = true;
+			        }
+			    }	    
+			  	//Check if parameter was correctly found and substituted
+			  	if(!found){
+					System.out.println("Incorrect parameter, exiting"); System.exit(-1);
+			  	}
+			  	//Prepare for next iteration
+			  	parameter++;
+			  	found = false;
+		  	}
+		  	
+		)
+		(
+	  		<COMMA> ((tmp=<INT_VARNAME>) | (tmp=<FLOAT_VARNAME>) | (tmp=<BOOL_VARNAME>))
+	  		{
+				for (Map.Entry<String, Object> entry : data.entrySet()) {
+	        		if (entry.getValue().equals(parameter)) {
+	        		  	localVariables.put(entry.getKey(), map.get(tmp.toString()));
+	        		  	found = true;
+			        }
+			    }
+			    
+			  	//Check if parameter was correctly found and substituted
+			  	if(!found){
+					System.out.println("Incorrect parameter, exiting."); System.exit(-1);
+			  	}
+			  	//Prepare for next iteration
+			  	parameter++;
+			  	found = false;
+	  		}
+
+	  		
+		)* <RPARENTHESIS>
+		| <LPARENTHESIS><RPARENTHESIS>
+	)
+	{
+	  	//Safety check - case of too few parameters passed to the function
+		for (Map.Entry<String, Object> entry : data.entrySet()) {
+	        if (entry.getValue().equals(parameter)) {
+				System.out.println("Too few parameters passed to the function, exiting."); System.exit(-1);
+			}
+		}
+
+		//Time to execute the procedure
+		//Get the contents of the procedure into body
+		//Convert condition and body into a string
+		String procedure_contents = data.get("BODY").toString();
+		procedure_contents = procedure_contents.replaceAll(", "," ");
+		procedure_contents = procedure_contents.replace("[","");
+		procedure_contents = procedure_contents.replace("]","");
+
+		String return_contents = data.get("RETURN").toString();
+	  	return_contents = return_contents.replace("[","");
+		return_contents = return_contents.replace("]","");
+	  	
+		//Convert string into input stream and pass to the parser
+		InputStream bodyStream 		= new ByteArrayInputStream(procedure_contents.getBytes());
+		InputStream returnStream 	= new ByteArrayInputStream(return_contents.getBytes());
+		parsername parser_body 		= new parsername(bodyStream);
+		parsername parser_return 	= new parsername(returnStream);
+
+		System.out.println("\nStarting procedure execution");
+	  	System.out.println("Body: "+procedure_contents);
+
+		try
+	    {
+	      	//Perform body of the function
+			parser_body.linesInLoop(map, localVariables, fps);
+			Integer a; Double b; Boolean c;
+			
+			//Return a value
+			if(data.get("TYPE").toString().equals("INT")) {
+				a = parser_return.integerExpression(map, localVariables, fps);
+				return a;
+			}
+			else if(data.get("TYPE").toString().equals("FLOAT"))
+			{
+				b = parser_return.floatExpression(map, localVariables, fps);
+				return b;
+			}
+			else {
+			  	//TO DO - > ADD COMPARATIVE STATEMENTS HERE
+				c = parser_return.booleanExpression(map, localVariables, fps);
+				return c;
+			}
+	    }
+	    catch (Exception e)
+	    {
+	        System.out.println("Something went wrong in a function - exception detected.");
+	        System.out.println(e.getMessage());
+	        System.exit(-1) ;
+	    }
+	    catch (Error e)
+	    {
+	        System.out.println("Something went wrong in a function - error detected.");
+	        System.out.println(e.getMessage());
+	        System.exit(-1) ;
+	    }
+	
+		System.out.println("Local vars: "+localVariables);
+	}
+}
