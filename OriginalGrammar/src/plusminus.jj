@@ -774,11 +774,11 @@ void procedureDeclaration(Map map, Map fps):
 		}
 	}
 	(	LOOKAHEAD(2)	  	(		  		<LPARENTHESIS> ((<INT> tmp=<INT_VARNAME>) | (<DOUBLE> tmp=<FLOAT_VARNAME >) | (<BOOLEAN> tmp=<BOOL_VARNAME>)) 
-			{localVariables.put(tmp.toString(), position); position++;}
+			{localVariables.put(tmp.toString(), "Var"+position); position++;}
 		)
 		(
 	  		<COMMA> ((<INT> tmp=<INT_VARNAME>) | (<DOUBLE> tmp=<FLOAT_VARNAME>) | (<BOOLEAN> tmp=<BOOL_VARNAME>))
-			{localVariables.put(tmp.toString(), position); position++;}
+			{localVariables.put(tmp.toString(), "Var"+position); position++;}
 		)* <RPARENTHESIS>
 		| <LPARENTHESIS><RPARENTHESIS>
 	)
@@ -819,9 +819,10 @@ void procedureCall(Map map, Map fps):
 	  		//Find the appropriate variable
 			{
 		  		for (Map.Entry<String, Object> entry : data.entrySet()) {
-	        		if (entry.getValue().equals(parameter)) {
+	        		if (entry.getValue().equals("Var"+parameter)) {
 	        		  	localVariables.put(entry.getKey(), map.get(tmp.toString()));
 	        		  	found = true;
+	        		  	break;
 			        }
 			    }	    
 			  	//Check if parameter was correctly found and substituted
@@ -838,9 +839,10 @@ void procedureCall(Map map, Map fps):
 	  		<COMMA> ((tmp=<INT_VARNAME>) | (tmp=<FLOAT_VARNAME>) | (tmp=<BOOL_VARNAME>))
 	  		{
 				for (Map.Entry<String, Object> entry : data.entrySet()) {
-	        		if (entry.getValue().equals(parameter)) {
+	        		if (entry.getValue().equals("Var"+parameter)) {
 	        		  	localVariables.put(entry.getKey(), map.get(tmp.toString()));
 	        		  	found = true;
+	        		  	break;
 			        }
 			    }
 			    
@@ -860,7 +862,7 @@ void procedureCall(Map map, Map fps):
 	{
 	  	//Safety check - case of too few parameters passed to the function
 		for (Map.Entry<String, Object> entry : data.entrySet()) {
-	        if (entry.getValue().equals(parameter)) {
+	        if (entry.getValue().equals("Var"+parameter)) {
 				System.out.println("Too few parameters passed to the function, exiting."); System.exit(-1);
 			}
 		}
