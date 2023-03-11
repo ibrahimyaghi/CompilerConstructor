@@ -35,6 +35,12 @@ ENDPROC
 
 MAIN
 
+Ia = 18;
+WRITE(Ia);
+PRINT(Ib);
+Ia = Ia + Ia;
+//PRINT(Ia);
+
 Bb = fun3();
 PRINT(Bb);
 

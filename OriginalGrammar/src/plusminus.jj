@@ -12,11 +12,13 @@ options
 
 [TO DO] Write code samples using our language
 
+[TO DO] Fix read()
+
 [TO DO] Nested while statements
 
 [TO DO] Functions and procedures - take expressions as parameters rather than just variables
 
-[TO DO / CHANGE] Extend printing to expression values (Variables for now) + add writing
+[MAYBE TO DO] Extend printing to expression values (Variables for now)
 
 [MAYBE CHANGE] Delete ELSEIF
 
@@ -34,6 +36,9 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.ByteArrayInputStream;
 import java.lang.reflect.Field;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.IOException;
 
 public class parsername
 {
@@ -165,7 +170,8 @@ TOKEN : /* IF+LOOPS */
 
 TOKEN : /* SPECIAL TOKENS */
 {
-  < PRINT: "PRINT" >
+  < PRINT: "PRINT" > 
+| < WRITE: "WRITE" >
 }
 
 
@@ -192,7 +198,7 @@ Token any():{Token t;}
 	  | t =	"EQB" | t = "NEQB" 
 	  | t = "EQI" | t = "NEQI" | t = "GEI" | t = "LEI" | t = "GI" | t = "LI"
       | t = "EQF" | t = "NEQF" | t = "GEF" | t = "LEF" | t = "GF" | t = "LF"
-      | t = <PRINT>
+      | t = <PRINT> | t = <WRITE>
 	)
 	{return t;}
 }
@@ -227,7 +233,7 @@ void declareINT(Map map, boolean execute, Map globals):
 {
     <INT> < INT_VARNAME > {a = token.toString();} <EQUAL>
     (
-    <INTEGER> { if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+    <INTEGER> { if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable aly declared. Exiting.."); System.exit(-1);}
       			if(execute){map.put(a, Integer.parseInt(token.image));}} |
 	<MINUS> <INTEGER> { if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
       			if(execute){map.put(a, -1*Integer.parseInt(token.image));}} 
@@ -367,7 +373,8 @@ void line(Map map, boolean execute, Map local, Map fps) :
 
 | procedureCall(map, fps)				{System.out.println("End of procedure execution\n"); return;}
 
-| print(map, local)						{return;}
+| print(map, local, execute)			{return;}
+| read(map, local, execute)				{return;}
 }
 
 /*---------------------------------------------------------------------*/
@@ -603,11 +610,12 @@ void ifStatement(Map map, Map locals, Map fps) :
 /*---------------------------------------------------------------------*/
 /*PRINT FUNCTION STARTS HERE*/
 /*---------------------------------------------------------------------*/
-void print(Map map, Map local):
+void print(Map map, Map local, boolean execute):
 {boolean a; int b; double c;}
 {
   <PRINT><LPARENTHESIS>(
     < FLOAT_VARNAME > {
+      	if(!execute){return;}
 		try {
 	  		c = (double) map.get(token.toString()); System.out.println(token.toString()+"="+c);
 		}
@@ -617,11 +625,12 @@ void print(Map map, Map local):
 	  			c = (double) local.get(token.toString()); System.out.println(token.toString()+"="+c);
 			}
 			catch(Exception f) {
-				System.out.println("Variable not declared. Cannot print. Exiting.."); System.exit(-1);
+				System.out.println("Float variable not declared. Cannot print. Exiting.."); System.exit(-1);
 			}
 		}
 	}
   | < BOOL_VARNAME >  {
+    	if(!execute){return;}
     	try {
 	  		a = (Boolean) map.get(token.toString()); System.out.println(token.toString()+"="+a);
 		}
@@ -631,11 +640,12 @@ void print(Map map, Map local):
 	  			a = (Boolean) local.get(token.toString()); System.out.println(token.toString()+"="+a);
 			}
 			catch(Exception f) {
-				System.out.println("Variable not declared. Cannot print. Exiting.."); System.exit(-1);
+				System.out.println("Boolean variable not declared. Cannot print. Exiting.."); System.exit(-1);
 			}
 		}
 	}
   | < INT_VARNAME >   {
+    	if(!execute){return;}
 		try {
 	  		b = (Integer) map.get(token.toString()); System.out.println(token.toString()+"="+b);
 		}
@@ -645,11 +655,47 @@ void print(Map map, Map local):
 	  			b = (Integer) local.get(token.toString()); System.out.println(token.toString()+"="+b);
 			}
 			catch(Exception f) {
-				System.out.println("Variable not declared. Cannot print. Exiting.."); System.exit(-1);
+				System.out.println("Integer variable not declared. Cannot print. Exiting.."); System.exit(-1);
 			}
 		}
 	}
   )<RPARENTHESIS><SEMICOLON>
+}
+
+/*---------------------------------------------------------------------*/
+/*READ FUNCTION STARTS HERE*/
+/*---------------------------------------------------------------------*/
+void read(Map map, Map local, boolean execute):
+{boolean a; int b; double c; Token tmp = null;}
+{
+  //FIX - DOES NOT OVERRIDE PROPERLY VALUES
+  	<WRITE><LPARENTHESIS>(tmp=<INT_VARNAME> | tmp=<FLOAT_VARNAME> | tmp=<BOOL_VARNAME>){
+  	  	if(!execute){return;}
+  	  	
+	    // Enter data using BufferReader
+        BufferedReader reader = new BufferedReader(
+        new InputStreamReader(System.in));
+ 
+        // Read line
+        String value = "";
+		try {
+        	value = reader.readLine();
+ 		}catch(Exception e) { 
+			System.out.println("Something went wrong while reading user input - error detected.");
+			System.exit(-1) ;
+ 		}
+
+ 		if(!map.containsKey(tmp.toString())){
+	    	if(!local.containsKey(tmp.toString()))
+	    	{System.out.println("Variable not declared. Exiting.."); System.exit(-1);}
+	    	else {
+				local.put(tmp.toString(), value);
+	    	}
+	 	}else{
+	    	map.put(tmp.toString(), value);
+	    	System.out.println(tmp.toString()+map.get(tmp.toString()));
+	    }
+      }<RPARENTHESIS><SEMICOLON>
 }
 
 /*---------------------------------------------------------------------*/
