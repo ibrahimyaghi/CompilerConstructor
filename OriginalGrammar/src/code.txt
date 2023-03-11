@@ -35,10 +35,11 @@ ENDPROC
 
 MAIN
 
+INT Iz = 1;
 Ia = 18;
-WRITE(Ia);
-PRINT(Ib);
-Ia = Ia + Ia;
+WRITE(Iz);
+PRINT(Ia);
+Iz = Iz + Ia;
 //PRINT(Ia);
 
 Bb = fun3();

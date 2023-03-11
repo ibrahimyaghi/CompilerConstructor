@@ -373,8 +373,8 @@ void line(Map map, boolean execute, Map local, Map fps) :
 
 | procedureCall(map, fps)				{System.out.println("End of procedure execution\n"); return;}
 
-| print(map, local, execute)			{return;}
-| read(map, local, execute)				{return;}
+| print(map, local, execute)			{System.out.println("PRINT executed\n"); return;}
+| read(map, local, execute)				{System.out.println("WRITE executed\n"); return;}
 }
 
 /*---------------------------------------------------------------------*/
@@ -666,11 +666,12 @@ void print(Map map, Map local, boolean execute):
 /*READ FUNCTION STARTS HERE*/
 /*---------------------------------------------------------------------*/
 void read(Map map, Map local, boolean execute):
-{boolean a; int b; double c; Token tmp = null;}
+{Token tmp = null;}
 {
   //FIX - DOES NOT OVERRIDE PROPERLY VALUES
-  	<WRITE><LPARENTHESIS>(tmp=<INT_VARNAME> | tmp=<FLOAT_VARNAME> | tmp=<BOOL_VARNAME>){
-  	  	if(!execute){return;}
+  	{
+  	  	System.out.println("Reading value from input stream: ");
+		if(!execute){return;}
   	  	
 	    // Enter data using BufferReader
         BufferedReader reader = new BufferedReader(
@@ -683,8 +684,12 @@ void read(Map map, Map local, boolean execute):
  		}catch(Exception e) { 
 			System.out.println("Something went wrong while reading user input - error detected.");
 			System.exit(-1) ;
- 		}
-
+ 		}	  	
+  	}
+  	<WRITE><LPARENTHESIS>(tmp=<INT_VARNAME> 
+  						| tmp=<FLOAT_VARNAME>
+  						| tmp=<BOOL_VARNAME> )
+  	{
  		if(!map.containsKey(tmp.toString())){
 	    	if(!local.containsKey(tmp.toString()))
 	    	{System.out.println("Variable not declared. Exiting.."); System.exit(-1);}
@@ -693,7 +698,6 @@ void read(Map map, Map local, boolean execute):
 	    	}
 	 	}else{
 	    	map.put(tmp.toString(), value);
-	    	System.out.println(tmp.toString()+map.get(tmp.toString()));
 	    }
       }<RPARENTHESIS><SEMICOLON>
 }

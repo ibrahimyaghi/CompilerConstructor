@@ -750,11 +750,11 @@ public class parsername implements parsernameConstants {
         break;
       case PRINT:
         print(map, local, execute);
-                                                 {if (true) return;}
+                                                 System.out.println("PRINT executed\u005cn"); {if (true) return;}
         break;
       case WRITE:
         read(map, local, execute);
-                                                         {if (true) return;}
+                                                         System.out.println("WRITE executed\u005cn"); {if (true) return;}
         break;
       default:
         jj_la1[17] = jj_gen;
@@ -1553,7 +1553,22 @@ public class parsername implements parsernameConstants {
 /*READ FUNCTION STARTS HERE*/
 /*---------------------------------------------------------------------*/
   final public void read(Map map, Map local, boolean execute) throws ParseException {
- boolean a; int b; double c; Token tmp = null;
+ Token tmp = null;
+                System.out.println("Reading value from input stream: ");
+                if(!execute){{if (true) return;}}
+
+            // Enter data using BufferReader
+        BufferedReader reader = new BufferedReader(
+        new InputStreamReader(System.in));
+
+        // Read line
+        String value = "";
+                try {
+                value = reader.readLine();
+                }catch(Exception e) {
+                        System.out.println("Something went wrong while reading user input - error detected.");
+                        System.exit(-1) ;
+                }
     jj_consume_token(WRITE);
     jj_consume_token(LPARENTHESIS);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1571,21 +1586,6 @@ public class parsername implements parsernameConstants {
       jj_consume_token(-1);
       throw new ParseException();
     }
-                if(!execute){{if (true) return;}}
-
-            // Enter data using BufferReader
-        BufferedReader reader = new BufferedReader(
-        new InputStreamReader(System.in));
-
-        // Read line
-        String value = "";
-                try {
-                value = reader.readLine();
-                }catch(Exception e) {
-                        System.out.println("Something went wrong while reading user input - error detected.");
-                        System.exit(-1) ;
-                }
-
                 if(!map.containsKey(tmp.toString())){
                 if(!local.containsKey(tmp.toString()))
                 {System.out.println("Variable not declared. Exiting.."); System.exit(-1);}
@@ -1594,7 +1594,6 @@ public class parsername implements parsernameConstants {
                 }
                 }else{
                 map.put(tmp.toString(), value);
-                System.out.println(tmp.toString()+map.get(tmp.toString()));
             }
     jj_consume_token(RPARENTHESIS);
     jj_consume_token(SEMICOLON);
@@ -2608,27 +2607,8 @@ public class parsername implements parsernameConstants {
     finally { jj_save(6, xla); }
   }
 
-  private boolean jj_3R_34() {
-    if (jj_scan_token(DOUBLE)) return true;
-    return false;
-  }
-
   private boolean jj_3R_59() {
     if (jj_scan_token(51)) return true;
-    return false;
-  }
-
-  private boolean jj_3_7() {
-    if (jj_scan_token(LPARENTHESIS)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(41)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(43)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(42)) return true;
-    }
-    }
     return false;
   }
 
@@ -2728,8 +2708,27 @@ public class parsername implements parsernameConstants {
     return false;
   }
 
+  private boolean jj_3_4() {
+    if (jj_scan_token(LPARENTHESIS)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_30()) {
+    jj_scanpos = xsp;
+    if (jj_3R_31()) {
+    jj_scanpos = xsp;
+    if (jj_3R_32()) return true;
+    }
+    }
+    return false;
+  }
+
   private boolean jj_3R_53() {
     if (jj_scan_token(45)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_77() {
+    if (jj_scan_token(VARNAME)) return true;
     return false;
   }
 
@@ -2768,22 +2767,8 @@ public class parsername implements parsernameConstants {
     return false;
   }
 
-  private boolean jj_3_4() {
-    if (jj_scan_token(LPARENTHESIS)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_30()) {
-    jj_scanpos = xsp;
-    if (jj_3R_31()) {
-    jj_scanpos = xsp;
-    if (jj_3R_32()) return true;
-    }
-    }
-    return false;
-  }
-
-  private boolean jj_3R_77() {
-    if (jj_scan_token(VARNAME)) return true;
+  private boolean jj_3R_32() {
+    if (jj_scan_token(BOOLEAN)) return true;
     return false;
   }
 
@@ -2805,23 +2790,18 @@ public class parsername implements parsernameConstants {
     return false;
   }
 
+  private boolean jj_3R_33() {
+    if (jj_scan_token(INT)) return true;
+    return false;
+  }
+
   private boolean jj_3R_27() {
     if (jj_3R_36()) return true;
     return false;
   }
 
-  private boolean jj_3R_32() {
-    if (jj_scan_token(BOOLEAN)) return true;
-    return false;
-  }
-
   private boolean jj_3R_39() {
     if (jj_3R_44()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_33() {
-    if (jj_scan_token(INT)) return true;
     return false;
   }
 
@@ -2861,6 +2841,16 @@ public class parsername implements parsernameConstants {
     return false;
   }
 
+  private boolean jj_3R_31() {
+    if (jj_scan_token(DOUBLE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_35() {
+    if (jj_scan_token(BOOLEAN)) return true;
+    return false;
+  }
+
   private boolean jj_3_2() {
     if (jj_scan_token(BOOL_VARNAME)) return true;
     if (jj_scan_token(EQUAL)) return true;
@@ -2883,16 +2873,6 @@ public class parsername implements parsernameConstants {
     return false;
   }
 
-  private boolean jj_3R_31() {
-    if (jj_scan_token(DOUBLE)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_35() {
-    if (jj_scan_token(BOOLEAN)) return true;
-    return false;
-  }
-
   private boolean jj_3R_66() {
     Token xsp;
     xsp = jj_scanpos;
@@ -2911,21 +2891,6 @@ public class parsername implements parsernameConstants {
 
   private boolean jj_3R_51() {
     if (jj_3R_67()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_43() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_48()) {
-    jj_scanpos = xsp;
-    if (jj_3R_49()) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3R_48() {
-    if (jj_scan_token(MINUS)) return true;
     return false;
   }
 
@@ -2957,6 +2922,21 @@ public class parsername implements parsernameConstants {
     return false;
   }
 
+  private boolean jj_3R_43() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_48()) {
+    jj_scanpos = xsp;
+    if (jj_3R_49()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_48() {
+    if (jj_scan_token(MINUS)) return true;
+    return false;
+  }
+
   private boolean jj_3R_38() {
     if (jj_3R_43()) return true;
     return false;
@@ -2977,6 +2957,11 @@ public class parsername implements parsernameConstants {
     return false;
   }
 
+  private boolean jj_3R_30() {
+    if (jj_scan_token(INT)) return true;
+    return false;
+  }
+
   private boolean jj_3R_29() {
     if (jj_3R_38()) return true;
     return false;
@@ -2987,11 +2972,6 @@ public class parsername implements parsernameConstants {
     return false;
   }
 
-  private boolean jj_3R_30() {
-    if (jj_scan_token(INT)) return true;
-    return false;
-  }
-
   private boolean jj_3R_64() {
     if (jj_scan_token(56)) return true;
     return false;
@@ -2999,6 +2979,11 @@ public class parsername implements parsernameConstants {
 
   private boolean jj_3R_63() {
     if (jj_scan_token(55)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_34() {
+    if (jj_scan_token(DOUBLE)) return true;
     return false;
   }
 
@@ -3034,6 +3019,20 @@ public class parsername implements parsernameConstants {
     }
     }
     }
+    }
+    }
+    return false;
+  }
+
+  private boolean jj_3_7() {
+    if (jj_scan_token(LPARENTHESIS)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(41)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(43)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(42)) return true;
     }
     }
     return false;
