@@ -176,7 +176,6 @@ TOKEN: /* DATA TYPES */
   < INT_VARNAME   		: "I" <VARNAME> > 
 | < BOOL_VARNAME 		: "B" <VARNAME> > 
 | < FLOAT_VARNAME 		: "F" <VARNAME> >
-| < PROCEDURE_VARNAME 	: "P" <VARNAME> >
 }
 
 
@@ -766,7 +765,7 @@ void procedureDeclaration(Map map, Map fps):
 	int position = 1;
 }
 {
-	"PROC" s = <PROCEDURE_VARNAME>
+	"PROC" s = <VARNAME>
 	{
 	  	//Look for name collisions
 	  	if(fps.containsKey(s.toString())){
@@ -804,7 +803,7 @@ void procedureCall(Map map, Map fps):
 	boolean found = false;
 }
 {
-	tmp=<PROCEDURE_VARNAME>
+	tmp=<VARNAME>
 	{
 	  	//Recover data gathered during declaration
 	  	data = (Map<String, Object>) fps.get(tmp.toString()); System.out.println(data);

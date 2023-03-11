@@ -19,11 +19,11 @@ FLOAT FUNC fun2(FLOAT Fvar1, FLOAT Fvar2)
 RETURN 0.5*Fvar1*Fvar2;
 ENDFUNC
 
-PROC Pdosth()
+PROC dosth()
 Ia = 5 * Ia;
 ENDPROC
 
-PROC Pdosth2(FLOAT Fvar1, INT Ivar2, BOOLEAN Bvar3)
+PROC dosth2(FLOAT Fvar1, INT Ivar2, BOOLEAN Bvar3)
 INT Iabc = 15, Ifc = 10;
 Ia = 5 * Ivar2;
 Fc = 2.0 * Fvar1;
@@ -40,10 +40,10 @@ Fc = fun2(Fd, Fd);
 PRINT(Fc);
 
 ENDMAIN //Comment endmain out to run all the code
-Pdosth();
+dosth();
 PRINT(Ia);
 
-Pdosth2(Fc, Ia, Bb);
+dosth2(Fc, Ia, Bb);
 
 Iy = 1;
 WHILE NEQI Iy 16
