@@ -2118,7 +2118,7 @@ public class parsername implements parsernameConstants {
         jj_consume_token(-1);
         throw new ParseException();
       }
-                         localVariables.put(tmp.toString(), position); position++;
+                         localVariables.put(tmp.toString(), "Var"+position); position++;
       label_22:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2148,7 +2148,7 @@ public class parsername implements parsernameConstants {
           jj_consume_token(-1);
           throw new ParseException();
         }
-                         localVariables.put(tmp.toString(), position); position++;
+                         localVariables.put(tmp.toString(), "Var"+position); position++;
       }
       jj_consume_token(RPARENTHESIS);
     } else {
@@ -2319,9 +2319,10 @@ public class parsername implements parsernameConstants {
         throw new ParseException();
       }
                                 for (Map.Entry<String, Object> entry : data.entrySet()) {
-                                if (entry.getValue().equals(parameter)) {
+                                if (entry.getValue().equals("Var"+parameter)) {
                                         localVariables.put(entry.getKey(), map.get(tmp.toString()));
                                         found = true;
+                                        break;
                                 }
                             }
                                 //Check if parameter was correctly found and substituted
@@ -2358,7 +2359,7 @@ public class parsername implements parsernameConstants {
           throw new ParseException();
         }
                                 for (Map.Entry<String, Object> entry : data.entrySet()) {
-                                if (entry.getValue().equals(parameter)) {
+                                if (entry.getValue().equals("Var"+parameter)) {
                                         localVariables.put(entry.getKey(), map.get(tmp.toString()));
                                         found = true;
                                 }
@@ -2387,7 +2388,7 @@ public class parsername implements parsernameConstants {
     }
                 //Safety check - case of too few parameters passed to the function
                 for (Map.Entry<String, Object> entry : data.entrySet()) {
-                if (entry.getValue().equals(parameter)) {
+                if (entry.getValue().equals("Var"+parameter)) {
                                 System.out.println("Too few parameters passed to the function, exiting."); System.exit(-1);
                         }
                 }
