@@ -2450,10 +2450,19 @@ public class parsername implements parsernameConstants {
                         else {
                                 //TO DO - > ADD COMPARATIVE STATEMENTS HERE
                                 try {
+                                        //It is either a boolean expression
                                         c = parser_return.booleanExpression(map, localVariables, fps);
                                 }catch (Exception e){
-                                        System.out.println("Incorrect return type - should be BOOLEAN");
-                                System.exit(-1) ;
+                                        //Or comparison statement
+                                        System.out.println("Exception - not a boolean expression - check for comparative expression");
+                                        try {
+                                                returnStream = new ByteArrayInputStream(return_contents.getBytes());
+                                                parser_return = new parsername(returnStream);
+                                                c = parser_return.comparison(map, localVariables, fps);
+                                        }catch (Exception f){
+                                                System.out.println("Incorrect return type - should be BOOLEAN");
+                                        System.exit(-1) ;
+                                }
                                 }
                                 {if (true) return c;}
                         }

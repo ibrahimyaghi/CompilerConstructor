@@ -12,7 +12,11 @@ FLOAT Fc = -1.5, Fd = 2.1, Fe = -1.2;
 
 INT FUNC fun1()
 Ib = 69 * Ib;
-RETURN Ia;
+RETURN Ib;
+ENDFUNC
+
+BOOLEAN FUNC fun3()
+RETURN EQI 1 2;
 ENDFUNC
 
 FLOAT FUNC fun2(FLOAT Fvar1, FLOAT Fvar2)
@@ -30,6 +34,9 @@ Fc = 2.0 * Fvar1;
 ENDPROC
 
 MAIN
+
+Bb = fun3();
+PRINT(Bb);
 
 INT Iy = 1;
 Iy = fun1();
