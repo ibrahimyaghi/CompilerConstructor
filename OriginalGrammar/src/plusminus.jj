@@ -16,8 +16,6 @@ options
 
 [TO DO] Functions and procedures - take expressions as parameters rather than just variables
 
-[TO DO] Functions - allow return of comparative statements
-
 [TO DO / CHANGE] Extend printing to expression values (Variables for now) + add writing
 
 [MAYBE CHANGE] Delete ELSEIF
