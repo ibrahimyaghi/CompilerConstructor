@@ -35,6 +35,7 @@ ENDPROC
 
 MAIN
 
+BOOLEAN Bc = TRUE;
 INT Iz = 1;
 Ia = 18;
 //WRITE(Iz);
@@ -86,7 +87,6 @@ PRINT(Iy);
 
 INT Ix = 10;
 FLOAT Ff = 1.2;
-BOOLEAN Bc = FALSE;
 
 Fc = 5.0 * Ff;
 Ix = Ix;
@@ -140,10 +140,23 @@ Bb = FALSE;
 WHILE NEQB Bb TRUE
 DO
 PRINT(Bb);
+WHILE NEQB Bc TRUE
+DO
+Bc = TRUE;
+Ia = 1;
+WHILE NEQI Ia 5
+DO
+Ia = Ia + 1;
+PRINT(Ia);
+ENDWHILE
+PRINT(Bc);
+ENDWHILE
 Bb = TRUE;
 ENDWHILE
+Bc = FALSE;
 ENDWHILE
 PRINT(Iy);
+
 
 
 ENDMAIN

@@ -748,7 +748,7 @@ public class parsername implements parsernameConstants {
                                                  if(parsername.verbose){System.out.println("End of IF statement\u005cn");} {if (true) return;}
       break;
     case WHILE:
-      whileLoop(map, local, fps);
+      whileLoop(map, local, fps, false);
                                                  if(parsername.verbose){System.out.println("End of loop\u005cn");} {if (true) return;}
       break;
     case VARNAME:
@@ -1672,7 +1672,7 @@ public class parsername implements parsernameConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public void whileLoop(Map map, Map locals, Map fps) throws ParseException {
+  final public List<Token> whileLoop(Map map, Map locals, Map fps, boolean isNested) throws ParseException {
         boolean execute = false;
         Map<String,Object> localVariables = new HashMap<String,Object>();
 
@@ -1685,7 +1685,11 @@ public class parsername implements parsernameConstants {
     Token t = null;
     List<Token> body = new ArrayList<Token>();
     List<Token> condition = new ArrayList<Token>();
-    jj_consume_token(WHILE);
+    List<Token> nested = new ArrayList<Token>();
+    List<Token> superNested = new ArrayList<Token>();
+    //Store condition
+            t = jj_consume_token(WHILE);
+                                 if(isNested){nested.add(t);}
     label_17:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1726,9 +1730,10 @@ public class parsername implements parsernameConstants {
         break label_17;
       }
       t = anyCondition();
-                                     condition.add(t);
+                         if(isNested){nested.add(t);}   else{condition.add(t);}
     }
-    jj_consume_token(DO);
+    t = jj_consume_token(DO);
+                                         if(isNested){nested.add(t);}
     label_18:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1829,10 +1834,11 @@ public class parsername implements parsernameConstants {
       case 56:
       case 57:
         t = anyBody();
-                        body.add(t);
+                                 if(isNested){nested.add(t);}   else{body.add(t);}
         break;
       case WHILE:
-        whileLoop(map, localVariables, fps);
+        superNested = whileLoop(map, localVariables, fps, true);
+                                                 if(isNested){nested.addAll(superNested);} else {body.addAll(superNested);}
         break;
       default:
         jj_la1[51] = jj_gen;
@@ -1840,67 +1846,77 @@ public class parsername implements parsernameConstants {
         throw new ParseException();
       }
     }
-    jj_consume_token(ENDWHILE);
-                //Convert condition and body into a string
-                String condition_string = "";
-                for (int i = 0; i < condition.size(); i++) {
-                        condition_string+=" ";
-                    condition_string+=condition.get(i).toString();
-                }
-
-                String body_string = "";
-                for (int i = 0; i < body.size(); i++) {
-                        body_string+=" ";
-                    body_string+=body.get(i).toString();
-                }
-
-                //Convert strings into input stream
-                InputStream bodyStream          = new ByteArrayInputStream(body_string.getBytes());
-                InputStream conditionStream = new ByteArrayInputStream(condition_string.getBytes());
-
-                if(parsername.verbose){
-                        System.out.println("\u005cnStarting loop");
-                        System.out.println("Condition: "+condition_string);
-                        System.out.println("Body: "+body_string);
-                }
-
-                parsername parser_body          = new parsername(bodyStream);
-                parsername parser_condition = new parsername(conditionStream);
-
-                try
-            {
-                while(parser_condition.conditionInLoop(map, localVariables, fps)){
-                                parser_body.linesInLoop(map, localVariables, fps);
-                                if(parsername.verbose){System.out.println("Loop interation executed");}
-
-                                //Reseting input stream and parsers for potential next iteration
-                                bodyStream              = new ByteArrayInputStream(body_string.getBytes());
-                conditionStream         = new ByteArrayInputStream(condition_string.getBytes());
-                                parser_body             = new parsername(bodyStream);
-                                parser_condition        = new parsername(conditionStream);
+    t = jj_consume_token(ENDWHILE);
+                                 if(isNested){nested.add(t);}
+                //Perform the loop if it is not nested
+                if(!isNested){
+                        //Convert condition and body into a string
+                        String condition_string = "";
+                        for (int i = 0; i < condition.size(); i++) {
+                                condition_string+=" ";
+                            condition_string+=condition.get(i).toString();
                         }
-            }
-            catch (Exception e)
-            {
-                System.out.println("Something went wrong in a loop - exception detected.");
-                System.out.println(e.getMessage());
-                System.exit(-1) ;
-            }
-            catch (Error e)
-            {
-                System.out.println("Something went wrong in a loop - error detected.");
-                System.out.println(e.getMessage());
-                System.exit(-1) ;
-            }
 
-                //Check if any of the local variables were changed
-                Iterator<Map.Entry<String, Object>> iterator2 = locals.entrySet().iterator();
-            while (iterator2.hasNext()) {
-                Map.Entry<String, Object> entry = iterator2.next();
-                if(entry.getValue() != localVariables.get(entry.getKey())) {
-                                locals.put(entry.getKey(), localVariables.get(entry.getKey()));
+                        String body_string = "";
+                        for (int i = 0; i < body.size(); i++) {
+                                body_string+=" ";
+                            body_string+=body.get(i).toString();
+                        }
+
+                        //Convert strings into input stream
+                        InputStream bodyStream          = new ByteArrayInputStream(body_string.getBytes());
+                        InputStream conditionStream = new ByteArrayInputStream(condition_string.getBytes());
+
+                        if(parsername.verbose){
+                                System.out.println("\u005cnStarting loop");
+                                System.out.println("Condition: "+condition_string);
+                                System.out.println("Body: "+body_string);
+                        }
+
+                        parsername parser_body          = new parsername(bodyStream);
+                        parsername parser_condition = new parsername(conditionStream);
+
+                        try
+                    {
+                        while(parser_condition.conditionInLoop(map, localVariables, fps)){
+                                        parser_body.linesInLoop(map, localVariables, fps);
+                                        if(parsername.verbose){System.out.println("Loop interation executed");}
+
+                                        //Reseting input stream and parsers for potential next iteration
+                                        bodyStream              = new ByteArrayInputStream(body_string.getBytes());
+                        conditionStream         = new ByteArrayInputStream(condition_string.getBytes());
+                                        parser_body             = new parsername(bodyStream);
+                                        parser_condition        = new parsername(conditionStream);
+                                }
+                    }
+                    catch (Exception e)
+                    {
+                        System.out.println("Something went wrong in a loop - exception detected.");
+                        System.out.println(e.getMessage());
+                        System.exit(-1) ;
+                    }
+                    catch (Error e)
+                    {
+                        System.out.println("Something went wrong in a loop - error detected.");
+                        System.out.println(e.getMessage());
+                        System.exit(-1) ;
+                    }
+
+                        //Check if any of the local variables were changed
+                        Iterator<Map.Entry<String, Object>> iterator2 = locals.entrySet().iterator();
+                    while (iterator2.hasNext()) {
+                        Map.Entry<String, Object> entry = iterator2.next();
+                        if(entry.getValue() != localVariables.get(entry.getKey())) {
+                                        locals.put(entry.getKey(), localVariables.get(entry.getKey()));
+                        }
                 }
-        }
+                {if (true) return null;}
+                }
+                else {
+                        //Return the contents in case of nesting
+                        {if (true) return nested;}
+                }
+    throw new Error("Missing return statement in function");
   }
 
 /*---------------------------------------------------------------------*/
@@ -2646,6 +2662,11 @@ public class parsername implements parsernameConstants {
     finally { jj_save(4, xla); }
   }
 
+  private boolean jj_3R_28() {
+    if (jj_scan_token(DOUBLE)) return true;
+    return false;
+  }
+
   private boolean jj_3R_31() {
     if (jj_scan_token(DOUBLE)) return true;
     return false;
@@ -2670,20 +2691,6 @@ public class parsername implements parsernameConstants {
     return false;
   }
 
-  private boolean jj_3_2() {
-    if (jj_scan_token(LPARENTHESIS)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_27()) {
-    jj_scanpos = xsp;
-    if (jj_3R_28()) {
-    jj_scanpos = xsp;
-    if (jj_3R_29()) return true;
-    }
-    }
-    return false;
-  }
-
   private boolean jj_3_5() {
     if (jj_scan_token(LPARENTHESIS)) return true;
     Token xsp;
@@ -2693,6 +2700,20 @@ public class parsername implements parsernameConstants {
     if (jj_scan_token(43)) {
     jj_scanpos = xsp;
     if (jj_scan_token(42)) return true;
+    }
+    }
+    return false;
+  }
+
+  private boolean jj_3_2() {
+    if (jj_scan_token(LPARENTHESIS)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_27()) {
+    jj_scanpos = xsp;
+    if (jj_3R_28()) {
+    jj_scanpos = xsp;
+    if (jj_3R_29()) return true;
     }
     }
     return false;
@@ -2736,18 +2757,13 @@ public class parsername implements parsernameConstants {
     return false;
   }
 
-  private boolean jj_3R_32() {
-    if (jj_scan_token(BOOLEAN)) return true;
-    return false;
-  }
-
   private boolean jj_3_1() {
     if (jj_3R_26()) return true;
     return false;
   }
 
-  private boolean jj_3R_28() {
-    if (jj_scan_token(DOUBLE)) return true;
+  private boolean jj_3R_32() {
+    if (jj_scan_token(BOOLEAN)) return true;
     return false;
   }
 

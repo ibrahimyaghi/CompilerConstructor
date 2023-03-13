@@ -14,8 +14,6 @@ options
 
 [TO DO] Fix read()
 
-[TO DO] Nested while statements
-
 [TO DO] Functions and procedures - take expressions as parameters rather than just variables
 
 [MAYBE TO DO] Extend printing to expression values (Variables for now)
@@ -391,7 +389,7 @@ void line(Map map, boolean execute, Map local, Map fps) :
 | declareBOOL(local, execute, map)  	{if(parsername.verbose){System.out.println("Local variable(s) declared: " + execute);} return;}
 
 | ifStatement(map, local, fps)			{if(parsername.verbose){System.out.println("End of IF statement\n");} return;}
-| whileLoop(map, local, fps)			{if(parsername.verbose){System.out.println("End of loop\n");} return;}
+| whileLoop(map, local, fps, false)		{if(parsername.verbose){System.out.println("End of loop\n");} return;}
 
 | procedureCall(map, fps)				{if(parsername.verbose){System.out.println("End of procedure execution\n");} return;}
 
@@ -741,7 +739,7 @@ boolean conditionInLoop(Map map, Map local, Map fps): {boolean execute;}
   	{return execute;}
 }
 
-void whileLoop(Map map, Map locals, Map fps):
+List<Token> whileLoop(Map map, Map locals, Map fps, boolean isNested):
 {
   	boolean execute = false;
 	Map<String,Object> localVariables = new HashMap<String,Object>();
@@ -754,78 +752,92 @@ void whileLoop(Map map, Map locals, Map fps):
     }
     Token t = null;
     List<Token> body = new ArrayList<Token>();
-    List<Token> condition = new ArrayList<Token>(); 
+    List<Token> condition = new ArrayList<Token>();
+    List<Token> nested = new ArrayList<Token>();
+    List<Token> superNested = new ArrayList<Token>();
 }
 {
   	//Store condition
-  	<WHILE> (t = anyCondition() {condition.add(t);})*
-	<DO>
+  	t = <WHILE> 		{if(isNested){nested.add(t);}}
+   (t = anyCondition() 	{if(isNested){nested.add(t);} 	else{condition.add(t);}})*
+	t = <DO> 			{if(isNested){nested.add(t);}}
 	//Gather tokens for further processing
-	(t = anyBody() {body.add(t);} | whileLoop(map, localVariables, fps))*
-  	<ENDWHILE> 
+   (
+     t = anyBody() 		{if(isNested){nested.add(t);}	else{body.add(t);}}
+   	| superNested = whileLoop(map, localVariables, fps, true)
+   						{if(isNested){nested.addAll(superNested);} else {body.addAll(superNested);}}
+   )*
+  	t = <ENDWHILE> 		{if(isNested){nested.add(t);}}
 
-	//Perform the loop
 	{
-	  	//Convert condition and body into a string
-		String condition_string = ""; 
-		for (int i = 0; i < condition.size(); i++) {
-	  	  	condition_string+=" ";
-		    condition_string+=condition.get(i).toString();
-		}
-	  
-	  	String body_string = "";  
-	  	for (int i = 0; i < body.size(); i++) {
-	  	  	body_string+=" ";
-		    body_string+=body.get(i).toString();
-		}
-
-		//Convert strings into input stream
-		InputStream bodyStream 		= new ByteArrayInputStream(body_string.getBytes());
-		InputStream conditionStream = new ByteArrayInputStream(condition_string.getBytes());
-
-		if(parsername.verbose){
-			System.out.println("\nStarting loop");
-			System.out.println("Condition: "+condition_string);
-		  	System.out.println("Body: "+body_string);
-	 	}
-		
-		parsername parser_body 		= new parsername(bodyStream);
-		parsername parser_condition = new parsername(conditionStream);
-		
-		try
-	    {
-	      	while(parser_condition.conditionInLoop(map, localVariables, fps)){
-				parser_body.linesInLoop(map, localVariables, fps);
-				if(parsername.verbose){System.out.println("Loop interation executed");}
-
-				//Reseting input stream and parsers for potential next iteration
-				bodyStream      	= new ByteArrayInputStream(body_string.getBytes());
-                conditionStream 	= new ByteArrayInputStream(condition_string.getBytes());				
-				parser_body 		= new parsername(bodyStream);
-				parser_condition 	= new parsername(conditionStream);
+	  	//Perform the loop if it is not nested
+	  	if(!isNested){ 
+		  	//Convert condition and body into a string
+			String condition_string = ""; 
+			for (int i = 0; i < condition.size(); i++) {
+		  	  	condition_string+=" ";
+			    condition_string+=condition.get(i).toString();
 			}
-	    }
-	    catch (Exception e)
-	    {
-	        System.out.println("Something went wrong in a loop - exception detected.");
-	        System.out.println(e.getMessage());
-	        System.exit(-1) ;
-	    }
-	    catch (Error e)
-	    {
-	        System.out.println("Something went wrong in a loop - error detected.");
-	        System.out.println(e.getMessage());
-	        System.exit(-1) ;
-	    }
-  	
-		//Check if any of the local variables were changed
-		Iterator<Map.Entry<String, Object>> iterator2 = locals.entrySet().iterator();
-	    while (iterator2.hasNext()) {
-	      	Map.Entry<String, Object> entry = iterator2.next();
-	      	if(entry.getValue() != localVariables.get(entry.getKey())) {
-				locals.put(entry.getKey(), localVariables.get(entry.getKey()));
-	      	}
-    	}
+		  
+		  	String body_string = "";  
+		  	for (int i = 0; i < body.size(); i++) {
+		  	  	body_string+=" ";
+			    body_string+=body.get(i).toString();
+			}
+	
+			//Convert strings into input stream
+			InputStream bodyStream 		= new ByteArrayInputStream(body_string.getBytes());
+			InputStream conditionStream = new ByteArrayInputStream(condition_string.getBytes());
+	
+			if(parsername.verbose){
+				System.out.println("\nStarting loop");
+				System.out.println("Condition: "+condition_string);
+			  	System.out.println("Body: "+body_string);
+		 	}
+			
+			parsername parser_body 		= new parsername(bodyStream);
+			parsername parser_condition = new parsername(conditionStream);
+			
+			try
+		    {
+		      	while(parser_condition.conditionInLoop(map, localVariables, fps)){
+					parser_body.linesInLoop(map, localVariables, fps);
+					if(parsername.verbose){System.out.println("Loop interation executed");}
+	
+					//Reseting input stream and parsers for potential next iteration
+					bodyStream      	= new ByteArrayInputStream(body_string.getBytes());
+	                conditionStream 	= new ByteArrayInputStream(condition_string.getBytes());				
+					parser_body 		= new parsername(bodyStream);
+					parser_condition 	= new parsername(conditionStream);
+				}
+		    }
+		    catch (Exception e)
+		    {
+		        System.out.println("Something went wrong in a loop - exception detected.");
+		        System.out.println(e.getMessage());
+		        System.exit(-1) ;
+		    }
+		    catch (Error e)
+		    {
+		        System.out.println("Something went wrong in a loop - error detected.");
+		        System.out.println(e.getMessage());
+		        System.exit(-1) ;
+		    }
+	  	
+			//Check if any of the local variables were changed
+			Iterator<Map.Entry<String, Object>> iterator2 = locals.entrySet().iterator();
+		    while (iterator2.hasNext()) {
+		      	Map.Entry<String, Object> entry = iterator2.next();
+		      	if(entry.getValue() != localVariables.get(entry.getKey())) {
+					locals.put(entry.getKey(), localVariables.get(entry.getKey()));
+		      	}
+	    	}
+	    	return null;
+		}
+		else {
+			//Return the contents in case of nesting
+			return nested;	
+		}
 	}
 }
 
