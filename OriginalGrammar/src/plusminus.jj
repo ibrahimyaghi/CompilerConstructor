@@ -315,8 +315,6 @@ void line(Map map, boolean execute, Map local, Map fps) :
 	or by any type of comparison, so we basically allow sth like:
 	Bb = EQB TRUE FALSE; 											*/
 
-  
-  LOOKAHEAD(3)
   s = < BOOL_VARNAME > <EQUAL> (a = booleanExpression(map, local, fps) | a = comparison(map, local, fps)) <SEMICOLON> 
   {
     if(!execute){return;}
@@ -332,7 +330,7 @@ void line(Map map, boolean execute, Map local, Map fps) :
     System.out.println("Result: " + a);
     return;
   }
-| LOOKAHEAD(3)
+| 
   s = < INT_VARNAME > <EQUAL> b = integerExpression(map, local, fps) <SEMICOLON> 
   {
     if(!execute){return;}
@@ -485,7 +483,7 @@ double floatExpression(Map map, Map local, Map fps) :
 {double a, b;}
 {
   a = fterm(map, local, fps)
-  ( < PLUS >   b = fterm(map, local, fps) {a += b; } | < MINUS >  b = fterm(map, local, fps) {a -= b; } )*
+  ( < PLUS > b = fterm(map, local, fps) {a += b; } | < MINUS > b = fterm(map, local, fps) {a -= b; } )*
   {return a;}
 }
 

@@ -37,7 +37,7 @@ MAIN
 
 INT Iz = 1;
 Ia = 18;
-WRITE(Iz);
+//WRITE(Iz);
 PRINT(Ia);
 Iz = Iz + Ia;
 //PRINT(Ia);
