@@ -44,12 +44,30 @@ public class parsername
 {
   //Change this variable to get more information about code execution
   //It prints a lot of rubbish
+  //Keep 'false' by default, swap to 'true' while debugging
   public static boolean verbose = false;
   public static void main(String args []) throws ParseException
   {
 	//Get current directory
 	String path = System.getProperty("user.dir");
-	path+="\\src\\code.txt";
+	path+="\\src\\";
+
+  	System.out.println("Provide name of the file to execute:");
+  	  	
+	// Enter data using BufferReader
+    BufferedReader reader = new BufferedReader(
+    new InputStreamReader(System.in));
+ 
+    // Read line
+    String filename = "";
+	try {
+        filename = reader.readLine();
+ 	}catch(Exception e) { 
+		System.out.println("Something went wrong while reading user input - error detected.");
+		System.exit(-1) ;
+ 	}		
+
+	path+=filename;
 
     parsername parser = null;
 	try {

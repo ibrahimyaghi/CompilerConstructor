@@ -12,12 +12,30 @@ import java.io.IOException;
 public class parsername implements parsernameConstants {
   //Change this variable to get more information about code execution
   //It prints a lot of rubbish
+  //Keep 'false' by default, swap to 'true' while debugging
   public static boolean verbose = false;
   public static void main(String args []) throws ParseException
   {
         //Get current directory
         String path = System.getProperty("user.dir");
-        path+="\u005c\u005csrc\u005c\u005ccode.txt";
+        path+="\u005c\u005csrc\u005c\u005c";
+
+        System.out.println("Provide name of the file to execute:");
+
+        // Enter data using BufferReader
+    BufferedReader reader = new BufferedReader(
+    new InputStreamReader(System.in));
+
+    // Read line
+    String filename = "";
+        try {
+        filename = reader.readLine();
+        }catch(Exception e) {
+                System.out.println("Something went wrong while reading user input - error detected.");
+                System.exit(-1) ;
+        }
+
+        path+=filename;
 
     parsername parser = null;
         try {
@@ -2605,6 +2623,11 @@ public class parsername implements parsernameConstants {
     finally { jj_save(4, xla); }
   }
 
+  private boolean jj_3R_28() {
+    if (jj_scan_token(DOUBLE)) return true;
+    return false;
+  }
+
   private boolean jj_3R_31() {
     if (jj_scan_token(DOUBLE)) return true;
     return false;
@@ -2702,11 +2725,6 @@ public class parsername implements parsernameConstants {
 
   private boolean jj_3_1() {
     if (jj_3R_26()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_28() {
-    if (jj_scan_token(DOUBLE)) return true;
     return false;
   }
 
