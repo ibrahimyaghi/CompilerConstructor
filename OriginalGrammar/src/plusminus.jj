@@ -14,15 +14,15 @@ options
 
 [TO DO] Fix read()
 
-[TO DO] Functions and procedures - take expressions as parameters rather than just variables
+[MAYBE TO DO] Functions and procedures - take expressions as parameters rather than just variables
 
 [MAYBE TO DO] Extend printing to expression values (Variables for now)
 
-[MAYBE CHANGE] Delete ELSEIF
+[MAYBE CHANGE, BUT WORKS] Delete ELSEIF
 
-[MAYBE CHANGE] Comparison as a part of boolean statement
+[MAYBE CHANGE, BUT WORKS] Comparison as a part of boolean statement
 
-[MAYBE CHANGE] Operation with semicolon consistency
+[MAYBE CHANGE, BUT WORKS] Operation with semicolon consistency
 
 [FIX] Figure out why we have warning in floatExpression and integerExpression 
 ---------------------------------------------------------------------*/
