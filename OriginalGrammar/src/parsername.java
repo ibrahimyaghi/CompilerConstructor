@@ -10,6 +10,9 @@ import java.io.InputStreamReader;
 import java.io.IOException;
 
 public class parsername implements parsernameConstants {
+  //Change this variable to get more information about code execution
+  //It prints a lot of rubbish
+  public static boolean verbose = false;
   public static void main(String args []) throws ParseException
   {
         //Get current directory
@@ -28,7 +31,7 @@ public class parsername implements parsernameConstants {
         }
 
     //If file was found, execute its contents
-    System.out.println("Reading from file!");
+    if(verbose){System.out.println("Reading from file!");}
 
     try
     {
@@ -53,7 +56,7 @@ public class parsername implements parsernameConstants {
     }
 
         //Exit after successful code execution
-    System.out.println("Terminating global version");
+    System.out.println("Code execution terminated");
   }
 
   final public Token any() throws ParseException {
@@ -404,7 +407,7 @@ public class parsername implements parsernameConstants {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case INTEGER:
       jj_consume_token(INTEGER);
-                if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable aly declared. Exiting.."); System.exit(-1);}
+                if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
                         if(execute){map.put(a, Integer.parseInt(token.image));}
       break;
     case MINUS:
@@ -585,24 +588,24 @@ public class parsername implements parsernameConstants {
       }
       if (jj_2_1(2)) {
         functionDeclaration(map, fps);
-                 System.out.println("Function declared");
+                 if(parsername.verbose){System.out.println("Function declared");}
       } else {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 61:
           procedureDeclaration(map, fps);
-                 System.out.println("Procedure declared");
+                 if(parsername.verbose){System.out.println("Procedure declared");}
           break;
         case INT:
           declareINT(map, execute, map);
-                 System.out.println("Global variable(s) declared: " + execute);
+                 if(parsername.verbose){System.out.println("Global variable(s) declared: " + execute);}
           break;
         case DOUBLE:
           declareFLOAT(map, execute, map);
-                 System.out.println("Global variable(s) declared: " + execute);
+                 if(parsername.verbose){System.out.println("Global variable(s) declared: " + execute);}
           break;
         case BOOLEAN:
           declareBOOL(map, execute, map);
-                 System.out.println("Global variable(s) declared: " + execute);
+                 if(parsername.verbose){System.out.println("Global variable(s) declared: " + execute);}
           break;
         default:
           jj_la1[14] = jj_gen;
@@ -611,7 +614,7 @@ public class parsername implements parsernameConstants {
         }
       }
     }
-   System.out.println("\u005cnEntering main");
+   if(parsername.verbose){System.out.println("\u005cnEntering main");}
     jj_consume_token(59);
     label_5:
     while (true) {
@@ -636,7 +639,7 @@ public class parsername implements parsernameConstants {
       line(map, true, mainLocal, fps);
     }
     jj_consume_token(60);
-         System.out.println("Exiting main\u005cn") ;{if (true) return;}
+         if(parsername.verbose){System.out.println("Exiting main\u005cn") ;{if (true) return;}}
   }
 
   final public void line(Map map, boolean execute, Map local, Map fps) throws ParseException {
@@ -690,7 +693,7 @@ public class parsername implements parsernameConstants {
         }else{
         map.replace(s.toString(), a);
     }
-    System.out.println("Result: " + a);
+    if(parsername.verbose){System.out.println("Result: " + a);}
     {if (true) return;}
       break;
     case INT_VARNAME:
@@ -708,7 +711,7 @@ public class parsername implements parsernameConstants {
         }else{
         map.replace(s.toString(), b);
     }
-    System.out.println("Result: " + b);
+    if(parsername.verbose){System.out.println("Result: " + b);}
     {if (true) return;}
       break;
     case FLOAT_VARNAME:
@@ -726,40 +729,40 @@ public class parsername implements parsernameConstants {
         }else{
         map.replace(s.toString(), c);
     }
-    System.out.println("Result: " + c);
+    if(parsername.verbose){System.out.println("Result: " + c);}
     {if (true) return;}
       break;
     case INT:
       declareINT(local, execute, map);
-                                         System.out.println("Local variable(s) declared: " + execute); {if (true) return;}
+                                         if(parsername.verbose){System.out.println("Local variable(s) declared: " + execute);} {if (true) return;}
       break;
     case DOUBLE:
       declareFLOAT(local, execute, map);
-                                         System.out.println("Local variable(s) declared: " + execute); {if (true) return;}
+                                         if(parsername.verbose){System.out.println("Local variable(s) declared: " + execute);} {if (true) return;}
       break;
     case BOOLEAN:
       declareBOOL(local, execute, map);
-                                         System.out.println("Local variable(s) declared: " + execute); {if (true) return;}
+                                         if(parsername.verbose){System.out.println("Local variable(s) declared: " + execute);} {if (true) return;}
       break;
     case IF:
       ifStatement(map, local, fps);
-                                                 System.out.println("End of IF statement\u005cn"); {if (true) return;}
+                                                 if(parsername.verbose){System.out.println("End of IF statement\u005cn");} {if (true) return;}
       break;
     case WHILE:
       whileLoop(map, local, fps);
-                                                 System.out.println("End of loop\u005cn"); {if (true) return;}
+                                                 if(parsername.verbose){System.out.println("End of loop\u005cn");} {if (true) return;}
       break;
     case VARNAME:
       procedureCall(map, fps);
-                                                         System.out.println("End of procedure execution\u005cn"); {if (true) return;}
+                                                         if(parsername.verbose){System.out.println("End of procedure execution\u005cn");} {if (true) return;}
       break;
     case PRINT:
       print(map, local, execute);
-                                                 System.out.println("PRINT executed\u005cn"); {if (true) return;}
+                                                 if(parsername.verbose){System.out.println("PRINT executed\u005cn");} {if (true) return;}
       break;
     case WRITE:
       read(map, local, execute);
-                                                         System.out.println("WRITE executed\u005cn"); {if (true) return;}
+                                                         if(parsername.verbose){System.out.println("WRITE executed\u005cn");} {if (true) return;}
       break;
     default:
       jj_la1[17] = jj_gen;
@@ -884,7 +887,7 @@ public class parsername implements parsernameConstants {
                 }
                 catch(Exception e) {
                         try {
-                                System.out.println("Checking local variables.");
+                                if(parsername.verbose){System.out.println("Checking local variables.");}
                                 a = (Integer) local.get(token.toString());
                         }
                         catch(Exception f) {
@@ -1002,7 +1005,7 @@ public class parsername implements parsernameConstants {
                 }
                 catch(Exception e) {
                         try {
-                                System.out.println("Checking local variables.");
+                                if(parsername.verbose){System.out.println("Checking local variables.");}
                                 a = (Boolean) local.get(token.toString());
                         }
                         catch(Exception f) {
@@ -1135,7 +1138,7 @@ public class parsername implements parsernameConstants {
                 }
                 catch(Exception e) {
                         try {
-                                System.out.println("Checking local variables.");
+                                if(parsername.verbose){System.out.println("Checking local variables.");}
                                 a = (double) local.get(token.toString());
                         }
                         catch(Exception f) {
@@ -1352,7 +1355,7 @@ public class parsername implements parsernameConstants {
       jj_consume_token(-1);
       throw new ParseException();
     }
-         done = execute; System.out.println("\u005cnIf executed: " + execute);
+         done = execute; if(parsername.verbose){System.out.println("\u005cnIf executed: " + execute);}
     jj_consume_token(THEN);
     label_12:
     while (true) {
@@ -1417,7 +1420,7 @@ public class parsername implements parsernameConstants {
         jj_consume_token(-1);
         throw new ParseException();
       }
-           execute = execute && !done; done = done || execute; System.out.println("Elseif executed: " + execute);
+           execute = execute && !done; done = done || execute; if(parsername.verbose){System.out.println("Elseif executed: " + execute);}
       jj_consume_token(THEN);
       label_14:
       while (true) {
@@ -1445,7 +1448,7 @@ public class parsername implements parsernameConstants {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case ELSE:
       jj_consume_token(ELSE);
-                  System.out.println("Else executed: " + !done);
+                  if(parsername.verbose){System.out.println("Else executed: " + !done);}
       jj_consume_token(THEN);
       label_15:
       while (true) {
@@ -1504,7 +1507,7 @@ public class parsername implements parsernameConstants {
                 }
                 catch(Exception e) {
                         try {
-                                System.out.println("Checking local variables.");
+                                if(parsername.verbose){System.out.println("Checking local variables.");}
                                 c = (double) local.get(token.toString()); System.out.println(token.toString()+"="+c);
                         }
                         catch(Exception f) {
@@ -1520,7 +1523,7 @@ public class parsername implements parsernameConstants {
                 }
                 catch(Exception e) {
                         try {
-                                System.out.println("Checking local variables.");
+                                if(parsername.verbose){System.out.println("Checking local variables.");}
                                 a = (Boolean) local.get(token.toString()); System.out.println(token.toString()+"="+a);
                         }
                         catch(Exception f) {
@@ -1536,7 +1539,7 @@ public class parsername implements parsernameConstants {
                 }
                 catch(Exception e) {
                         try {
-                                System.out.println("Checking local variables.");
+                                if(parsername.verbose){System.out.println("Checking local variables.");}
                                 b = (Integer) local.get(token.toString()); System.out.println(token.toString()+"="+b);
                         }
                         catch(Exception f) {
@@ -1814,9 +1817,11 @@ public class parsername implements parsernameConstants {
                 InputStream bodyStream          = new ByteArrayInputStream(body_string.getBytes());
                 InputStream conditionStream = new ByteArrayInputStream(condition_string.getBytes());
 
-                System.out.println("\u005cnStarting loop");
-                System.out.println("Condition: "+condition_string);
-                System.out.println("Body: "+body_string);
+                if(parsername.verbose){
+                        System.out.println("\u005cnStarting loop");
+                        System.out.println("Condition: "+condition_string);
+                        System.out.println("Body: "+body_string);
+                }
 
                 parsername parser_body          = new parsername(bodyStream);
                 parsername parser_condition = new parsername(conditionStream);
@@ -1825,7 +1830,7 @@ public class parsername implements parsernameConstants {
             {
                 while(parser_condition.conditionInLoop(map, localVariables, fps)){
                                 parser_body.linesInLoop(map, localVariables, fps);
-                                System.out.println("Loop interation executed");
+                                if(parsername.verbose){System.out.println("Loop interation executed");}
 
                                 //Reseting input stream and parsers for potential next iteration
                                 bodyStream              = new ByteArrayInputStream(body_string.getBytes());
@@ -1998,7 +2003,7 @@ public class parsername implements parsernameConstants {
                 localVariables.put("BODY", body);
                 //Save procedure to the global memory
                 fps.put(s.toString(), localVariables);
-                System.out.println(fps.get(s.toString())+"Procedure saved\u005cn");
+                if(parsername.verbose){System.out.println(fps.get(s.toString())+"Procedure saved\u005cn");}
     jj_consume_token(62);
   }
 
@@ -2011,7 +2016,7 @@ public class parsername implements parsernameConstants {
         boolean found = false;
     tmp = jj_consume_token(VARNAME);
                 //Recover data gathered during declaration
-                data = (Map<String, Object>) fps.get(tmp.toString()); System.out.println(data);
+                data = (Map<String, Object>) fps.get(tmp.toString()); if(parsername.verbose){System.out.println(data);}
                 //Check if procedure exists at all
                 if(data == null) {
                         System.out.println("Procedure with this name does not exist, exiting"); System.exit(-1);
@@ -2123,8 +2128,10 @@ public class parsername implements parsernameConstants {
                 InputStream bodyStream = new ByteArrayInputStream(procedure_contents.getBytes());
                 parsername parser_body = new parsername(bodyStream);
 
-                System.out.println("\u005cnStarting procedure execution");
-                System.out.println("Body: "+procedure_contents);
+                if(parsername.verbose){
+                        System.out.println("\u005cnStarting procedure execution");
+                        System.out.println("Body: "+procedure_contents);
+                }
 
                 try
             {
@@ -2143,7 +2150,7 @@ public class parsername implements parsernameConstants {
                 System.exit(-1) ;
             }
 
-                System.out.println("Local vars: "+localVariables);
+                if(parsername.verbose){System.out.println("Local vars: "+localVariables);}
   }
 
 /*---------------------------------------------------------------------*/
@@ -2366,7 +2373,7 @@ public class parsername implements parsernameConstants {
                 localVariables.put("RETURN", ret);
                 //Save function to the global memory
                 fps.put(s.toString(), localVariables);
-                System.out.println(fps.get(s.toString())+"Function saved\u005cn");
+                if(parsername.verbose){System.out.println(fps.get(s.toString())+"Function saved\u005cn");}
     jj_consume_token(65);
   }
 
@@ -2378,7 +2385,7 @@ public class parsername implements parsernameConstants {
         boolean found = false;
     tmp = jj_consume_token(VARNAME);
                 //Recover data gathered during declaration
-                data = (Map<String, Object>) fps.get(tmp.toString()); System.out.println(data);
+                data = (Map<String, Object>) fps.get(tmp.toString()); if(parsername.verbose){System.out.println(data);}
                 //Check if procedure exists at all
                 if(data == null) {
                         System.out.println("Function with this name does not exist, exiting"); System.exit(-1);
@@ -2495,18 +2502,19 @@ public class parsername implements parsernameConstants {
                 parsername parser_body          = new parsername(bodyStream);
                 parsername parser_return        = new parsername(returnStream);
 
-                System.out.println("\u005cnStarting function execution");
-                System.out.println("Body: "+procedure_contents);
-                System.out.println("Return: "+return_contents);
+                if(parsername.verbose){
+                        System.out.println("\u005cnStarting function execution");
+                        System.out.println("Body: "+procedure_contents);
+                        System.out.println("Return: "+return_contents);
+                }
 
                 try
             {
                 //Perform body of the function
                         parser_body.linesInLoop(map, localVariables, fps);
                         Integer a = 0; Double b = 0.0; Boolean c = false;
+                        if(parsername.verbose){System.out.println("Local vars: "+localVariables);}
 
-
-                        System.out.println("Local vars: "+localVariables);
                         //Return a value
                         if(data.get("TYPE").toString().equals("INT")) {
                                 try {
@@ -2534,7 +2542,7 @@ public class parsername implements parsernameConstants {
                                         c = parser_return.booleanExpression(map, localVariables, fps);
                                 }catch (Exception e){
                                         //Or comparison statement
-                                        System.out.println("Exception - not a boolean expression - check for comparative expression");
+                                        if(parsername.verbose){System.out.println("Not a boolean expression - check for comparative expression");}
                                         try {
                                                 returnStream = new ByteArrayInputStream(return_contents.getBytes());
                                                 parser_return = new parsername(returnStream);
@@ -2597,32 +2605,13 @@ public class parsername implements parsernameConstants {
     finally { jj_save(4, xla); }
   }
 
-  private boolean jj_3R_28() {
+  private boolean jj_3R_31() {
     if (jj_scan_token(DOUBLE)) return true;
     return false;
   }
 
   private boolean jj_3R_27() {
     if (jj_scan_token(INT)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_31() {
-    if (jj_scan_token(DOUBLE)) return true;
-    return false;
-  }
-
-  private boolean jj_3_2() {
-    if (jj_scan_token(LPARENTHESIS)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_27()) {
-    jj_scanpos = xsp;
-    if (jj_3R_28()) {
-    jj_scanpos = xsp;
-    if (jj_3R_29()) return true;
-    }
-    }
     return false;
   }
 
@@ -2649,6 +2638,20 @@ public class parsername implements parsernameConstants {
     if (jj_scan_token(43)) {
     jj_scanpos = xsp;
     if (jj_scan_token(42)) return true;
+    }
+    }
+    return false;
+  }
+
+  private boolean jj_3_2() {
+    if (jj_scan_token(LPARENTHESIS)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_27()) {
+    jj_scanpos = xsp;
+    if (jj_3R_28()) {
+    jj_scanpos = xsp;
+    if (jj_3R_29()) return true;
     }
     }
     return false;
@@ -2699,6 +2702,11 @@ public class parsername implements parsernameConstants {
 
   private boolean jj_3_1() {
     if (jj_3R_26()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_28() {
+    if (jj_scan_token(DOUBLE)) return true;
     return false;
   }
 

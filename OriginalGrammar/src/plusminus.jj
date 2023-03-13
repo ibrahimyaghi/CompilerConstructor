@@ -42,6 +42,9 @@ import java.io.IOException;
 
 public class parsername
 {
+  //Change this variable to get more information about code execution
+  //It prints a lot of rubbish
+  public static boolean verbose = false;
   public static void main(String args []) throws ParseException
   {
 	//Get current directory
@@ -60,7 +63,7 @@ public class parsername
 	}
 
     //If file was found, execute its contents
-    System.out.println("Reading from file!");
+    if(verbose){System.out.println("Reading from file!");}
     
     try
     {
@@ -85,7 +88,7 @@ public class parsername
     }
 
 	//Exit after successful code execution
-    System.out.println("Terminating global version");
+    System.out.println("Code execution terminated");
   }
 }
 
@@ -233,7 +236,7 @@ void declareINT(Map map, boolean execute, Map globals):
 {
     <INT> < INT_VARNAME > {a = token.toString();} <EQUAL>
     (
-    <INTEGER> { if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable aly declared. Exiting.."); System.exit(-1);}
+    <INTEGER> { if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
       			if(execute){map.put(a, Integer.parseInt(token.image));}} |
 	<MINUS> <INTEGER> { if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
       			if(execute){map.put(a, -1*Integer.parseInt(token.image));}} 
@@ -291,21 +294,21 @@ void multipleLines(Map map, Map fps):
   (
       LOOKAHEAD(2)
       functionDeclaration(map, fps)
-  		{System.out.println("Function declared");}
+  		{if(parsername.verbose){System.out.println("Function declared");}}
  	| procedureDeclaration(map, fps)
- 		{System.out.println("Procedure declared");}
+ 		{if(parsername.verbose){System.out.println("Procedure declared");}}
   	| declareINT(map, execute, map)
-  		{System.out.println("Global variable(s) declared: " + execute);}
+  		{if(parsername.verbose){System.out.println("Global variable(s) declared: " + execute);}}
 	| declareFLOAT(map, execute, map)
-		{System.out.println("Global variable(s) declared: " + execute);}
+		{if(parsername.verbose){System.out.println("Global variable(s) declared: " + execute);}}
 	| declareBOOL(map, execute, map)
-		{System.out.println("Global variable(s) declared: " + execute);}
+		{if(parsername.verbose){System.out.println("Global variable(s) declared: " + execute);}}
   )*
   
   //MAIN procedure
-  {System.out.println("\nEntering main");}
+  {if(parsername.verbose){System.out.println("\nEntering main");}}
   "MAIN" (line(map, true, mainLocal, fps))* "ENDMAIN"
-  	{System.out.println("Exiting main\n") ;return;}
+  	{if(parsername.verbose){System.out.println("Exiting main\n") ;return;}}
 }
 
 void line(Map map, boolean execute, Map local, Map fps) :
@@ -327,7 +330,7 @@ void line(Map map, boolean execute, Map local, Map fps) :
  	}else{  
     	map.replace(s.toString(), a);
     }
-    System.out.println("Result: " + a);
+    if(parsername.verbose){System.out.println("Result: " + a);}
     return;
   }
 | 
@@ -343,7 +346,7 @@ void line(Map map, boolean execute, Map local, Map fps) :
  	}else{  
     	map.replace(s.toString(), b);
     }
-    System.out.println("Result: " + b);
+    if(parsername.verbose){System.out.println("Result: " + b);}
     return;
   }
 | s = < FLOAT_VARNAME > <EQUAL> c = floatExpression(map, local, fps) <SEMICOLON> 
@@ -358,21 +361,21 @@ void line(Map map, boolean execute, Map local, Map fps) :
  	}else{  
     	map.replace(s.toString(), c);
     }
-    System.out.println("Result: " + c);
+    if(parsername.verbose){System.out.println("Result: " + c);}
     return;
   }
 
-| declareINT(local, execute, map)   	{System.out.println("Local variable(s) declared: " + execute); return;}
-| declareFLOAT(local, execute, map) 	{System.out.println("Local variable(s) declared: " + execute); return;}
-| declareBOOL(local, execute, map)  	{System.out.println("Local variable(s) declared: " + execute); return;}
+| declareINT(local, execute, map)   	{if(parsername.verbose){System.out.println("Local variable(s) declared: " + execute);} return;}
+| declareFLOAT(local, execute, map) 	{if(parsername.verbose){System.out.println("Local variable(s) declared: " + execute);} return;}
+| declareBOOL(local, execute, map)  	{if(parsername.verbose){System.out.println("Local variable(s) declared: " + execute);} return;}
 
-| ifStatement(map, local, fps)			{System.out.println("End of IF statement\n"); return;}
-| whileLoop(map, local, fps)			{System.out.println("End of loop\n"); return;}
+| ifStatement(map, local, fps)			{if(parsername.verbose){System.out.println("End of IF statement\n");} return;}
+| whileLoop(map, local, fps)			{if(parsername.verbose){System.out.println("End of loop\n");} return;}
 
-| procedureCall(map, fps)				{System.out.println("End of procedure execution\n"); return;}
+| procedureCall(map, fps)				{if(parsername.verbose){System.out.println("End of procedure execution\n");} return;}
 
-| print(map, local, execute)			{System.out.println("PRINT executed\n"); return;}
-| read(map, local, execute)				{System.out.println("WRITE executed\n"); return;}
+| print(map, local, execute)			{if(parsername.verbose){System.out.println("PRINT executed\n");} return;}
+| read(map, local, execute)				{if(parsername.verbose){System.out.println("WRITE executed\n");} return;}
 }
 
 /*---------------------------------------------------------------------*/
@@ -412,7 +415,7 @@ int abase(Map map, Map local, Map fps) :
 		}
 		catch(Exception e) {
 			try {
-	  			System.out.println("Checking local variables.");
+	  			if(parsername.verbose){System.out.println("Checking local variables.");}
 	  			a = (Integer) local.get(token.toString());
 			}
 			catch(Exception f) {
@@ -464,7 +467,7 @@ boolean bbase(Map map, Map local, Map fps) :
 		}
 		catch(Exception e) {
 		  	try {
-	  			System.out.println("Checking local variables.");
+	  			if(parsername.verbose){System.out.println("Checking local variables.");}
 	  			a = (Boolean) local.get(token.toString());
 			}
 			catch(Exception f) {
@@ -512,7 +515,7 @@ double fbase(Map map, Map local, Map fps) :
 		}
 		catch(Exception e) {
 		  	try {
-	  			System.out.println("Checking local variables.");
+	  			if(parsername.verbose){System.out.println("Checking local variables.");}
 	  			a = (double) local.get(token.toString());
 			}
 			catch(Exception f) {
@@ -584,14 +587,14 @@ void ifStatement(Map map, Map locals, Map fps) :
 { 
   	//Go into the logic
 	<IF> (execute = comparison(map, localVariables, fps) | execute = booleanExpression(map, localVariables, fps))
-	{done = execute; System.out.println("\nIf executed: " + execute);}
+	{done = execute; if(parsername.verbose){System.out.println("\nIf executed: " + execute);}}
 	<THEN> (line(map, execute, localVariables, fps))*
 	(
 	  <ELSEIF> (execute = comparison(map, localVariables, fps) | execute = booleanExpression(map, localVariables, fps))
-	  {execute = execute && !done; done = done || execute; System.out.println("Elseif executed: " + execute);}	  
+	  {execute = execute && !done; done = done || execute; if(parsername.verbose){System.out.println("Elseif executed: " + execute);}}	  
 	  <THEN> (line(map, execute, localVariables, fps))*
 	)*
-	((<ELSE> {System.out.println("Else executed: " + !done);} <THEN> (line(map, !done, localVariables, fps))* <ENDIF>) | <ENDIF>)
+	((<ELSE> {if(parsername.verbose){System.out.println("Else executed: " + !done);}} <THEN> (line(map, !done, localVariables, fps))* <ENDIF>) | <ENDIF>)
 
 	//Check if any of the local variables were changed
 	{
@@ -619,7 +622,7 @@ void print(Map map, Map local, boolean execute):
 		}
 		catch(Exception e) {
 		  	try {
-	  			System.out.println("Checking local variables.");
+	  			if(parsername.verbose){System.out.println("Checking local variables.");}
 	  			c = (double) local.get(token.toString()); System.out.println(token.toString()+"="+c);
 			}
 			catch(Exception f) {
@@ -634,7 +637,7 @@ void print(Map map, Map local, boolean execute):
 		}
 		catch(Exception e) {
 		  	try {
-	  			System.out.println("Checking local variables.");
+	  			if(parsername.verbose){System.out.println("Checking local variables.");}
 	  			a = (Boolean) local.get(token.toString()); System.out.println(token.toString()+"="+a);
 			}
 			catch(Exception f) {
@@ -649,7 +652,7 @@ void print(Map map, Map local, boolean execute):
 		}
 		catch(Exception e) {
 		  	try {
-	  			System.out.println("Checking local variables.");
+	  			if(parsername.verbose){System.out.println("Checking local variables.");}
 	  			b = (Integer) local.get(token.toString()); System.out.println(token.toString()+"="+b);
 			}
 			catch(Exception f) {
@@ -756,9 +759,11 @@ void whileLoop(Map map, Map locals, Map fps):
 		InputStream bodyStream 		= new ByteArrayInputStream(body_string.getBytes());
 		InputStream conditionStream = new ByteArrayInputStream(condition_string.getBytes());
 
-		System.out.println("\nStarting loop");
-		System.out.println("Condition: "+condition_string);
-	  	System.out.println("Body: "+body_string);
+		if(parsername.verbose){
+			System.out.println("\nStarting loop");
+			System.out.println("Condition: "+condition_string);
+		  	System.out.println("Body: "+body_string);
+	 	}
 		
 		parsername parser_body 		= new parsername(bodyStream);
 		parsername parser_condition = new parsername(conditionStream);
@@ -767,7 +772,7 @@ void whileLoop(Map map, Map locals, Map fps):
 	    {
 	      	while(parser_condition.conditionInLoop(map, localVariables, fps)){
 				parser_body.linesInLoop(map, localVariables, fps);
-				System.out.println("Loop interation executed");
+				if(parsername.verbose){System.out.println("Loop interation executed");}
 
 				//Reseting input stream and parsers for potential next iteration
 				bodyStream      	= new ByteArrayInputStream(body_string.getBytes());
@@ -834,7 +839,7 @@ void procedureDeclaration(Map map, Map fps):
 	  	localVariables.put("BODY", body);
 	  	//Save procedure to the global memory
 	  	fps.put(s.toString(), localVariables);
-	  	System.out.println(fps.get(s.toString())+"Procedure saved\n");
+	  	if(parsername.verbose){System.out.println(fps.get(s.toString())+"Procedure saved\n");}
 	}	
 	"ENDPROC"
 }
@@ -852,7 +857,7 @@ void procedureCall(Map map, Map fps):
 	tmp=<VARNAME>
 	{
 	  	//Recover data gathered during declaration
-	  	data = (Map<String, Object>) fps.get(tmp.toString()); System.out.println(data);
+	  	data = (Map<String, Object>) fps.get(tmp.toString()); if(parsername.verbose){System.out.println(data);}
 	  	//Check if procedure exists at all
 	  	if(data == null) {
 			System.out.println("Procedure with this name does not exist, exiting"); System.exit(-1);
@@ -924,8 +929,10 @@ void procedureCall(Map map, Map fps):
 		InputStream bodyStream = new ByteArrayInputStream(procedure_contents.getBytes());
 		parsername parser_body = new parsername(bodyStream);
 
-		System.out.println("\nStarting procedure execution");
-	  	System.out.println("Body: "+procedure_contents);
+		if(parsername.verbose){
+			System.out.println("\nStarting procedure execution");
+		  	System.out.println("Body: "+procedure_contents);
+	 	}
 
 		try
 	    {
@@ -944,7 +951,7 @@ void procedureCall(Map map, Map fps):
 	        System.exit(-1) ;
 	    }
 	
-		System.out.println("Local vars: "+localVariables);
+		if(parsername.verbose){System.out.println("Local vars: "+localVariables);}
 	}
 }
 
@@ -996,7 +1003,7 @@ void functionDeclaration(Map map, Map fps):
 	  	localVariables.put("RETURN", ret);
 	  	//Save function to the global memory
 	  	fps.put(s.toString(), localVariables);
-	  	System.out.println(fps.get(s.toString())+"Function saved\n");
+	  	if(parsername.verbose){System.out.println(fps.get(s.toString())+"Function saved\n");}
 	}	
 	"ENDFUNC"
 }
@@ -1013,7 +1020,7 @@ Object functionCall(Map map, Map fps):
   	tmp=<VARNAME>
 	{
 	  	//Recover data gathered during declaration
-	  	data = (Map<String, Object>) fps.get(tmp.toString()); System.out.println(data);
+	  	data = (Map<String, Object>) fps.get(tmp.toString()); if(parsername.verbose){System.out.println(data);}
 	  	//Check if procedure exists at all
 	  	if(data == null) {
 			System.out.println("Function with this name does not exist, exiting"); System.exit(-1);
@@ -1092,18 +1099,19 @@ Object functionCall(Map map, Map fps):
 		parsername parser_body 		= new parsername(bodyStream);
 		parsername parser_return 	= new parsername(returnStream);
 
-		System.out.println("\nStarting function execution");
-	  	System.out.println("Body: "+procedure_contents);
-	  	System.out.println("Return: "+return_contents);
+		if(parsername.verbose){
+			System.out.println("\nStarting function execution");
+		  	System.out.println("Body: "+procedure_contents);
+		  	System.out.println("Return: "+return_contents);
+	 	}
 
 		try
 	    {
 	      	//Perform body of the function
 			parser_body.linesInLoop(map, localVariables, fps);
-			Integer a = 0; Double b = 0.0; Boolean c = false;
-
-				
-			System.out.println("Local vars: "+localVariables);
+			Integer a = 0; Double b = 0.0; Boolean c = false;	
+			if(parsername.verbose){System.out.println("Local vars: "+localVariables);}
+			
 			//Return a value
 			if(data.get("TYPE").toString().equals("INT")) {
 			  	try { 
@@ -1131,7 +1139,7 @@ Object functionCall(Map map, Map fps):
 					c = parser_return.booleanExpression(map, localVariables, fps);
 				}catch (Exception e){
 				  	//Or comparison statement
-				  	System.out.println("Exception - not a boolean expression - check for comparative expression");
+				  	if(parsername.verbose){System.out.println("Not a boolean expression - check for comparative expression");}
 				  	try {
 						returnStream = new ByteArrayInputStream(return_contents.getBytes());
 						parser_return = new parsername(returnStream);
