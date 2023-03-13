@@ -53,7 +53,23 @@ PRINT(Fd);
 Fc = fun2(Fd, Fd);
 PRINT(Fc);
 
-ENDMAIN //Comment endmain out to run all the code
+Iy = 1;
+
+/*
+WHILE NEQI Iy 16
+DO
+Iy = Iy + Iy;
+WHILE NEQI Iz 2
+DO
+PRINT(Iz)
+Iz = 2;
+ENDWHILE
+PRINT(Iy);
+ENDWHILE
+PRINT(Iy);
+*/
+
+//ENDMAIN //Comment endmain out to run all the code
 dosth();
 PRINT(Ia);
 
@@ -82,7 +98,7 @@ Bc = EQB Bc Bc;
 Bb = EQI Ia 1;
 
 IF EQB Bb TRUE THEN
-INT Iz = 69;
+INT Iaaa = 69;
 Ia = 5;
 ELSE THEN
 INT Izz = 69;
@@ -113,5 +129,21 @@ ENDIF
 Ia = Ia;
 
 PRINT(Ia);
+
+Iy = 1;
+WHILE NEQI Iy 16
+DO
+Iy = Iy + Iy;
+Ia = 16;
+PRINT(Iy);
+Bb = FALSE;
+WHILE NEQB Bb TRUE
+DO
+PRINT(Bb);
+Bb = TRUE;
+ENDWHILE
+ENDWHILE
+PRINT(Iy);
+
 
 ENDMAIN

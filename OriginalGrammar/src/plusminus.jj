@@ -203,31 +203,34 @@ TOKEN: /* DATA TYPES */
 | < FLOAT_VARNAME 		: "F" <VARNAME> >
 }
 
-
-Token any():{Token t;}
+//DO NOT put <DO> in condition, otherwise loop will not start
+Token anyCondition():{Token t;}
 {
-	(
+  	//Conditions can be expressions and comparisons
+  	(
 	  	t = <INTEGER> | t = <FLOAT>
 	  | t = <INT_VARNAME> | t = <BOOL_VARNAME> | t = <FLOAT_VARNAME>
 	  | t = <PLUS> | t = <MINUS> | t = <MULTIPLY> | t = <DIVIDE>
-	  | t = <INT> | t = <DOUBLE> | t = < BOOLEAN> | t = <TRUE> | t = <FALSE>
-	  | t = <EQUAL> | t = <SEMICOLON> | t = <COMMA>
+	  | t = <TRUE> | t = <FALSE>
 	  | t = <LPARENTHESIS> | t = <RPARENTHESIS>
-	  | t = <AND> | t = <OR> | t = <NOT>
-	  | t = <IF> | t = <ELSE> | t = <ELSEIF> | t = <THEN> | t = <ENDIF> 
-	  | t = <WHILE>
+	  | t = <AND> | t = <OR> | t = <NOT>  
 	  | t =	"EQB" | t = "NEQB" 
 	  | t = "EQI" | t = "NEQI" | t = "GEI" | t = "LEI" | t = "GI" | t = "LI"
       | t = "EQF" | t = "NEQF" | t = "GEF" | t = "LEF" | t = "GF" | t = "LF"
-      | t = <PRINT> | t = <WRITE>
 	)
 	{return t;}
 }
 
-//DO NOT put <DO> in condition, otherwise loop will not start
-Token anyCondition():{Token t;}
+Token any():{Token t;}
 {
-	(t = <ENDWHILE> | t = any()){return t;}
+	(
+	   t = anyCondition()
+	 | t = <IF> | t = <ELSE> | t = <ELSEIF> | t = <THEN> | t = <ENDIF>
+	 | t = <PRINT> | t = <WRITE>
+	 | t = <EQUAL> | t = <SEMICOLON> | t = <COMMA>
+	 | t = <INT> | t = <DOUBLE> | t = <BOOLEAN>
+	)
+	{return t;}
 }
 
 //DO NOT put <ENDWHILE> in body, otherwise loop will not end
@@ -239,7 +242,7 @@ Token anyBody():{Token t;}
 
 Token anyProcedure():{Token t;}
 {
-	(t = <ENDWHILE> | t = <DO> | t = any()){return t;}
+	(t = <ENDWHILE> | t = <DO> | t = <WHILE> | t = any()){return t;}
 }
 
 /*---------------------------------------------------------------------*/
@@ -634,47 +637,50 @@ void print(Map map, Map local, boolean execute):
 {
   <PRINT><LPARENTHESIS>(
     < FLOAT_VARNAME > {
-      	if(!execute){return;}
-		try {
-	  		c = (double) map.get(token.toString()); System.out.println(token.toString()+"="+c);
-		}
-		catch(Exception e) {
-		  	try {
-	  			if(parsername.verbose){System.out.println("Checking local variables.");}
-	  			c = (double) local.get(token.toString()); System.out.println(token.toString()+"="+c);
+      	if(execute){
+			try {
+		  		c = (double) map.get(token.toString()); System.out.println(token.toString()+"="+c);
 			}
-			catch(Exception f) {
-				System.out.println("Float variable not declared. Cannot print. Exiting.."); System.exit(-1);
+			catch(Exception e) {
+			  	try {
+		  			if(parsername.verbose){System.out.println("Checking local variables.");}
+		  			c = (double) local.get(token.toString()); System.out.println(token.toString()+"="+c);
+				}
+				catch(Exception f) {
+					System.out.println("Float variable not declared. Cannot print. Exiting.."); System.exit(-1);
+				}
 			}
 		}
 	}
   | < BOOL_VARNAME >  {
-    	if(!execute){return;}
-    	try {
-	  		a = (Boolean) map.get(token.toString()); System.out.println(token.toString()+"="+a);
-		}
-		catch(Exception e) {
-		  	try {
-	  			if(parsername.verbose){System.out.println("Checking local variables.");}
-	  			a = (Boolean) local.get(token.toString()); System.out.println(token.toString()+"="+a);
+    	if(execute){
+	    	try {
+		  		a = (Boolean) map.get(token.toString()); System.out.println(token.toString()+"="+a);
 			}
-			catch(Exception f) {
-				System.out.println("Boolean variable not declared. Cannot print. Exiting.."); System.exit(-1);
+			catch(Exception e) {
+			  	try {
+		  			if(parsername.verbose){System.out.println("Checking local variables.");}
+		  			a = (Boolean) local.get(token.toString()); System.out.println(token.toString()+"="+a);
+				}
+				catch(Exception f) {
+					System.out.println("Boolean variable not declared. Cannot print. Exiting.."); System.exit(-1);
+				}
 			}
 		}
 	}
   | < INT_VARNAME >   {
-    	if(!execute){return;}
-		try {
-	  		b = (Integer) map.get(token.toString()); System.out.println(token.toString()+"="+b);
-		}
-		catch(Exception e) {
-		  	try {
-	  			if(parsername.verbose){System.out.println("Checking local variables.");}
-	  			b = (Integer) local.get(token.toString()); System.out.println(token.toString()+"="+b);
+    	if(execute){
+			try {
+		  		b = (Integer) map.get(token.toString()); System.out.println(token.toString()+"="+b);
 			}
-			catch(Exception f) {
-				System.out.println("Integer variable not declared. Cannot print. Exiting.."); System.exit(-1);
+			catch(Exception e) {
+			  	try {
+		  			if(parsername.verbose){System.out.println("Checking local variables.");}
+		  			b = (Integer) local.get(token.toString()); System.out.println(token.toString()+"="+b);
+				}
+				catch(Exception f) {
+					System.out.println("Integer variable not declared. Cannot print. Exiting.."); System.exit(-1);
+				}
 			}
 		}
 	}
@@ -755,7 +761,7 @@ void whileLoop(Map map, Map locals, Map fps):
   	<WHILE> (t = anyCondition() {condition.add(t);})*
 	<DO>
 	//Gather tokens for further processing
-	(t = anyBody() {body.add(t);})*
+	(t = anyBody() {body.add(t);} | whileLoop(map, localVariables, fps))*
   	<ENDWHILE> 
 
 	//Perform the loop
