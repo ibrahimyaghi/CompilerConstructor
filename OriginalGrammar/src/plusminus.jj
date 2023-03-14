@@ -391,7 +391,7 @@ void line(Map map, boolean execute, Map local, Map fps) :
 | ifStatement(map, local, fps)			{if(parsername.verbose){System.out.println("End of IF statement\n");} return;}
 | whileLoop(map, local, fps, false)		{if(parsername.verbose){System.out.println("End of loop\n");} return;}
 
-| procedureCall(map, fps)				{if(parsername.verbose){System.out.println("End of procedure execution\n");} return;}
+| procedureCall(map, fps, local)		{if(parsername.verbose){System.out.println("End of procedure execution\n");} return;}
 
 | print(map, local, execute)			{if(parsername.verbose){System.out.println("PRINT executed\n");} return;}
 | read(map, local, execute)				{if(parsername.verbose){System.out.println("WRITE executed\n");} return;}
@@ -442,7 +442,7 @@ int abase(Map map, Map local, Map fps) :
 			}
 		}
 	}
-  | tmp = functionCall(map, fps){try{a = (Integer)tmp;}catch(Exception e){System.out.println("Incompatible function return type."); System.exit(-1);}}
+  | tmp = functionCall(map, fps, local){try{a = (Integer)tmp;}catch(Exception e){System.out.println("Incompatible function return type."); System.exit(-1);}}
   ){return a;}
 }
 
@@ -478,7 +478,7 @@ boolean bbase(Map map, Map local, Map fps) :
   (
   <TRUE> {a = Boolean.parseBoolean(token.image);} |
   <FALSE> {a = Boolean.parseBoolean(token.image);} |
-  tmp = functionCall(map, fps){try{a = (boolean) tmp;}catch(Exception e){System.out.println("Incompatible function return type."); System.exit(-1);}}|
+  tmp = functionCall(map, fps, local){try{a = (boolean) tmp;}catch(Exception e){System.out.println("Incompatible function return type."); System.exit(-1);}}|
   <LPARENTHESIS> a=booleanExpression(map, local, fps) <RPARENTHESIS> |
   < BOOL_VARNAME > { a = true;
 		try {
@@ -542,7 +542,7 @@ double fbase(Map map, Map local, Map fps) :
 			}
 		}
 	}
-  | tmp = functionCall(map, fps){try{a = (Double) tmp;}catch(Exception e){System.out.println("Incompatible function return type."); System.exit(-1);}}
+  | tmp = functionCall(map, fps, local){try{a = (Double) tmp;}catch(Exception e){System.out.println("Incompatible function return type."); System.exit(-1);}}
   )
   {return a;}
 }
@@ -881,7 +881,7 @@ void procedureDeclaration(Map map, Map fps):
 }
 
 //We only accept variables as variables in the procedure call 
-void procedureCall(Map map, Map fps):
+void procedureCall(Map map, Map fps, Map local):
 {
   	Map<String,Object> localVariables = new HashMap<String,Object>();
 	Token tmp;
@@ -907,6 +907,15 @@ void procedureCall(Map map, Map fps):
 		  		for (Map.Entry<String, Object> entry : data.entrySet()) {
 	        		if (entry.getValue().equals("Var"+parameter)) {
 	        		  	localVariables.put(entry.getKey(), map.get(tmp.toString()));
+						//Check if variable was in globals
+						if(localVariables.get(entry.getKey()) == null) {
+							if(parsername.verbose){System.out.println("Checking local variables.");}
+							localVariables.put(entry.getKey(), local.get(tmp.toString()));
+						}
+						//Check if variable was in local variables
+						if(localVariables.get(entry.getKey()) == null) {
+							System.out.println("Variable not declared. Exiting.."); System.exit(-1);
+						}
 	        		  	found = true;
 	        		  	break;
 			        }
@@ -927,6 +936,15 @@ void procedureCall(Map map, Map fps):
 				for (Map.Entry<String, Object> entry : data.entrySet()) {
 	        		if (entry.getValue().equals("Var"+parameter)) {
 	        		  	localVariables.put(entry.getKey(), map.get(tmp.toString()));
+						//Check if variable was in globals
+						if(localVariables.get(entry.getKey()) == null) {
+							if(parsername.verbose){System.out.println("Checking local variables.");}
+							localVariables.put(entry.getKey(), local.get(tmp.toString()));
+						}
+						//Check if variable was in local variables
+						if(localVariables.get(entry.getKey()) == null) {
+							System.out.println("Variable not declared. Exiting.."); System.exit(-1);
+						}
 	        		  	found = true;
 	        		  	break;
 			        }
@@ -1044,7 +1062,7 @@ void functionDeclaration(Map map, Map fps):
 	"ENDFUNC"
 }
 
-Object functionCall(Map map, Map fps):
+Object functionCall(Map map, Map fps, Map local):
 {
   	Map<String,Object> localVariables = new HashMap<String,Object>();
 	Token tmp;
@@ -1069,7 +1087,16 @@ Object functionCall(Map map, Map fps):
 			{
 		  		for (Map.Entry<String, Object> entry : data.entrySet()) {
 	        		if (entry.getValue().equals("Var"+parameter)) {
-	        		  	localVariables.put(entry.getKey(), map.get(tmp.toString()));
+						localVariables.put(entry.getKey(), map.get(tmp.toString()));
+						//Check if variable was in globals
+						if(localVariables.get(entry.getKey()) == null) {
+							if(parsername.verbose){System.out.println("Checking local variables.");}
+							localVariables.put(entry.getKey(), local.get(tmp.toString()));
+						}
+						//Check if variable was in local variables
+						if(localVariables.get(entry.getKey()) == null) {
+							System.out.println("Variable not declared. Exiting.."); System.exit(-1);
+						}
 	        		  	found = true;
 	        		  	break;
 			        }
@@ -1090,6 +1117,15 @@ Object functionCall(Map map, Map fps):
 				for (Map.Entry<String, Object> entry : data.entrySet()) {
 	        		if (entry.getValue().equals("Var"+parameter)) {
 	        		  	localVariables.put(entry.getKey(), map.get(tmp.toString()));
+						//Check if variable was in globals
+						if(localVariables.get(entry.getKey()) == null) {
+							if(parsername.verbose){System.out.println("Checking local variables.");}
+							localVariables.put(entry.getKey(), local.get(tmp.toString()));
+						}
+						//Check if variable was in local variables
+						if(localVariables.get(entry.getKey()) == null) {
+							System.out.println("Variable not declared. Exiting.."); System.exit(-1);
+						}
 	        		  	found = true;
 	        		  	break;
 			        }

@@ -752,8 +752,8 @@ public class parsername implements parsernameConstants {
                                                  if(parsername.verbose){System.out.println("End of loop\u005cn");} {if (true) return;}
       break;
     case VARNAME:
-      procedureCall(map, fps);
-                                                         if(parsername.verbose){System.out.println("End of procedure execution\u005cn");} {if (true) return;}
+      procedureCall(map, fps, local);
+                                                 if(parsername.verbose){System.out.println("End of procedure execution\u005cn");} {if (true) return;}
       break;
     case PRINT:
       print(map, local, execute);
@@ -895,8 +895,8 @@ public class parsername implements parsernameConstants {
                 }
       break;
     case VARNAME:
-      tmp = functionCall(map, fps);
-                                 try{a = (Integer)tmp;}catch(Exception e){System.out.println("Incompatible function return type."); System.exit(-1);}
+      tmp = functionCall(map, fps, local);
+                                        try{a = (Integer)tmp;}catch(Exception e){System.out.println("Incompatible function return type."); System.exit(-1);}
       break;
     default:
       jj_la1[23] = jj_gen;
@@ -988,8 +988,8 @@ public class parsername implements parsernameConstants {
            a = Boolean.parseBoolean(token.image);
       break;
     case VARNAME:
-      tmp = functionCall(map, fps);
-                               try{a = (boolean) tmp;}catch(Exception e){System.out.println("Incompatible function return type."); System.exit(-1);}
+      tmp = functionCall(map, fps, local);
+                                      try{a = (boolean) tmp;}catch(Exception e){System.out.println("Incompatible function return type."); System.exit(-1);}
       break;
     case LPARENTHESIS:
       jj_consume_token(LPARENTHESIS);
@@ -1146,8 +1146,8 @@ public class parsername implements parsernameConstants {
                 }
       break;
     case VARNAME:
-      tmp = functionCall(map, fps);
-                                 try{a = (Double) tmp;}catch(Exception e){System.out.println("Incompatible function return type."); System.exit(-1);}
+      tmp = functionCall(map, fps, local);
+                                        try{a = (Double) tmp;}catch(Exception e){System.out.println("Incompatible function return type."); System.exit(-1);}
       break;
     default:
       jj_la1[33] = jj_gen;
@@ -2065,7 +2065,7 @@ public class parsername implements parsernameConstants {
   }
 
 //We only accept variables as variables in the procedure call 
-  final public void procedureCall(Map map, Map fps) throws ParseException {
+  final public void procedureCall(Map map, Map fps, Map local) throws ParseException {
         Map<String,Object> localVariables = new HashMap<String,Object>();
         Token tmp;
         int parameter = 1;
@@ -2098,6 +2098,15 @@ public class parsername implements parsernameConstants {
                                 for (Map.Entry<String, Object> entry : data.entrySet()) {
                                 if (entry.getValue().equals("Var"+parameter)) {
                                         localVariables.put(entry.getKey(), map.get(tmp.toString()));
+                                                //Check if variable was in globals
+                                                if(localVariables.get(entry.getKey()) == null) {
+                                                        if(parsername.verbose){System.out.println("Checking local variables.");}
+                                                        localVariables.put(entry.getKey(), local.get(tmp.toString()));
+                                                }
+                                                //Check if variable was in local variables
+                                                if(localVariables.get(entry.getKey()) == null) {
+                                                        System.out.println("Variable not declared. Exiting.."); System.exit(-1);
+                                                }
                                         found = true;
                                         break;
                                 }
@@ -2138,6 +2147,15 @@ public class parsername implements parsernameConstants {
                                 for (Map.Entry<String, Object> entry : data.entrySet()) {
                                 if (entry.getValue().equals("Var"+parameter)) {
                                         localVariables.put(entry.getKey(), map.get(tmp.toString()));
+                                                //Check if variable was in globals
+                                                if(localVariables.get(entry.getKey()) == null) {
+                                                        if(parsername.verbose){System.out.println("Checking local variables.");}
+                                                        localVariables.put(entry.getKey(), local.get(tmp.toString()));
+                                                }
+                                                //Check if variable was in local variables
+                                                if(localVariables.get(entry.getKey()) == null) {
+                                                        System.out.println("Variable not declared. Exiting.."); System.exit(-1);
+                                                }
                                         found = true;
                                         break;
                                 }
@@ -2434,7 +2452,7 @@ public class parsername implements parsernameConstants {
     jj_consume_token(65);
   }
 
-  final public Object functionCall(Map map, Map fps) throws ParseException {
+  final public Object functionCall(Map map, Map fps, Map local) throws ParseException {
         Map<String,Object> localVariables = new HashMap<String,Object>();
         Token tmp;
         int parameter = 1;
@@ -2466,7 +2484,16 @@ public class parsername implements parsernameConstants {
       }
                                 for (Map.Entry<String, Object> entry : data.entrySet()) {
                                 if (entry.getValue().equals("Var"+parameter)) {
-                                        localVariables.put(entry.getKey(), map.get(tmp.toString()));
+                                                localVariables.put(entry.getKey(), map.get(tmp.toString()));
+                                                //Check if variable was in globals
+                                                if(localVariables.get(entry.getKey()) == null) {
+                                                        if(parsername.verbose){System.out.println("Checking local variables.");}
+                                                        localVariables.put(entry.getKey(), local.get(tmp.toString()));
+                                                }
+                                                //Check if variable was in local variables
+                                                if(localVariables.get(entry.getKey()) == null) {
+                                                        System.out.println("Variable not declared. Exiting.."); System.exit(-1);
+                                                }
                                         found = true;
                                         break;
                                 }
@@ -2507,6 +2534,15 @@ public class parsername implements parsernameConstants {
                                 for (Map.Entry<String, Object> entry : data.entrySet()) {
                                 if (entry.getValue().equals("Var"+parameter)) {
                                         localVariables.put(entry.getKey(), map.get(tmp.toString()));
+                                                //Check if variable was in globals
+                                                if(localVariables.get(entry.getKey()) == null) {
+                                                        if(parsername.verbose){System.out.println("Checking local variables.");}
+                                                        localVariables.put(entry.getKey(), local.get(tmp.toString()));
+                                                }
+                                                //Check if variable was in local variables
+                                                if(localVariables.get(entry.getKey()) == null) {
+                                                        System.out.println("Variable not declared. Exiting.."); System.exit(-1);
+                                                }
                                         found = true;
                                         break;
                                 }
@@ -2662,46 +2698,32 @@ public class parsername implements parsernameConstants {
     finally { jj_save(4, xla); }
   }
 
-  private boolean jj_3R_28() {
-    if (jj_scan_token(DOUBLE)) return true;
+  private boolean jj_3_4() {
+    if (jj_scan_token(LPARENTHESIS)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_30()) {
+    jj_scanpos = xsp;
+    if (jj_3R_31()) {
+    jj_scanpos = xsp;
+    if (jj_3R_32()) return true;
+    }
+    }
     return false;
   }
 
-  private boolean jj_3R_31() {
+  private boolean jj_3R_32() {
+    if (jj_scan_token(BOOLEAN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_28() {
     if (jj_scan_token(DOUBLE)) return true;
     return false;
   }
 
   private boolean jj_3R_27() {
     if (jj_scan_token(INT)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_26() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(26)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(27)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(28)) return true;
-    }
-    }
-    if (jj_scan_token(63)) return true;
-    return false;
-  }
-
-  private boolean jj_3_5() {
-    if (jj_scan_token(LPARENTHESIS)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(41)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(43)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(42)) return true;
-    }
-    }
     return false;
   }
 
@@ -2719,8 +2741,8 @@ public class parsername implements parsernameConstants {
     return false;
   }
 
-  private boolean jj_3R_30() {
-    if (jj_scan_token(INT)) return true;
+  private boolean jj_3R_31() {
+    if (jj_scan_token(DOUBLE)) return true;
     return false;
   }
 
@@ -2738,32 +2760,46 @@ public class parsername implements parsernameConstants {
     return false;
   }
 
+  private boolean jj_3R_26() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(26)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(27)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(28)) return true;
+    }
+    }
+    if (jj_scan_token(63)) return true;
+    return false;
+  }
+
   private boolean jj_3R_29() {
     if (jj_scan_token(BOOLEAN)) return true;
     return false;
   }
 
-  private boolean jj_3_4() {
+  private boolean jj_3_5() {
     if (jj_scan_token(LPARENTHESIS)) return true;
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_30()) {
+    if (jj_scan_token(41)) {
     jj_scanpos = xsp;
-    if (jj_3R_31()) {
+    if (jj_scan_token(43)) {
     jj_scanpos = xsp;
-    if (jj_3R_32()) return true;
+    if (jj_scan_token(42)) return true;
     }
     }
+    return false;
+  }
+
+  private boolean jj_3R_30() {
+    if (jj_scan_token(INT)) return true;
     return false;
   }
 
   private boolean jj_3_1() {
     if (jj_3R_26()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_32() {
-    if (jj_scan_token(BOOLEAN)) return true;
     return false;
   }
 

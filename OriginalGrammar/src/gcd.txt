@@ -1,0 +1,20 @@
+PROGRAM gcd
+
+
+
+INT FUNC gcd(INT Ix, INT Iy)
+RETURN Iy+1;
+ENDFUNC
+
+
+
+MAIN
+
+INT Ia = 10, Ib = 5, Iresult = 0;
+
+PRINT(Ia);
+Iresult = gcd(Ia, Ib);
+PRINT(Iresult);
+
+
+ENDMAIN
