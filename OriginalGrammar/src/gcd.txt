@@ -1,20 +1,66 @@
 PROGRAM gcd
 
+//We can have some global variables
+//They are coprime
+INT Iglobala = 2137, Iglobalb = 5234;
 
+INT FUNC gcd(INT Ia, INT Ib)
 
-INT FUNC gcd(INT Ix, INT Iy)
-RETURN Iy+1;
+	//Variable to be returned
+	INT Ireturn = 0;
+
+	//Do a loop until one of the variables becomes 0
+	WHILE NEQI Ia 0 DO
+		WHILE NEQI Ib 0 DO
+			/* 
+			Subtract the lower number from the bigger until it becomes the smaller one.
+			We don't have division with remainder, so we have to do it in a little more complicated way.
+			*/
+			IF GI Ia Ib THEN
+				Ia = Ia - Ib;
+			ELSE THEN
+				Ib = Ib - Ia;
+			ENDIF
+			//Return non-zero number, which is a GCD
+			IF EQI Ia 0 THEN
+				Ireturn = Ib;
+				Ib = 0;
+			ENDIF
+		ENDWHILE
+		//Return non-zero number, which is a GCD
+		IF EQI Ireturn 0 THEN
+			Ireturn = Ia;
+			Ia = 0;
+		ENDIF
+	ENDWHILE
+
+	RETURN Ireturn;
 ENDFUNC
-
-
 
 MAIN
 
-INT Ia = 10, Ib = 5, Iresult = 0;
+	//We can also have local variables
+	INT Ilocala = 22, Ilocalb = 10, Igcd = 0;
 
-PRINT(Ia);
-Iresult = gcd(Ia, Ib);
-PRINT(Iresult);
+	//Test for small numbers	
+	PRINT(Ilocala);
+	PRINT(Ilocalb);
+	Igcd = gcd(Ilocala, Ilocalb);
+	PRINT(Igcd);
+
+	//We can override them
+	Ilocala = 964; Ilocalb = 1928;
+	//Test for bigger number	
+	PRINT(Ilocala);
+	PRINT(Ilocalb);
+	Igcd = gcd(Ilocala, Ilocalb);
+	PRINT(Igcd);
+	
+	//Test for big coprime numbers using global variables
+	PRINT(Iglobala);
+	PRINT(Iglobalb);
+	Igcd = gcd(Iglobala, Iglobalb);
+	PRINT(Igcd);
 
 
 ENDMAIN

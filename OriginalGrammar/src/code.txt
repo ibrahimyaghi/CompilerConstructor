@@ -35,6 +35,9 @@ ENDPROC
 
 MAIN
 
+PRINT(Ia);
+ENDMAIN;
+
 BOOLEAN Bc = TRUE;
 INT Iz = 1;
 Ia = 18;
