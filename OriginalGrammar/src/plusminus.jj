@@ -18,12 +18,6 @@ options
 
 [MAYBE TO DO] Extend printing to expression values (Variables for now)
 
-[MAYBE CHANGE, BUT WORKS] Delete ELSEIF
-
-[MAYBE CHANGE, BUT WORKS] Comparison as a part of boolean statement
-
-[MAYBE CHANGE, BUT WORKS] Operation with semicolon consistency
-
 [FIX] Figure out why we have warning in floatExpression and integerExpression 
 ---------------------------------------------------------------------*/
 
