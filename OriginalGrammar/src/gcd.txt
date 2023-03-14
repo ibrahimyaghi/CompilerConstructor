@@ -10,7 +10,7 @@ INT FUNC gcd(INT Ia, INT Ib)
 	INT Ireturn = 0;
 
 	/* 	Do a loop until one of the variables becomes 0
-		Actually this nesting is absolutelly useless, 
+		Actually this nesting is absolutely useless, 
 		I just wanted to show that it is possible to do it  	*/
 	WHILE NEQI Ia 0 DO
 		WHILE NEQI Ib 0 DO

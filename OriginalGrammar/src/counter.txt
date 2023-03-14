@@ -1,0 +1,23 @@
+PROGRAM counter
+
+FLOAT Fcounter = 0.0;
+
+PROC increasecounter()
+	Fcounter = Fcounter + 1.0;
+ENDPROC
+
+PROC increasecounterbyvalue(FLOAT Fval)
+	Fcounter = Fcounter + Fval;
+ENDPROC
+
+MAIN
+
+	//This code just sums random floats using procedures
+	FLOAT Ftime1 = 1.27, Ftime2 = 2.33;
+	increasecounter();
+	increasecounterbyvalue(Ftime1);
+	increasecounter();
+	increasecounterbyvalue(Ftime2);
+	PRINT(Fcounter);
+
+ENDMAIN
