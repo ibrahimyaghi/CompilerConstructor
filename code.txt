@@ -1,0 +1,165 @@
+PROGRAM programname
+
+//A comment
+/*
+a = 1+1 Another comment
+*/
+
+INT Ia = 1;
+INT Ib = -2, Ic = -15, Id = 10;
+BOOLEAN Bb = TRUE;
+FLOAT Fc = -1.5, Fd = 2.1, Fe = -1.2;
+
+INT FUNC fun1()
+Ib = 69 * Ib;
+RETURN Ib;
+ENDFUNC
+
+BOOLEAN FUNC fun3()
+RETURN EQI 1 2;
+ENDFUNC
+
+FLOAT FUNC fun2(FLOAT Fvar1, FLOAT Fvar2)
+RETURN 0.5*Fvar1*Fvar2;
+ENDFUNC
+
+PROC dosth()
+Ia = 5 * Ia;
+ENDPROC
+
+PROC dosth2(FLOAT Fvar1, INT Ivar2, BOOLEAN Bvar3)
+INT Iabc = 15, Ifc = 10;
+Ia = 5 * Ivar2;
+Fc = 2.0 * Fvar1;
+ENDPROC
+
+MAIN
+
+PRINT(Ia);
+ENDMAIN;
+
+BOOLEAN Bc = TRUE;
+INT Iz = 1;
+Ia = 18;
+//WRITE(Iz);
+PRINT(Ia);
+Iz = Iz + Ia;
+//PRINT(Ia);
+
+Bb = fun3();
+PRINT(Bb);
+
+INT Iy = 1;
+Iy = fun1();
+PRINT(Iy);
+
+PRINT(Fd);
+Fc = fun2(Fd, Fd);
+PRINT(Fc);
+
+Iy = 1;
+
+/*
+WHILE NEQI Iy 16
+DO
+Iy = Iy + Iy;
+WHILE NEQI Iz 2
+DO
+PRINT(Iz)
+Iz = 2;
+ENDWHILE
+PRINT(Iy);
+ENDWHILE
+PRINT(Iy);
+*/
+
+//ENDMAIN //Comment endmain out to run all the code
+dosth();
+PRINT(Ia);
+
+dosth2(Fc, Ia, Bb);
+
+Iy = 1;
+WHILE NEQI Iy 16
+DO
+Iy = Iy + Iy;
+Ia = 16;
+PRINT(Iy);
+ENDWHILE
+PRINT(Iy);
+
+INT Ix = 10;
+FLOAT Ff = 1.2;
+
+Fc = 5.0 * Ff;
+Ix = Ix;
+Fc = Fc;
+Bc = NOT Bc;
+
+Bc = EQB Bc Bc;
+
+Bb = EQI Ia 1;
+
+IF EQB Bb TRUE THEN
+INT Iaaa = 69;
+Ia = 5;
+ELSE THEN
+INT Izz = 69;
+Ia = 15;
+ENDIF
+
+IF EQB Bb FALSE THEN
+Ia = 5;
+ELSEIF TRUE THEN
+Ia = Ia+5;
+Ix = 2*Ix;
+INT Iif = 12;
+PRINT(Ix);
+ELSE THEN
+Ia = Ia+10;
+ENDIF
+
+PRINT(Ix);
+
+IF EQB Bb FALSE THEN
+Ia = 5;
+ELSEIF EQI 1 2 THEN
+Ia = 10;
+ELSE THEN
+Ia = 15;
+ENDIF
+
+Ia = Ia;
+
+PRINT(Ia);
+
+Iy = 1;
+WHILE NEQI Iy 16
+DO
+Iy = Iy + Iy;
+Ia = 16;
+PRINT(Iy);
+Bb = FALSE;
+WHILE NEQB Bb TRUE
+DO
+PRINT(Bb);
+WHILE NEQB Bc TRUE
+DO
+Bc = TRUE;
+Ia = 1;
+WHILE NEQI Ia 5
+DO
+Ia = Ia + 1;
+PRINT(Ia);
+ENDWHILE
+PRINT(Bc);
+ENDWHILE
+Bb = TRUE;
+ENDWHILE
+Bc = FALSE;
+ENDWHILE
+PRINT(Iy);
+
+
+
+ENDMAIN

@@ -1,0 +1,23 @@
+PROGRAM factorial
+
+// define a function to calculate factorial
+INT FUNC factorial(INT Inum)
+    INT Ifact = 1;
+    IF EQI Inum 0 THEN
+        Ifact = 1;
+    ELSE
+        WHILE GI Inum 0 
+        DO
+            Ifact = Ifact * Inum;
+            Inum = Inum - 1;
+        ENDWHILE
+    ENDIF
+    RETURN Ifact;
+ENDFUNC
+
+MAIN
+    // call the factorial function
+    INT Inum = 5;
+    INT Ifact = factorial(Inum);
+    PRINT(Ifact);
+ENDMAIN
