@@ -1,0 +1,37 @@
+PROGRAM 
+max
+
+	//Global variables
+	INT Inum1= 10, Inum2 = 20, Inum3=30;                       
+    INT Imax=0;
+	                                                           
+
+	INT FUNC max (INT Inum1, INT Inum2, INT Inum3)
+
+		/* Using IF */
+
+
+
+
+		IF GI Inum1 Inum2 THEN                     
+                 Imax=Inum1;                       
+        ELSE THEN                                       
+                  Imax=Inum2;  
+        ENDIF
+        IF GI Inum3 Imax THEN
+                 Imax=Inum3;
+		
+ENDIF
+		RETURN Imax;
+	ENDFUNC
+	
+
+	MAIN
+	
+		PRINT(Inum1);
+		PRINT(Inum2);
+       PRINT(Inum3);
+		Imax = max(Inum1, Inum2, Inum3);
+		PRINT(Imax);
+
+	ENDMAIN
