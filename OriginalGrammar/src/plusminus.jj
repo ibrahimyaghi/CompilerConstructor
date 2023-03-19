@@ -200,7 +200,7 @@ Token anyCondition():{Token t;}
 {
   	//Conditions can be expressions and comparisons
   	(
-	  	t = <INTEGER> | t = <FLOAT>
+	  	t = <INTEGER> | t = <FLOAT> | t = <VARNAME>
 	  | t = <INT_VARNAME> | t = <BOOL_VARNAME> | t = <FLOAT_VARNAME>
 	  | t = <PLUS> | t = <MINUS> | t = <MULTIPLY> | t = <DIVIDE>
 	  | t = <TRUE> | t = <FALSE>
@@ -244,53 +244,62 @@ Token anyProcedure():{Token t;}
 /* We do not allow initialization of the same variable twice 
 /*---------------------------------------------------------------------*/
 
-void declareINT(Map map, boolean execute, Map globals):
-{String a;}
+void declareINT(Map map, boolean execute, Map globals, Map fps):
+{String a; int b;}
 {
     <INT> < INT_VARNAME > {a = token.toString();} <EQUAL>
     (
-    <INTEGER> { if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
-      			if(execute){map.put(a, Integer.parseInt(token.image));}} |
-	<MINUS> <INTEGER> { if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
-      			if(execute){map.put(a, -1*Integer.parseInt(token.image));}} 
+	    b = integerExpression(globals, map, fps)
+		{
+			if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+		    if(execute){map.put(a, Integer.parseInt(token.image));}
+	    } 
     )
 	(<COMMA>  < INT_VARNAME > {a = token.toString();} <EQUAL>
-		( 
-    		<INTEGER> { if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
-      			if(execute){map.put(a, Integer.parseInt(token.image));}}|
-			<MINUS> <INTEGER> { if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
-      			if(execute){map.put(a, -1*Integer.parseInt(token.image));}} 
-		)
+    	b = integerExpression(globals, map, fps)
+		{
+			if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+			if(execute){map.put(a, Integer.parseInt(token.image));}
+		}  
 	)* <SEMICOLON>
 }
 
-void declareBOOL(Map map, boolean execute, Map globals):
-{String a;}
+void declareBOOL(Map map, boolean execute, Map globals, Map fps):
+{String a; boolean b;}
 {
-  <BOOLEAN> < BOOL_VARNAME > {a = token.toString();} <EQUAL>
-  (<TRUE> | <FALSE>) {  if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
-    					if(execute){map.put(a, Boolean.parseBoolean(token.image)); }}
-  (<COMMA>  < BOOL_VARNAME > {a = token.toString();} <EQUAL>
-  (<TRUE> | <FALSE>) {  if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
-    					if(execute){map.put(a, Boolean.parseBoolean(token.image));}})* <SEMICOLON>
+  	<BOOLEAN> < BOOL_VARNAME > {a = token.toString();} <EQUAL>
+  	(b = booleanExpression(globals, map, fps)| b = comparison(globals, map, fps))
+	  	{
+	  		if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+			if(execute){map.put(a, Boolean.parseBoolean(token.image));}
+		} 
+  	(<COMMA>  < BOOL_VARNAME > {a = token.toString();} <EQUAL>
+  	(b = booleanExpression(globals, map, fps)| b = comparison(globals, map, fps))
+  		{
+  			if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+			if(execute){map.put(a, Boolean.parseBoolean(token.image));}
+		}
+	)* <SEMICOLON>
 }
 
-void declareFLOAT(Map map, boolean execute, Map globals):
-{String a;}
+void declareFLOAT(Map map, boolean execute, Map globals, Map fps):
+{String a; double b;}
 {
-  <DOUBLE> < FLOAT_VARNAME > {a = token.toString();} <EQUAL>
-  (    <FLOAT> { if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
-    		if(execute){map.put(a, Double.parseDouble(token.image));}} |
-	<MINUS> <FLOAT> { if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
-    		if(execute){map.put(a, -1*Double.parseDouble(token.image));}} 
-  )
-  (<COMMA> < FLOAT_VARNAME > {a = token.toString();} <EQUAL>
-  	(    	<FLOAT> { if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
-    		if(execute){map.put(a, Double.parseDouble(token.image));}} |
-  		<MINUS> <FLOAT> { if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
-    		if(execute){map.put(a, -1*Double.parseDouble(token.image));}}
-  	)
-  )* <SEMICOLON>
+  	<DOUBLE> < FLOAT_VARNAME > {a = token.toString();} <EQUAL>
+  	(
+	    b = floatExpression(globals, map, fps)
+		{
+			if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+		    if(execute){map.put(a, Double.parseDouble(token.image));}
+	    } 
+    )
+  	(<COMMA> < FLOAT_VARNAME > {a = token.toString();} <EQUAL>
+	    b = floatExpression(globals, map, fps)
+		{
+			if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
+		    if(execute){map.put(a, Double.parseDouble(token.image));}
+	    } 
+  	)* <SEMICOLON>
 }
 
 /*---------------------------------------------------------------------*/
@@ -310,11 +319,11 @@ void multipleLines(Map map, Map fps):
   		{if(parsername.verbose){System.out.println("Function declared");}}
  	| procedureDeclaration(map, fps)
  		{if(parsername.verbose){System.out.println("Procedure declared");}}
-  	| declareINT(map, execute, map)
+  	| declareINT(map, execute, map, fps)
   		{if(parsername.verbose){System.out.println("Global variable(s) declared: " + execute);}}
-	| declareFLOAT(map, execute, map)
+	| declareFLOAT(map, execute, map, fps)
 		{if(parsername.verbose){System.out.println("Global variable(s) declared: " + execute);}}
-	| declareBOOL(map, execute, map)
+	| declareBOOL(map, execute, map, fps)
 		{if(parsername.verbose){System.out.println("Global variable(s) declared: " + execute);}}
   )*
   
@@ -378,17 +387,17 @@ void line(Map map, boolean execute, Map local, Map fps) :
     return;
   }
 
-| declareINT(local, execute, map)   	{if(parsername.verbose){System.out.println("Local variable(s) declared: " + execute);} return;}
-| declareFLOAT(local, execute, map) 	{if(parsername.verbose){System.out.println("Local variable(s) declared: " + execute);} return;}
-| declareBOOL(local, execute, map)  	{if(parsername.verbose){System.out.println("Local variable(s) declared: " + execute);} return;}
+| declareINT(local, execute, map, fps)   	{if(parsername.verbose){System.out.println("Local variable(s) declared: " + execute);} return;}
+| declareFLOAT(local, execute, map, fps) 	{if(parsername.verbose){System.out.println("Local variable(s) declared: " + execute);} return;}
+| declareBOOL(local, execute, map, fps)  	{if(parsername.verbose){System.out.println("Local variable(s) declared: " + execute);} return;}
 
-| ifStatement(map, local, fps)			{if(parsername.verbose){System.out.println("End of IF statement\n");} return;}
-| whileLoop(map, local, fps, false)		{if(parsername.verbose){System.out.println("End of loop\n");} return;}
+| ifStatement(map, local, fps)				{if(parsername.verbose){System.out.println("End of IF statement\n");} return;}
+| whileLoop(map, local, fps, false)			{if(parsername.verbose){System.out.println("End of loop\n");} return;}
 
-| procedureCall(map, fps, local)		{if(parsername.verbose){System.out.println("End of procedure execution\n");} return;}
+| procedureCall(map, fps, local)			{if(parsername.verbose){System.out.println("End of procedure execution\n");} return;}
 
-| print(map, local, execute)			{if(parsername.verbose){System.out.println("PRINT executed\n");} return;}
-| read(map, local, execute)				{if(parsername.verbose){System.out.println("WRITE executed\n");} return;}
+| print(map, local, execute)				{if(parsername.verbose){System.out.println("PRINT executed\n");} return;}
+| read(map, local, execute)					{if(parsername.verbose){System.out.println("WRITE executed\n");} return;}
 }
 
 /*---------------------------------------------------------------------*/

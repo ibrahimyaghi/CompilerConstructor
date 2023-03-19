@@ -8,12 +8,13 @@ ENDPROC
 
 PROC increasecounterbyvalue(FLOAT Fval)
 	Fcounter = Fcounter + Fval;
+	increasecounter();
 ENDPROC
 
 MAIN
 
 	//This code just sums random floats using procedures
-	FLOAT Ftime1 = 1.27, Ftime2 = 2.33;
+	FLOAT Ftime1 = 1.25, Ftime2 = 2.5;
 	increasecounter();
 	increasecounterbyvalue(Ftime1);
 	increasecounter();
