@@ -7,21 +7,17 @@ max
 	                                                           
 
 	INT FUNC max (INT Inum1, INT Inum2, INT Inum3)
-
 		/* Using IF */
-
-
-
-
 		IF GI Inum1 Inum2 THEN                     
-                 Imax=Inum1;                       
+        	Imax=Inum1;                       
         ELSE THEN                                       
-                  Imax=Inum2;  
+        	Imax=Inum2;  
         ENDIF
+        
         IF GI Inum3 Imax THEN
-                 Imax=Inum3;
+        	Imax=Inum3;
+		ENDIF
 		
-ENDIF
 		RETURN Imax;
 	ENDFUNC
 	
@@ -30,7 +26,7 @@ ENDIF
 	
 		PRINT(Inum1);
 		PRINT(Inum2);
-       PRINT(Inum3);
+       	PRINT(Inum3);
 		Imax = max(Inum1, Inum2, Inum3);
 		PRINT(Imax);
 

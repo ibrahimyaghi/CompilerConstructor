@@ -1,0 +1,27 @@
+PROGRAM recursivefactorial
+
+//Define a function to calculate factorial
+INT FUNC factorial(INT Inum)
+	BOOLEAN Bgodeeper = FALSE;
+    IF EQI Inum 0 THEN
+        Inum = 1;
+    ELSE THEN
+        Bgodeeper = TRUE;       
+    ENDIF
+    
+    //This is not the most efficient code
+    WHILE Bgodeeper DO
+    	INT Ifact = Inum - 1;
+    	Inum = Inum*factorial(Ifact);
+    	Bgodeeper = FALSE; 
+    ENDWHILE;
+    RETURN Inum;
+ENDFUNC
+
+MAIN
+    //Call the factorial function
+    INT Ifact = 5;
+    INT Iresult = factorial(Ifact);
+    PRINT(Ifact);
+    PRINT(Iresult);
+ENDMAIN
