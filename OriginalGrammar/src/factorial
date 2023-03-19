@@ -14,5 +14,6 @@ ENDPROC
 MAIN
     // call the factorial procedure
     FLOAT Fnum = 5.0;
+    PRINT(Fnum);
     factorial(Fnum);
 ENDMAIN
