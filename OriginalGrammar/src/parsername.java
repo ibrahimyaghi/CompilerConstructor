@@ -411,7 +411,7 @@ public class parsername implements parsernameConstants {
     jj_consume_token(EQUAL);
     b = integerExpression(globals, map, fps);
                         if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
-                    if(execute){map.put(a, Integer.parseInt(token.image));}
+                    if(execute){map.put(a, b);}
     label_1:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -428,7 +428,7 @@ public class parsername implements parsernameConstants {
       jj_consume_token(EQUAL);
       b = integerExpression(globals, map, fps);
                         if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
-                        if(execute){map.put(a, Integer.parseInt(token.image));}
+                        if(execute){map.put(a, b);}
     }
     jj_consume_token(SEMICOLON);
   }
@@ -470,7 +470,7 @@ public class parsername implements parsernameConstants {
       throw new ParseException();
     }
                         if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
-                        if(execute){map.put(a, Boolean.parseBoolean(token.image));}
+                        if(execute){map.put(a, b);}
     label_2:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -516,7 +516,7 @@ public class parsername implements parsernameConstants {
         throw new ParseException();
       }
                         if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
-                        if(execute){map.put(a, Boolean.parseBoolean(token.image));}
+                        if(execute){map.put(a, b);}
     }
     jj_consume_token(SEMICOLON);
   }
@@ -529,7 +529,7 @@ public class parsername implements parsernameConstants {
     jj_consume_token(EQUAL);
     b = floatExpression(globals, map, fps);
                         if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
-                    if(execute){map.put(a, Double.parseDouble(token.image));}
+                    if(execute){map.put(a, b);}
     label_3:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -546,7 +546,7 @@ public class parsername implements parsernameConstants {
       jj_consume_token(EQUAL);
       b = floatExpression(globals, map, fps);
                         if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
-                    if(execute){map.put(a, Double.parseDouble(token.image));}
+                    if(execute){map.put(a, b);}
     }
     jj_consume_token(SEMICOLON);
   }

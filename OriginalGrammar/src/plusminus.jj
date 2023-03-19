@@ -252,14 +252,14 @@ void declareINT(Map map, boolean execute, Map globals, Map fps):
 	    b = integerExpression(globals, map, fps)
 		{
 			if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
-		    if(execute){map.put(a, Integer.parseInt(token.image));}
+		    if(execute){map.put(a, b);}
 	    } 
     )
 	(<COMMA>  < INT_VARNAME > {a = token.toString();} <EQUAL>
     	b = integerExpression(globals, map, fps)
 		{
 			if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
-			if(execute){map.put(a, Integer.parseInt(token.image));}
+			if(execute){map.put(a, b);}
 		}  
 	)* <SEMICOLON>
 }
@@ -271,13 +271,13 @@ void declareBOOL(Map map, boolean execute, Map globals, Map fps):
   	(b = booleanExpression(globals, map, fps)| b = comparison(globals, map, fps))
 	  	{
 	  		if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
-			if(execute){map.put(a, Boolean.parseBoolean(token.image));}
+			if(execute){map.put(a, b);}
 		} 
   	(<COMMA>  < BOOL_VARNAME > {a = token.toString();} <EQUAL>
   	(b = booleanExpression(globals, map, fps)| b = comparison(globals, map, fps))
   		{
   			if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
-			if(execute){map.put(a, Boolean.parseBoolean(token.image));}
+			if(execute){map.put(a, b);}
 		}
 	)* <SEMICOLON>
 }
@@ -290,14 +290,14 @@ void declareFLOAT(Map map, boolean execute, Map globals, Map fps):
 	    b = floatExpression(globals, map, fps)
 		{
 			if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
-		    if(execute){map.put(a, Double.parseDouble(token.image));}
+		    if(execute){map.put(a, b);}
 	    } 
     )
   	(<COMMA> < FLOAT_VARNAME > {a = token.toString();} <EQUAL>
 	    b = floatExpression(globals, map, fps)
 		{
 			if(map.containsKey(a) || globals.containsKey(a)){System.out.println("Variable already declared. Exiting.."); System.exit(-1);}
-		    if(execute){map.put(a, Double.parseDouble(token.image));}
+		    if(execute){map.put(a, b);}
 	    } 
   	)* <SEMICOLON>
 }

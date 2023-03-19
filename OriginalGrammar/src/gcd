@@ -42,7 +42,7 @@ ENDFUNC
 MAIN
 
 	//We can also have local variables
-	INT Ilocala = 22, Ilocalb = 10, Igcd = 0;
+	INT Ilocala = 22, Ilocalb = Ilocala - 12 , Igcd = 0;
 
 	//Test for small numbers	
 	PRINT(Ilocala);
