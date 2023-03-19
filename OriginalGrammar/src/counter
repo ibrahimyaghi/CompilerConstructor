@@ -15,7 +15,13 @@ MAIN
 
 	//This code just sums random floats using procedures
 	FLOAT Ftime1 = 1.25, Ftime2 = 2.5;
-	increasecounter();
+	
+	//Check if greater of equal
+	BOOLEAN Ba = GEF Ftime1 1.25;
+	IF Ba THEN
+		increasecounter();
+	ENDIF
+	
 	increasecounterbyvalue(Ftime1);
 	increasecounter();
 	increasecounterbyvalue(Ftime2);
