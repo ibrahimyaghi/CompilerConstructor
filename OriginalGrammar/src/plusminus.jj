@@ -10,13 +10,7 @@ options
 /* TO DO LIST / BUGS TO FIX 										   */
 /*-----------------------------------------------------------------------
 
-[TO DO] Write code samples using our language
-
 [TO DO] Fix read()
-
-[MAYBE TO DO] Functions and procedures - take expressions as parameters rather than just variables
-
-[MAYBE TO DO] Extend printing to expression values (Variables for now)
 
 [FIX] Figure out why we have warning in floatExpression and integerExpression 
 ---------------------------------------------------------------------*/
