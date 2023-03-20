@@ -1,0 +1,35 @@
+PROGRAM 
+ fmin
+
+	//Global variables
+	FLOAT Fnum1= 10.5, Fnum2 = 20.0, Fnum3=30.8;                       
+    FLOAT Fmin=0.0;
+	                                                           
+
+	FLOAT FUNC min (FLOAT Fnum1, FLOAT Fnum2, FLOAT Fnum3)
+
+		/* Using IF */
+
+		IF LF Fnum1 Fnum2 THEN                     
+                 Fmin=Fnum1;                       
+        ELSE THEN                                       
+                  Fmin=Fnum2;  
+        ENDIF
+        IF LF Fnum3 Fmin THEN
+                 Fmin=Fnum3;
+		
+ENDIF
+		RETURN Fmin;
+	ENDFUNC
+	
+
+	MAIN
+	
+		PRINT(Fnum1);
+		PRINT(Fnum2);
+        PRINT(Fnum3);
+		Fmin = min(Fnum1, Fnum2, Fnum3);
+		PRINT(Fmin);
+
+	ENDMAIN
+	
