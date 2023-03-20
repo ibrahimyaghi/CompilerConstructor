@@ -9,14 +9,14 @@ floatmaxmin
       
       PROC  minmax (FLOAT Fnum1, FLOAT Fnum2, FLOAT Fnum3, FLOAT Fmax, FLOAT Fmin)
         
-        FLOAT Fmin = Fnum1;
+         Fmin = Fnum1;
         IF LF Fnum2  Fmin THEN
-            Imin = Inum2;
+            Fmin = Fnum2;
         ENDIF
         IF LF Fnum3  Fmin THEN
             Fmin = Fnum3;
         ENDIF
-        FLOAT Fmax = Fnum1;
+         Fmax = Fnum1;
         IF GF Fnum2  Fmax THEN
             Fmax = Fnum2;
 ENDIF
@@ -29,8 +29,8 @@ MAIN
         PRINT (Fnum1);
         PRINT (Fnum2);
         PRINT (Fnum3);
-        minmax();
-        PRINT(Imin);
-        PRINT(Imax);
+        minmax(Fnum1, Fnum2, Fnum3, Fmax, Fmin);
+        PRINT(Fmin);
+        PRINT(Fmax);
 ENDMAIN
 	

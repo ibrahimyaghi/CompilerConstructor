@@ -234,8 +234,7 @@ Token anyProcedure():{Token t;}
 
 /*---------------------------------------------------------------------*/
 /* DECLARE VARIABLES
-/* We allow only simple initializations by values
-/* No statements allowed here
+/* We allow only simple initializations by statements
 /* We do not allow initialization of the same variable twice 
 /*---------------------------------------------------------------------*/
 

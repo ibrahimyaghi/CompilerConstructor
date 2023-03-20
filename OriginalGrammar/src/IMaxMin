@@ -2,20 +2,20 @@ PROGRAM
 intmaxmin
 	
 //Global variables
-       INT Inum1=10, Inum2=20, Inum3=30;
+       INT Inum1=40, Inum2=20, Inum3=30;
        INT Imax=0;
        INT Imin=0;
        
        PROC  minmax (INT Inum1, INT Inum2, INT Inum3, INT Imax, INT Imin)
         
-        INT Imin = Inum1;
+        Imin = Inum1;
         IF LI Inum2  Imin THEN
             Imin = Inum2;
         ENDIF
         IF LI Inum3  Imin THEN
             Imin = Inum3;
         ENDIF
-        INT Imax = Inum1;
+        Imax = Inum1;
         IF GI Inum2  Imax THEN
             Imax = Inum2;
 ENDIF
@@ -28,7 +28,7 @@ MAIN
 PRINT (Inum1);
 PRINT (Inum2);
 PRINT (Inum3);
-minmax();
+minmax(Inum1, Inum2, Inum3, Imax, Imin);
 PRINT(Imax);
 PRINT(Imin);
 ENDMAIN

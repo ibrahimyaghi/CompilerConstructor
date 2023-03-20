@@ -20,7 +20,7 @@ ENDFUNC
 
 MAIN
     //Call the factorial function
-    INT Ifact = 5;
+    INT Ifact = 4;
     INT Iresult = factorial(Ifact);
     PRINT(Ifact);
     PRINT(Iresult);
