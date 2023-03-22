@@ -678,7 +678,7 @@ void print(Map map, Map local, boolean execute):
 			}
 		}
 	}
-  | <QUOTE>(tmp=<VARNAME>{s+=tmp;})*<QUOTE>{System.out.println(s);}
+  | <QUOTE>(tmp=<VARNAME>{s+=tmp; s+=" ";})*<QUOTE>{System.out.println(s);}
   )<RPARENTHESIS><SEMICOLON>
 }
 

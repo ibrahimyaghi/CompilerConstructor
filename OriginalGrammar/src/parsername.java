@@ -1552,10 +1552,10 @@ public class parsername implements parsernameConstants {
           break label_16;
         }
         tmp = jj_consume_token(VARNAME);
-                          s+=tmp;
+                          s+=tmp; s+=" ";
       }
       jj_consume_token(QUOTE);
-                                            System.out.println(s);
+                                                    System.out.println(s);
       break;
     default:
       jj_la1[42] = jj_gen;

@@ -64,5 +64,14 @@ MAIN
 	Igcd = gcd(Iglobala, Iglobalb);
 	PRINT(Igcd);
 
+	//Take user input
+	PRINT(''); //Make a new line
+	PRINT('provide first integer variable');
+	WRITE(Ilocala);
+	PRINT('');
+	PRINT('provide second integer variable');
+	WRITE(Ilocalb);
+	Igcd = gcd(Ilocala, Ilocalb);
+	PRINT(Igcd);
 
 ENDMAIN
