@@ -10,9 +10,7 @@ options
 /* TO DO LIST / BUGS TO FIX 										   */
 /*-----------------------------------------------------------------------
 
-[TO DO] Fix read()
-
-[FIX] Figure out why we have warning in floatExpression and integerExpression
+[WARNING] Figure out why we have warning in floatExpression and integerExpression
 
 ---------------------------------------------------------------------*/
 
@@ -180,6 +178,7 @@ TOKEN : /* SPECIAL TOKENS */
 {
   < PRINT: "PRINT" > 
 | < WRITE: "WRITE" >
+| < QUOTE: "'" >
 }
 
 
@@ -213,7 +212,7 @@ Token any():{Token t;}
 	(
 	   t = anyCondition()
 	 | t = <IF> | t = <ELSE> | t = <ELSEIF> | t = <THEN> | t = <ENDIF>
-	 | t = <PRINT> | t = <WRITE>
+	 | t = <PRINT> | t = <WRITE> | t= <QUOTE>
 	 | t = <EQUAL> | t = <SEMICOLON> | t = <COMMA>
 	 | t = <INT> | t = <DOUBLE> | t = <BOOLEAN>
 	)
@@ -234,7 +233,7 @@ Token anyProcedure():{Token t;}
 
 /*---------------------------------------------------------------------*/
 /* DECLARE VARIABLES
-/* We allow only simple initializations by statements
+/* We initialize by statements - variable always has to be assigned a value
 /* We do not allow initialization of the same variable twice 
 /*---------------------------------------------------------------------*/
 
@@ -628,7 +627,7 @@ void ifStatement(Map map, Map locals, Map fps) :
 /*PRINT FUNCTION STARTS HERE*/
 /*---------------------------------------------------------------------*/
 void print(Map map, Map local, boolean execute):
-{boolean a; int b; double c;}
+{boolean a; int b; double c; String s = ""; Token tmp;}
 {
   <PRINT><LPARENTHESIS>(
     < FLOAT_VARNAME > {
@@ -679,6 +678,7 @@ void print(Map map, Map local, boolean execute):
 			}
 		}
 	}
+  | <QUOTE>(tmp=<VARNAME>{s+=tmp;})*<QUOTE>{System.out.println(s);}
   )<RPARENTHESIS><SEMICOLON>
 }
 
@@ -688,7 +688,6 @@ void print(Map map, Map local, boolean execute):
 void read(Map map, Map local, boolean execute):
 {Token tmp = null;}
 {
-  //FIX - DOES NOT OVERRIDE PROPERLY VALUES
   	{
   	  	System.out.println("Reading value from input stream: ");
 		if(!execute){return;}
@@ -707,19 +706,42 @@ void read(Map map, Map local, boolean execute):
  		}	  	
   	}
   	<WRITE><LPARENTHESIS>(tmp=<INT_VARNAME> 
-  						| tmp=<FLOAT_VARNAME>
-  						| tmp=<BOOL_VARNAME> )
+	{
+ 		if(!map.containsKey(tmp.toString())){
+	    	if(!local.containsKey(tmp.toString()))
+	    	{System.out.println("Variable not declared. Exiting.."); System.exit(-1);}
+	    	else {
+				local.put(tmp.toString(), Integer.valueOf(value));
+	    	}
+	 	}else{
+	    	map.put(tmp.toString(), Integer.valueOf(value));
+	    }	    
+      }
+  	| tmp=<FLOAT_VARNAME>
   	{
  		if(!map.containsKey(tmp.toString())){
 	    	if(!local.containsKey(tmp.toString()))
 	    	{System.out.println("Variable not declared. Exiting.."); System.exit(-1);}
 	    	else {
-				local.put(tmp.toString(), value);
+				local.put(tmp.toString(), Double.valueOf(value));
 	    	}
 	 	}else{
-	    	map.put(tmp.toString(), value);
-	    }
-      }<RPARENTHESIS><SEMICOLON>
+	    	map.put(tmp.toString(), Double.valueOf(value));
+	    }	    
+    }
+  	| tmp=<BOOL_VARNAME>
+  	{
+ 		if(!map.containsKey(tmp.toString())){
+	    	if(!local.containsKey(tmp.toString()))
+	    	{System.out.println("Variable not declared. Exiting.."); System.exit(-1);}
+	    	else {
+				local.put(tmp.toString(), Boolean.valueOf(value));
+	    	}
+	 	}else{
+	    	map.put(tmp.toString(), Boolean.valueOf(value));
+	    }    
+    }
+  	)<RPARENTHESIS><SEMICOLON>
 }
 
 /*---------------------------------------------------------------------*/

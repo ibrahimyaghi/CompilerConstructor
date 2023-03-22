@@ -73,11 +73,13 @@ public interface parsernameConstants {
   /** RegularExpression Id. */
   int WRITE = 40;
   /** RegularExpression Id. */
-  int INT_VARNAME = 41;
+  int QUOTE = 41;
   /** RegularExpression Id. */
-  int BOOL_VARNAME = 42;
+  int INT_VARNAME = 42;
   /** RegularExpression Id. */
-  int FLOAT_VARNAME = 43;
+  int BOOL_VARNAME = 43;
+  /** RegularExpression Id. */
+  int FLOAT_VARNAME = 44;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -127,6 +129,7 @@ public interface parsernameConstants {
     "\"ENDWHILE\"",
     "\"PRINT\"",
     "\"WRITE\"",
+    "\"\\\'\"",
     "<INT_VARNAME>",
     "<BOOL_VARNAME>",
     "<FLOAT_VARNAME>",
