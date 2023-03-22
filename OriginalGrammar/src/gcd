@@ -72,6 +72,8 @@ MAIN
 	PRINT('provide second integer variable');
 	WRITE(Ilocalb);
 	Igcd = gcd(Ilocala, Ilocalb);
+	PRINT('');
+	PRINT('greatest common divisor is');
 	PRINT(Igcd);
 
 ENDMAIN
