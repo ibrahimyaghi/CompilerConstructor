@@ -26,11 +26,20 @@ ENDIF
 ENDPROC
 
 MAIN
-        PRINT (Fnum1);
-        PRINT (Fnum2);
-        PRINT (Fnum3);
+        PRINT(''); //Make a new line
+	    PRINT('write first float number');
+        WRITE (Fnum1);
+        PRINT(''); //Make a new line
+	    PRINT('write second float number');
+        WRITE(Fnum2);
+        PRINT(''); //Make a new line
+	    PRINT('write third float number');
+        WRITE (Fnum3);
         minmax(Fnum1, Fnum2, Fnum3, Fmax, Fmin);
+        PRINT(''); //Make a new line
+	    PRINT('the minimum of float numbers is');
         PRINT(Fmin);
+        PRINT('the maximum of float numbers is');
         PRINT(Fmax);
 ENDMAIN
 	

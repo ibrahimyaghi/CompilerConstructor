@@ -24,11 +24,16 @@ ENDIF
 	
 
 	MAIN
-	
-		PRINT(Fnum1);
-		PRINT(Fnum2);
-        PRINT(Fnum3);
+	    PRINT(''); //Make a new line
+	    PRINT('write first float number');
+		WRITE(Fnum1);
+		PRINT('write second float number');
+		WRITE(Fnum2);
+		PRINT('write third float number');
+        WRITE(Fnum3);
 		Fmin = min(Fnum1, Fnum2, Fnum3);
+		PRINT(''); //Make a new line
+		PRINT('the minimum of the numbers is');
 		PRINT(Fmin);
 
 	ENDMAIN
