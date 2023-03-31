@@ -6,14 +6,6 @@ options
   static = false;
 }
 
-/*---------------------------------------------------------------------*/
-/* TO DO LIST / BUGS TO FIX 										   */
-/*-----------------------------------------------------------------------
-
-[WARNING] Figure out why we have warning in floatExpression and integerExpression
-
----------------------------------------------------------------------*/
-
 PARSER_BEGIN(parsername)
 import java.util.*;
 import java.io.FileInputStream;
@@ -57,7 +49,6 @@ public class parsername
     parsername parser = null;
 	try {
 	  	//Access file with code
-	  	//Hardcoded - > THE SAME DIRECTORY AS JAVA CODE, IT HAS TO BE CALLED "code.txt" TO WORK
 		parser = new parsername(new FileInputStream(path));
 	}
 	catch (FileNotFoundException e) {
